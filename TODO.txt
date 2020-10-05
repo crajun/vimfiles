@@ -1,4 +1,0 @@
-vimrc
-
-* make sense of all the default tab etc. options finally
-

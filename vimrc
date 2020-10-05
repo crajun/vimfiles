@@ -24,19 +24,19 @@ endif
 " -------------------------
 " Packages and Settings
 " -------------------------
-packadd gruvbox
-packadd targets.vim
-packadd vim-commentary
-packadd vim-dispatch
-packadd vim-editorconfig
-packadd vim-indent-object
-" packadd vim-js
-" packadd vim-jsx-pretty
-packadd vim-repeat
-packadd vim-surround
-packadd vim-unimpaired
+packadd! gruvbox
+packadd! targets.vim
+packadd! vim-commentary
+packadd! vim-dispatch
+packadd! vim-editorconfig
+packadd! vim-indent-object
+" packadd! vim-js
+" packadd! vim-jsx-pretty
+packadd! vim-repeat
+packadd! vim-surround
+packadd! vim-unimpaired
 
-packadd vim-fugitive
+packadd! vim-fugitive
 " Matches default with 'ruler' on, from fugitive docs
 set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
 " g? in any of Fugitive windows to see applicable keymaps for that window.
@@ -46,13 +46,13 @@ nnoremap <Leader>gb :Git blame<CR>
 nnoremap <Leader>gg :Git commit --all<CR>
 nnoremap <Leader>gp :Git push<CR>
 
-packadd fzf
+packadd! fzf
 let g:fzf_layout = { 'down': '40%' }
-packadd fzf.vim
+packadd! fzf.vim
 nnoremap <C-p> :FZF<CR>
 " this is how terminal vim sees alt+p keypress (:help i_C-v)
 noremap <Esc>p :Buffers<CR>
-packadd vim-mucomplete
+packadd! vim-mucomplete
 let g:mucomplete#enable_auto_at_startup = 1
 
 " packadd! vim-gutentags
