@@ -55,10 +55,6 @@ noremap <Esc>p :Buffers<CR>
 packadd! vim-mucomplete
 let g:mucomplete#enable_auto_at_startup = 1
 
-" packadd! vim-gutentags
-" uses all &wildignore by default, plus what is here
-" let g:gutentags_ctags_exclude=["node_modules/", "*.json", "Session.vim", "*.md", "*.txt", "*.adoc"]
-
 " -------------------------
 " Non-Plugin Mappings
 " -------------------------
@@ -92,8 +88,8 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " nnoremap <Leader>V :<C-u>vert sfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
 
 " :tabedit/tabfind mappings
-" nnoremap <Leader>t :<C-u>tabedit <C-z><S-Tab>
-" nnoremap <Leader>T :<C-u>tabfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
+nnoremap <Leader>t :<C-u>tabedit <C-z><S-Tab>
+nnoremap <Leader>T :<C-u>tabfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
 
 " :buffer mappings
 " * Prefer <C-d> to wildmenu here because it allows fuzzy matching typing
@@ -235,6 +231,4 @@ rviminfo!
 " Ignore errors and read in all doc/ files in &rtp to update help files.
 silent! helptags ALL
 " Set last to make sure it applies after other things may have been done to syntax.
-let g:gruvbox_contrast_dark='medium'
-let g:gruvbox_italic=0
 colorscheme gruvbox
