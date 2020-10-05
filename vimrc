@@ -15,36 +15,28 @@ augroup END
 let mapleader = ' '
 let maplocalleader = "\\"
 
-" -------------------------
-" Packages and Settings
-" -------------------------
-packadd minpac
-
 if v:version >= 802
   set completeopt=menuone,noinsert,noselect,popup
 else
   set completeopt=menuone,noinsert,noselect,preview
 endif
 
-call minpac#init()
+" -------------------------
+" Packages and Settings
+" -------------------------
+packadd gruvbox
+packadd targets.vim
+packadd vim-commentary
+packadd vim-dispatch
+packadd vim-editorconfig
+packadd vim-indent-object
+" packadd vim-js
+" packadd vim-jsx-pretty
+packadd vim-repeat
+packadd vim-surround
+packadd vim-unimpaired
 
-call minpac#add('k-takata/minpac', {'type': 'opt'})
-command! PackUpdate source $MYVIMRC | call minpac#update('', {'do': 'call minpac#status()'})
-command! PackClean  source $MYVIMRC | call minpac#clean()
-command! PackStatus source $MYVIMRC | call minpac#status()
-
-" UI
-call minpac#add('gruvbox-community/gruvbox')
-
-" Basics
-call minpac#add('tpope/vim-commentary')
-call minpac#add('tpope/vim-repeat')
-call minpac#add('tpope/vim-surround')
-call minpac#add('sgur/vim-editorconfig')
-call minpac#add('tpope/vim-dispatch')
-call minpac#add('wellle/targets.vim')
-call minpac#add('tpope/vim-unimpaired')
-call minpac#add('tpope/vim-fugitive')
+packadd vim-fugitive
 " Matches default with 'ruler' on, from fugitive docs
 set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
 " g? in any of Fugitive windows to see applicable keymaps for that window.
@@ -53,37 +45,27 @@ nnoremap <Leader>ga :Git add -A<CR>
 nnoremap <Leader>gb :Git blame<CR>
 nnoremap <Leader>gg :Git commit --all<CR>
 nnoremap <Leader>gp :Git push<CR>
-call minpac#add('michaeljsmith/vim-indent-object')
 
-" Life Upgrades
-call minpac#add('junegunn/fzf')
+packadd fzf
 let g:fzf_layout = { 'down': '40%' }
-call minpac#add('junegunn/fzf.vim')
+packadd fzf.vim
 nnoremap <C-p> :FZF<CR>
 " this is how terminal vim sees alt+p keypress (:help i_C-v)
-nnoremap <Esc>p :Buffers<CR>
-call minpac#add('lifepillar/vim-mucomplete')
+noremap <Esc>p :Buffers<CR>
+packadd vim-mucomplete
 let g:mucomplete#enable_auto_at_startup = 1
 
-" TODO: candidate to remove and replace with easier maintenance via sh script or tpope method
-call minpac#add('ludovicchabant/vim-gutentags')
+" packadd! vim-gutentags
 " uses all &wildignore by default, plus what is here
-let g:gutentags_ctags_exclude=["node_modules/", "*.json", "Session.vim", "*.md", "*.txt", "*.adoc"]
-
-" Filetypes / Syntax
-call minpac#add('yuezk/vim-js', {'type': 'opt'})
-call minpac#add('maxmellon/vim-jsx-pretty', {'type': 'opt'})
+" let g:gutentags_ctags_exclude=["node_modules/", "*.json", "Session.vim", "*.md", "*.txt", "*.adoc"]
 
 " -------------------------
 " Non-Plugin Mappings
 " -------------------------
-
 " In command line mappings we can't use Tab so wcm needs to used in place of it
 " Essentially, whenever I see <C-z> read it as hitting <Tab> key
 set wildcharm=<C-z>
 
-" change to current buffer directory
-command! Cd :cd %:h
 
 nnoremap <Leader>ev :edit $MYVIMRC<CR>
 nnoremap <Leader>sv :source $MYVIMRC<CR>
@@ -115,8 +97,8 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " :buffer mappings
 " * Prefer <C-d> to wildmenu here because it allows fuzzy matching typing
-" nnoremap <Leader>b :<C-u>buffer <C-d>
-" nnoremap <Leader>B :<C-u>sbuffer <C-d>
+nnoremap <Leader>b :<C-u>buffer <C-d>
+nnoremap <Leader>B :<C-u>sbuffer <C-d>
 
 " Function keys
 nnoremap <silent><F3> :call utils#ToggleQuickfixList()<CR>
@@ -242,6 +224,8 @@ autocmd vimrc QuickFixCmdPost  l* lwindow
 " TODO: move these to user autoload folder
 command! Todo :silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ **<CR>
 command! LocalTodo :lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
+" change to current buffer directory
+command! Cd :cd %:h
 
 " -------------------------
 " Needed Last
