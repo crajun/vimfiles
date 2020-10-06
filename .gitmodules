@@ -58,3 +58,12 @@
 [submodule "pack/git-managed/opt/lightline.vim"]
 	path = pack/git-managed/opt/lightline.vim
 	url = https://github.com/itchyny/lightline.vim
+[submodule "pack/git-managed/opt/vim-vsnip-integ"]
+	path = pack/git-managed/opt/vim-vsnip-integ
+	url = https://github.com/hrsh7th/vim-vsnip-integ
+[submodule "pack/git-managed/opt/vim-vsnip"]
+	path = pack/git-managed/opt/vim-vsnip
+	url = https://github.com/hrsh7th/vim-vsnip
+[submodule "pack/git-managed/opt/vim-lsc"]
+	path = pack/git-managed/opt/vim-lsc
+	url = https://github.com/natebosch/vim-lsc

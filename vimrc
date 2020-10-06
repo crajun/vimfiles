@@ -1,4 +1,3 @@
-" vi:sw=2:et:tw=120
 " Author: C.D. MacEachern <craigm@fastmail.com>
 " Description: vim 8.0+ config (requires +packages)
 
@@ -40,7 +39,7 @@ let g:lightline = {
   \ 'colorscheme': 'nord',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+  \   [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
   \ },
   \ 'component_function': {
   \   'gitbranch': 'FugitiveHead'
@@ -60,13 +59,38 @@ packadd! fzf.vim
 nnoremap <C-p> :FZF<CR>
 " this is how terminal vim sees alt+p keypress (:help i_C-v)
 noremap <Esc>p :Buffers<CR>
-packadd! vim-mucomplete
-let g:mucomplete#enable_auto_at_startup = 1
+" packadd! vim-mucomplete
+" let g:mucomplete#enable_auto_at_startup = 1
+
+packadd! vim-lsc
+let g:lsc_server_commands = {
+  \ 'javascript': ''
+\ }
+" Complete default mappings are:
+let g:lsc_auto_map = {
+  \ 'GoToDefinition': '<C-]>',
+  \ 'GoToDefinitionSplit': ['<C-W>]', '<C-W><C-]>'],
+  \ 'FindReferences': 'gr',
+  \ 'NextReference': '<C-n>',
+  \ 'PreviousReference': '<C-p>',
+  \ 'FindImplementations': 'gI',
+  \ 'FindCodeActions': 'ga',
+  \ 'Rename': 'gR',
+  \ 'ShowHover': v:true,
+  \ 'DocumentSymbol': 'go',
+  \ 'WorkspaceSymbol': 'gS',
+  \ 'SignatureHelp': 'gm',
+  \ 'Completion': 'completefunc',
+\}
+
+packadd! vim-vsnip
+packadd! vim-vsnip-integ
+
 
 " -------------------------
 " Non-Plugin Mappings
 " -------------------------
-" In command line mappings we can't use Tab so wcm needs to used in place of it
+" command line mappingscan't use Tab so 'wcm' needs to used in place of it
 " Essentially, whenever I see <C-z> read it as hitting <Tab> key
 set wildcharm=<C-z>
 
@@ -89,7 +113,8 @@ map q: :q
 " Remaps C-p to do the above as a convenience
 " nmap <C-p> <Leader>e
 " " Do :edit from current file folder
-" nnoremap <Leader>E :<C-u>e <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-z><S-Tab>
+" nnoremap <Leader>E
+"   \ :<C-u>e <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-z><S-Tab>
 
 " :find mappings
 " * Like :edit but uses value of 'path',
@@ -98,9 +123,11 @@ map q: :q
 " " Like above, but use current file directory as starting point
 " nnoremap <Leader>F :<C-u>find <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
 " nnoremap <Leader>s :<C-u>sfind<space><C-d>
-" nnoremap <Leader>S :<C-u>sfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
+" nnoremap <Leader>S
+"   \ :<C-u>sfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
 " nnoremap <Leader>v :<C-u>vert sfind<space><C-d>
-" nnoremap <Leader>V :<C-u>vert sfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
+" nnoremap <Leader>V
+"   \ :<C-u>vert sfind <C-r>=fnameescape(expand('%:p:h')).'/'<CR><C-d>
 
 " :tabedit/tabfind mappings
 nnoremap <Leader>t :<C-u>tabedit <C-z><S-Tab>
@@ -112,19 +139,19 @@ nnoremap <Leader>b :<C-u>buffer <C-d>
 nnoremap <Leader>B :<C-u>sbuffer <C-d>
 
 " Function keys
-nnoremap <silent><F3> :call utils#ToggleQuickfixList()<CR>
-nnoremap <silent><F4> :call utils#ToggleLocationList()<CR>
-nnoremap <F5> :silent make % <bar> silent redraw!<CR>
-nnoremap <F6> :15Lexplore<CR>
-nnoremap <F9> :set list!<CR>
-nnoremap <F10> :set spell!<CR>
+nnoremap <silent><F3> call utils#ToggleQuickfixList()<CR>
+nnoremap <silent><F4> call utils#ToggleLocationList()<CR>
+nnoremap <F5> silent make % <bar> silent redraw!<CR>
+nnoremap <F6> 15Lexplore<CR>
+nnoremap <F9> set list!<CR>
+nnoremap <F10> set spell!<CR>
 
 " Buffers/Windows
 nnoremap <Leader>w :<C-u>update<CR>
 nnoremap <Leader>l :<C-u>b #<CR>
 
 " Edit current buffer filetype in after/ftplugin/
-nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
+nnoremap <Leader>ft e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 
 " Symbol Navigation (see vimways.org/2018 romainl article)
 nnoremap <Leader>ij :<C-u>ijump <C-r><C-w>
@@ -139,7 +166,7 @@ nnoremap <Leader>ds :<C-u>dsearch
 nnoremap <Leader>dl :<C-u>dlist
 
 " Tag jumping
-nnoremap <Leader>tj :<C-u>tjump<space>
+nnoremap <Leader>tj <C-u>tjump<space>
 nnoremap <Leader>tp <C-w>}
 "
 " jump to tag or present options if ambiguous
@@ -148,7 +175,7 @@ nnoremap <C-]> g<C-]>
 nnoremap <C-w><C-]> g<C-w><C-]>
 
 " Visual
-nnoremap <silent> <C-L> :<C-U>nohlsearch<CR>
+nnoremap <silent> <C-L> <C-U>nohlsearch<CR>
 
 " Terminal
 tnoremap <Esc> <C-\><C-n>
@@ -175,7 +202,7 @@ inoreabbrev [, [<CR>],<Esc>O
 " -------------------------
 let g:netrw_banner=0
 let g:netrw_liststyle=3
-let g:netrw_list_hide=netrw_gitignore#Hide().'.*\.swp$' | " use gitignore file if available
+let g:netrw_list_hide=netrw_gitignore#Hide().'.*\.swp$'
 let g:netrw_sizestyle='h'
 set autoread " If file changed on disk, reread it
 set autoindent
@@ -284,5 +311,4 @@ command! Cd :cd %:h
 rviminfo!
 " Ignore errors and read in all doc/ files in &rtp to update help files.
 silent! helptags ALL
-" Set last to make sure it applies after other things may have been done to syntax.
 colorscheme nord
