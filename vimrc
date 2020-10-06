@@ -71,8 +71,8 @@ let g:mucomplete#enable_auto_at_startup = 1
 set wildcharm=<C-z>
 
 " Scroll other window shortcut
-noremap <Esc>j <C-w>p<C-e><C-w>p
-noremap <Esc>k <C-w>p<C-y><C-w>p
+nnoremap <Esc>j <C-w>p<C-e><C-w>p
+nnoremap <Esc>k <C-w>p<C-y><C-w>p
 
 " vimrc
 nnoremap <Leader>ev :edit $MYVIMRC<CR>

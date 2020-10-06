@@ -22,4 +22,9 @@
 setlocal define=^\\s*\\(def\\\|class\\)
 compiler pylint
 
-packadd! vim-textobj-python
+" This is set in $VIMRUNTIME/ftplugin/python.vim but it is due
+" to change with PR #14
+setlocal expandtab
+setlocal tabstop=4
+setlocal softtabstop=4
+setlocal shiftwidth=0
