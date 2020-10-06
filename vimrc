@@ -20,6 +20,17 @@ else
   set completeopt=menuone,noinsert,noselect,preview
 endif
 
+" mintty-specific - to change cursor in vim to line cursor in insert mode
+" FIXME: pretty brittle hack here to check $WSLENV exists in bash env, if it
+" exists it is empty. There's got to be many cases this fails.
+" if getenv("WSLENV")
+"   echom "WSL detected. Setting cursor block..."
+"   let &t_ti.="\e[1 q"
+"   let &t_SI.="\e[5 q"
+"   let &t_EI.="\e[1 q"
+"   let &t_te.="\e[0 q"
+" endif
+
 " -------------------------
 " Packages and Settings
 " -------------------------
@@ -63,14 +74,14 @@ noremap <Esc>p :Buffers<CR>
 " let g:mucomplete#enable_auto_at_startup = 1
 
 packadd! vim-lsc
-let g:lsc_server_commands = {
-  \ 'javascript': '',
-  \ 'python': 'pyls',
-  \ 'css': '',
-  \ 'html': '',
-  \ 'bash': '',
-  \ 'vim': ''
-\ }
+" let g:lsc_server_commands = {
+"   \ 'javascript': '',
+"   \ 'python': 'pyls',
+"   \ 'css': '',
+"   \ 'html': '',
+"   \ 'bash': '',
+"   \ 'vim': ''
+" \ }
 " Complete default mappings are:
 let g:lsc_auto_map = {
   \ 'GoToDefinition': '<C-]>',
