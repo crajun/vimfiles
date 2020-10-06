@@ -24,7 +24,7 @@ endif
 " -------------------------
 " Packages and Settings
 " -------------------------
-packadd! apprentice
+packadd! nord-vim
 packadd! targets.vim
 packadd! vim-commentary
 packadd! vim-dispatch
@@ -35,11 +35,19 @@ packadd! vim-indent-object
 packadd! vim-repeat
 packadd! vim-surround
 packadd! vim-unimpaired
+packadd! lightline.vim
+let g:lightline = {
+  \ 'colorscheme': 'nord',
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+  \ },
+  \ 'component_function': {
+  \   'gitbranch': 'FugitiveHead'
+  \ },
+\ }
 
 packadd! vim-fugitive
-" Matches default with 'ruler' on, from fugitive docs
-set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
-" g? in any of Fugitive windows to see applicable keymaps for that window.
 nnoremap <Leader>gs :Git<CR>
 nnoremap <Leader>ga :Git add -A<CR>
 nnoremap <Leader>gb :Git blame<CR>
@@ -62,6 +70,11 @@ let g:mucomplete#enable_auto_at_startup = 1
 " Essentially, whenever I see <C-z> read it as hitting <Tab> key
 set wildcharm=<C-z>
 
+" Scroll other window shortcut
+noremap <Esc>j <C-w>p<C-e><C-w>p
+noremap <Esc>k <C-w>p<C-y><C-w>p
+
+" vimrc
 nnoremap <Leader>ev :edit $MYVIMRC<CR>
 nnoremap <Leader>sv :source $MYVIMRC<CR>
 
@@ -169,6 +182,7 @@ set autoindent
 set hidden
 set ignorecase smartcase
 set noswapfile nobackup noundofile nowritebackup
+set noshowmode
 set number relativenumber
 set laststatus=2
 " ',,' means search in current directory
@@ -190,6 +204,39 @@ set viminfo="'100,!26,<50,s10,h"
 set wildignore+=*.jpg,*.jpeg,*.bmp,*.ico,*.so,*.dll,*.o,*.obj,*.zip
 set wildignore+=*.swp,*~,._*,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz,*.zip
 set wildignore+=*/.git/*,*/node_modules/*,*/.hg/*,*/.svn/*,*/.venv/*
+
+" --------------------------------------------------
+" Whitespace Explanations. Because I forget.
+" These are the global defaults just here reference.
+" --------------------------------------------------
+" Number of spaces <Tab> counts for. Whether 1 tab byte 0x09 will be replaced
+" with space bytes 0x20 depends on if 'expandtab/noexpandtab'.
+set tabstop=8
+" Governs how much to indent (e.g., >> command)
+" Whether it uses spaces or tab character is up to a few settings:
+"   * if 'noexpandtab': tries to use tab bytes (\x09) alone. It will use
+"   spaces as needed if the result of tabstop / shiftwidth is not 0.
+"   * if 'expandtab': only use space bytes.
+" Unless you want mixed tab and space bytes (THE HORROR.) if you set
+" tabstop and shiftwidth to different values that are non equally divisible,
+" use 'expandtab'.
+set shiftwidth=8
+" Rounds indenting actions to a multiple of 'shiftwidth' if this is on.
+set noshiftround
+" Number of spaces that tab byte \x09 counts for when doing edits like
+" when pressing <Tab> or <BS>. It uses a mix of space \x020 and tab
+" \x09 bytes. Useful to keep tabstop at 8 while being able to add tabs
+" and delete like it is set to softtabstop (insert/remove that many
+" whitespaces, made up of space and tab characters).
+"  * if 'noexpandtab': number of \x020 (space) bytes are minimized by
+"  inserting as many \x09 (tab) bytes as possible.
+set softtabstop=0
+" Don't use space bytes \x020 to make up tab \x09 bytes, use real tabs.
+" Technically small filesizes with tab characters, but with minification
+" on most web/code now being popular, this doesn't matter as much.
+set noexpandtab
+" Do not copy indent from current line when starting new line: <CR>,o,O
+set noautoindent
 
 if v:version >= 800
   packadd! matchit
@@ -238,4 +285,4 @@ rviminfo!
 " Ignore errors and read in all doc/ files in &rtp to update help files.
 silent! helptags ALL
 " Set last to make sure it applies after other things may have been done to syntax.
-colorscheme apprentice
+colorscheme nord

@@ -38,8 +38,20 @@ loaded.
 ## Updating packages - (refreshing already installed packages)
 
 ```
-cd ~/dotfiles/vim/.vim
+cd ~/.vim
 git submodule update --remote --merge
+```
+## Update single package
+
+```
+cd ~/.vim/pack/git-managed/opt/plug-foo
+git pull origin master
+```
+
+## Replicating the repository on a machine
+
+```
+git clone --recursive https://github.com/craigmac/vimfiles ~/.vim
 ```
 
 ## Removing packages
@@ -47,10 +59,8 @@ git submodule update --remote --merge
 ```
 cd ~/.vim
 git submodule deinit pack/third-party/opt/fzf
-git rm pack/completion/opt/fzf
-rm -Rf .git/modules/pack/third-party/opt/fzf
-git add -A
-git commit -m
+git rm -r pack/completion/opt/fzf
+rm -r .git/modules/pack/third-party/opt/fzf
 ```
 
 Or you could just leave them in opt and not load them in

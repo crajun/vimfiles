@@ -52,3 +52,9 @@
 [submodule "pack/git-managed/opt/vim-cool"]
 	path = pack/git-managed/opt/vim-cool
 	url = https://github.com/romainl/vim-cool
+[submodule "pack/git-managed/opt/nord-vim"]
+	path = pack/git-managed/opt/nord-vim
+	url = https://github.com/arcticicestudio/nord-vim.git
+[submodule "pack/git-managed/opt/lightline.vim"]
+	path = pack/git-managed/opt/lightline.vim
+	url = https://github.com/itchyny/lightline.vim
