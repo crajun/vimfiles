@@ -21,15 +21,12 @@ else
 endif
 
 " mintty-specific - to change cursor in vim to line cursor in insert mode
-" FIXME: pretty brittle hack here to check $WSLENV exists in bash env, if it
-" exists it is empty. There's got to be many cases this fails.
-" if getenv("WSLENV")
-"   echom "WSL detected. Setting cursor block..."
-"   let &t_ti.="\e[1 q"
-"   let &t_SI.="\e[5 q"
-"   let &t_EI.="\e[1 q"
-"   let &t_te.="\e[0 q"
-" endif
+if !empty("WSLENV")
+  let &t_ti.="\e[1 q"
+  let &t_SI.="\e[5 q"
+  let &t_EI.="\e[1 q"
+  let &t_te.="\e[0 q"
+endif
 
 " -------------------------
 " Packages and Settings
@@ -79,14 +76,20 @@ endif
 " packadd! vim-mucomplete
 " let g:mucomplete#enable_auto_at_startup = 1
 packadd! vim-lsc
-" let g:lsc_server_commands = {
-"   \ 'javascript': '',
-"   \ 'python': 'pyls',
-"   \ 'css': '',
-"   \ 'html': '',
-"   \ 'bash': '',
-"   \ 'vim': ''
-" \ }
+" If switched to false, completion can be called but it will be synchronous
+let g:lsc_enable_autocomplete = v:true
+let g:lsc_server_commands = {
+  \ 'javascript': 'typescript-language-server --stdio',
+  \ 'javascriptreact': 'typescript-language-server --stdio',
+  \ 'typescript': 'typescript-language-server --stdio',
+  \ 'bash': 'bash-language-server --stdio',
+  \ 'css': 'css-languageserver --stdio',
+  \ 'html': 'html-languageserver --stdio',
+  \ 'docker': 'docker-langserver --stdio',
+  \ 'python': 'pyls --stdio',
+  \ 'vim': 'vim-language-server --stdio',
+\ }
+
 " Complete default mappings are:
 let g:lsc_auto_map = {
   \ 'GoToDefinition': '<C-]>',
@@ -106,7 +109,6 @@ let g:lsc_auto_map = {
 
 packadd! vim-vsnip
 packadd! vim-vsnip-integ
-
 
 " -------------------------
 " Non-Plugin Mappings
