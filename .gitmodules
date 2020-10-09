@@ -67,3 +67,15 @@
 [submodule "pack/git-managed/opt/vim-lsc"]
 	path = pack/git-managed/opt/vim-lsc
 	url = https://github.com/natebosch/vim-lsc
+[submodule "pack/git-managed/opt/vim-lsp"]
+	path = pack/git-managed/opt/vim-lsp
+	url = https://github.com/prabirshrestha/vim-lsp
+[submodule "pack/git-managed/opt/asyncomplete.vim"]
+	path = pack/git-managed/opt/asyncomplete.vim
+	url = https://github.com/prabirshrestha/asyncomplete.vim
+[submodule "pack/git-managed/opt/asyncomplete-lsp.vim"]
+	path = pack/git-managed/opt/asyncomplete-lsp.vim
+	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim
+[submodule "pack/git-managed/opt/vim-vsnip-snippets"]
+	path = pack/git-managed/opt/vim-vsnip-snippets
+	url = https://github.com/craigmac/vim-vsnip-snippets

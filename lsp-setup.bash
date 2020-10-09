@@ -1,6 +1,16 @@
 #!/bin/bash
 
-# Install LSP servers globally (requires Nodejs 10+ and python3)
+# Install LSP servers globally for use with
+# vim-lsp and/or other lsp clients
+
+# Requirements:
+# * Nodejs 10+ (sudo apt install nodejs)
+# * python3 (sudo apt install python3)
+# * pip3 (sudo apt install python3-pip)
+#
+# If npm was installed via apt or distro package manager, run
+# this script as sudo, i.e., $ sudo ./lsp-setup.bash after
+
 npm install --global typescript
 # binary is called 'typescript-language-server'
 npm install --global typescript-language-server

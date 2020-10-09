@@ -25,12 +25,12 @@ if &term =~ "xterm*"
   " see :h termcap-cursor-shape
   " let &t_ti.="\<Esc>[1 q" | " put terminal in 'termcap' mode
 
-  " start insert mode with 'bar' cursor
+  " start insert mode with 'bar' cursor in white
   let &t_SI.= "\<Esc>[5 q"
-  let &t_SI.= "\<ESC>]12;red\x7"
-  " t_SR is sent when entering Replace mode, if empty, uses t_SI
-  " let &t_SR = ""
+  let &t_SI.= "\<ESC>]12;white\x7"
   " t_EI is sent when leaving Insert/Replace mode (back to Normal)
+  " and red colour
+  let &t_EI.= "\<ESC>]12;red\x7"
   let &t_EI.="\<Esc>[1 q"
 
   " end 'termcap mode'
@@ -82,42 +82,83 @@ else
   " this is how terminal vim sees alt+p keypress in mintty (:help i_C-v)
   noremap <Esc>p :Buffers<CR>
 endif
-" packadd! vim-mucomplete
-" let g:mucomplete#enable_auto_at_startup = 1
-packadd! vim-lsc
-" If switched to false, completion can be called but it will be synchronous
-let g:lsc_enable_autocomplete = v:true
-let g:lsc_server_commands = {
-  \ 'javascript': 'typescript-language-server --stdio',
-  \ 'javascriptreact': 'typescript-language-server --stdio',
-  \ 'typescript': 'typescript-language-server --stdio',
-  \ 'bash': 'bash-language-server --stdio',
-  \ 'css': 'css-languageserver --stdio',
-  \ 'html': 'html-languageserver --stdio',
-  \ 'docker': 'docker-langserver --stdio',
-  \ 'python': 'pyls --stdio',
-  \ 'vim': 'vim-language-server --stdio',
-\ }
 
-" Complete default mappings are:
-let g:lsc_auto_map = {
-  \ 'GoToDefinition': '<C-]>',
-  \ 'GoToDefinitionSplit': ['<C-W>]', '<C-W><C-]>'],
-  \ 'FindReferences': 'gr',
-  \ 'NextReference': '<C-n>',
-  \ 'PreviousReference': '<C-p>',
-  \ 'FindImplementations': 'gI',
-  \ 'FindCodeActions': 'ga',
-  \ 'Rename': 'gR',
-  \ 'ShowHover': v:true,
-  \ 'DocumentSymbol': 'go',
-  \ 'WorkspaceSymbol': 'gS',
-  \ 'SignatureHelp': 'gm',
-  \ 'Completion': 'completefunc',
-\}
+" -----------------------------
+"  LSP settings and integration
+" -----------------------------
+packadd! vim-lsp
+let g:lsp_fold_enabled = 0
+let g:lsp_diagnostics_enabled = 0
+let g:lsp_highlights_enabled = 0
+let g:lsp_textprop_enabled = 0
+let g:lsp_highlight_references_enabled = 0
+
+if executable('pyls')
+  " pip install python-language-server
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'pyls',
+    \ 'cmd': {server_info->['pyls']},
+    \ 'allowlist': ['python'],
+  \ })
+endif
+
+function! s:on_lsp_buffer_enabled() abort
+  setlocal omnifunc=lsp#complete
+  setlocal signcolumn=yes
+  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+  nmap <buffer> gd <plug>(lsp-definition)
+  nmap <buffer> gr <plug>(lsp-references)
+  nmap <buffer> gi <plug>(lsp-implementation)
+  nmap <buffer> gt <plug>(lsp-type-definition)
+  nmap <buffer> <leader>rn <plug>(lsp-rename)
+  nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+  nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+  nmap <buffer> K <plug>(lsp-hover)
+endfunction
+
+augroup lsp_install
+  autocmd!
+  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+packadd! asyncomplete.vim
+packadd! asyncomplete-lsp.vim
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+imap <c-space> <Plug>(asyncomplete_force_refresh)
 
 packadd! vim-vsnip
+" Expand
+imap <expr> <C-j> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-j>'
+smap <expr> <C-j> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-j>'
+" Expand or jump
+imap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+" Jump forward or backward
+imap <expr> <Tab> vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<Tab>'
+smap <expr> <Tab> vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+" See https://github.com/hrsh7th/vim-vsnip/pull/50
+nmap s <Plug>(vsnip-select-text)
+xmap s <Plug>(vsnip-select-text)
+nmap S <Plug>(vsnip-cut-text)
+xmap S <Plug>(vsnip-cut-text)
+" If you want to use snippet for multiple filetypes, use 'g:vsnip_filetypes'.
+let g:vsnip_filetypes = {}
+let g:vsnip_filetypes.javascriptreact = ['javascript', 'html', 'css']
+let g:vsnip_filetypes.typescriptreact = ['typescript']
+let g:vsnip_snippet_dir = expand('~/.vim/snippets')
+let g:vsnip_snippet_dirs = [
+  \ expand('~/.vim/pack/git-managed/opt/vim-vsnip-snippets/snippets'),
+  \ expand('~/.vsnip')
+  \ ]
+
 packadd! vim-vsnip-integ
+packadd! vim-vsnip-snippets
 
 " -------------------------
 " Non-Plugin Mappings
@@ -214,9 +255,6 @@ nnoremap <Leader>tp <C-w>}
 nnoremap <C-]> g<C-]>
 " opens in preview window our choice
 nnoremap <C-w><C-]> g<C-w><C-]>
-
-" Visual
-nnoremap <silent> <C-L> :<C-U>nohlsearch<CR>
 
 " Terminal
 tnoremap <Esc> <C-\><C-n>
