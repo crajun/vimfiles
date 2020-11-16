@@ -20,23 +20,6 @@ else
   set completeopt=menuone,noinsert,noselect,preview
 endif
 
-" mintty/xterm-compatible terminal
-if &term =~ "xterm*"
-  " see :h termcap-cursor-shape
-  " let &t_ti.="\<Esc>[1 q" | " put terminal in 'termcap' mode
-
-  " start insert mode with 'bar' cursor in white
-  let &t_SI.= "\<Esc>[5 q"
-  let &t_SI.= "\<ESC>]12;white\x7"
-  " t_EI is sent when leaving Insert/Replace mode (back to Normal)
-  " and red colour
-  let &t_EI.= "\<ESC>]12;red\x7"
-  let &t_EI.="\<Esc>[1 q"
-
-  " end 'termcap mode'
-  " let &t_te.="\<Esc>[0 q"
-endif
-
 " -------------------------
 " Packages and Settings
 " -------------------------
@@ -46,22 +29,9 @@ packadd! vim-commentary
 packadd! vim-dispatch
 packadd! vim-editorconfig
 packadd! vim-indent-object
-" packadd! vim-js
-" packadd! vim-jsx-pretty
 packadd! vim-repeat
 packadd! vim-surround
 packadd! vim-unimpaired
-" packadd! lightline.vim
-" let g:lightline = {
-"   \ 'colorscheme': 'nord',
-"   \ 'active': {
-"   \   'left': [ [ 'mode', 'paste' ],
-"   \   [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-"   \ },
-"   \ 'component_function': {
-"   \   'gitbranch': 'FugitiveHead'
-"   \ },
-" \ }
 
 packadd! vim-fugitive
 nnoremap <Leader>gs :Git<CR>
@@ -72,6 +42,7 @@ nnoremap <Leader>gp :Git push<CR>
 
 packadd! fzf
 let g:fzf_layout = { 'down': '40%' }
+
 packadd! fzf.vim
 nnoremap <C-p> :FZF<CR>
 if has('osx')
@@ -82,52 +53,6 @@ else
   " this is how terminal vim sees alt+p keypress in mintty (:help i_C-v)
   noremap <Esc>p :Buffers<CR>
 endif
-
-" -----------------------------
-"  LSP settings and integration
-" -----------------------------
-packadd! vim-lsp
-let g:lsp_fold_enabled = 0
-let g:lsp_diagnostics_enabled = 0
-let g:lsp_highlights_enabled = 0
-let g:lsp_textprop_enabled = 0
-let g:lsp_highlight_references_enabled = 0
-
-if executable('pyls')
-  " pip install python-language-server
-  autocmd User lsp_setup call lsp#register_server({
-    \ 'name': 'pyls',
-    \ 'cmd': {server_info->['pyls']},
-    \ 'allowlist': ['python'],
-  \ })
-endif
-
-function! s:on_lsp_buffer_enabled() abort
-  setlocal omnifunc=lsp#complete
-  setlocal signcolumn=yes
-  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-  nmap <buffer> gd <plug>(lsp-definition)
-  nmap <buffer> gr <plug>(lsp-references)
-  nmap <buffer> gi <plug>(lsp-implementation)
-  nmap <buffer> gt <plug>(lsp-type-definition)
-  nmap <buffer> <leader>rn <plug>(lsp-rename)
-  nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-  nmap <buffer> K <plug>(lsp-hover)
-endfunction
-
-augroup lsp_install
-  autocmd!
-  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-packadd! asyncomplete.vim
-packadd! asyncomplete-lsp.vim
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
-imap <c-space> <Plug>(asyncomplete_force_refresh)
 
 packadd! vim-vsnip
 " Expand
@@ -159,6 +84,7 @@ let g:vsnip_snippet_dirs = [
 
 packadd! vim-vsnip-integ
 packadd! vim-vsnip-snippets
+packadd! YouCompleteMe
 
 " -------------------------
 " Non-Plugin Mappings
