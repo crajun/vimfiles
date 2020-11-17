@@ -326,16 +326,25 @@ command! Cd :cd %:h
 " -------------------------
 " Autocommands
 " -------------------------
-" Local settings
-autocmd FileType python setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=0
-autocmd FileType python setlocal define=^\\s*\\(def\\\|class\\)
-autocmd FileType python setlocal makeprg=pylint\ --output-format=parseable\ --score=n
-autocmd FileType javascript,javascriptreact setlocal et ts=2 sts=2 sw=0
-autocmd FileType javascript,javascriptreact setlocal makeprg=npx\ eslint\ --format\ unix
-autocmd FileType vim setlocal makeprg=vint
+augroup FileTypeSettings
+  " Used instead of e.g., .vim/after/ftplugin/javascript.vim to keep them all here
+  autocmd!
+  autocmd FileType python setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=0
+  autocmd FileType python setlocal define=^\\s*\\(def\\\|class\\)
+  autocmd FileType javascript,javascriptreact setlocal et ts=2 sts=2 sw=0
+augroup END
 
-" Lint on write, also have F5 to run same on demand
-autocmd BufWritePost *.py,*.js,*.jsx silent make! <afile> | silent redraw!
+augroup FileTypeLinting
+  autocmd!
+  autocmd FileType vim setlocal makeprg=vint
+  autocmd FileType python setlocal makeprg=pylint\ --output-format=parseable\ --score=n
+  " Run local eslint, so this will only work on a npm init project
+  autocmd FileType javascript,javascriptreact setlocal makeprg=npx\ eslint\ --format\ unix
+  " Lint on write, I also bind  F5 to run same on demand
+  autocmd BufWritePost *.py,*.js,*.jsx silent make! <afile> | silent redraw!
+augroup END
+
+
 
 " -------------------------
 " Needed Last
