@@ -236,7 +236,7 @@ set laststatus=2
 " use because I keep the value of 'cd' at project root
 set path=,,
 set path+=**3
-if has("patch-8.1.1564")
+if has('patch-8.1.1564')
   set signcolumn=number
 else
   set signcolumn=yes
@@ -332,6 +332,7 @@ autocmd FileType python setlocal define=^\\s*\\(def\\\|class\\)
 autocmd FileType python setlocal makeprg=pylint\ --output-format=parseable\ --score=n
 autocmd FileType javascript,javascriptreact setlocal et ts=2 sts=2 sw=0
 autocmd FileType javascript,javascriptreact setlocal makeprg=npx\ eslint\ --format\ unix
+autocmd FileType vim setlocal makeprg=vint
 
 " Lint on write, also have F5 to run same on demand
 autocmd BufWritePost *.py,*.js,*.jsx silent make! <afile> | silent redraw!
