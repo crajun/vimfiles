@@ -35,8 +35,10 @@ nnoremap <Leader>gb :Git blame<CR>
 nnoremap <Leader>gg :Git commit --all<CR>
 nnoremap <Leader>gp :Git push<CR>
 
+" integrates vim-fugitive and vim-obsession ('$' symbol for active)
+packadd! vim-airline
+packadd! vim-airline-themes
 packadd! vim-editorconfig
-packadd! vim-flagship
 packadd! vim-indent-object
 packadd! vim-obsession
 packadd! vim-repeat
@@ -248,6 +250,8 @@ else
 endif
 " split and vsplit commands always open below and to right, respectively
 set splitbelow splitright
+set title
+set titlestring=%{getcwd()}
 " adding '!26' to save 26 global marks, i.e., A - Z, rest is default
 set viminfo="'100,!26,<50,s10,h"
 " Used with :edit, :find, and a few others

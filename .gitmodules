@@ -88,6 +88,9 @@
 [submodule "pack/git-managed/opt/vim-obsession"]
 	path = pack/git-managed/opt/vim-obsession
 	url = https://github.com/tpope/vim-obsession
-[submodule "pack/git-managed/opt/vim-flagship"]
-	path = pack/git-managed/opt/vim-flagship
-	url = https://github.com/tpope/vim-flagship
+[submodule "pack/git-managed/opt/vim-airline"]
+	path = pack/git-managed/opt/vim-airline
+	url = https://github.com/vim-airline/vim-airline
+[submodule "pack/git-managed/opt/vim-airline-themes"]
+	path = pack/git-managed/opt/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes
