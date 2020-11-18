@@ -227,9 +227,7 @@ set autoindent
 set cursorline
 set hidden
 set ignorecase smartcase
-set noruler
 set noswapfile nobackup noundofile nowritebackup
-set noshowmode
 set number relativenumber
 set laststatus=2
 " ',,' means search in current directory
@@ -246,6 +244,22 @@ else
 endif
 " split and vsplit commands always open below and to right, respectively
 set splitbelow splitright
+" Statusline default:
+" :set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+" Each item has this form, each field except {item} are optional:
+" %-0{minwid}.{maxwid}{item}.
+" '-' is justify left, 0 is len of leading zeros on numeric items.
+" {minwid}.{maxwid} is padding related. Using %! evaluates expression.
+set statusline=\ %f " left-justified path to buffer file relative to :cd
+" TODO: add some colour to this using ':h hl-User1..9' and %1*{item}%*
+set statusline+=\ %M\ %R " modified flags, read-only flag
+set statusline+=\ ft:\ %Y " e.g., [vim], shows filetype
+" TODO: fugitive statusline add, obsession statusline add
+set statusline+=%= " Right hand side start
+set statusline+=%-15.(ln:\ %l\/%L%) " 14 minwid no max for group of line/lines
+set statusline+=%-10.(col:\ %v%)
+set statusline+=%-5.(%P%)
+
 set title
 set titlestring=%{getcwd()}
 " adding '!26' to save 26 global marks, i.e., A - Z, rest is default
@@ -344,9 +358,11 @@ augroup END
 augroup FileTypeLinting
   autocmd!
   autocmd FileType vim setlocal makeprg=vint
-  autocmd FileType python setlocal makeprg=pylint\ --output-format=parseable\ --score=n
+  autocmd FileType python setlocal
+    \ makeprg=pylint\ --output-format=parseable\ --score=n
   " Run local eslint, so this will only work on a npm init project
-  autocmd FileType javascript,javascriptreact setlocal makeprg=npx\ eslint\ --format\ unix
+  autocmd FileType javascript,javascriptreact setlocal
+    \ makeprg=npx\ eslint\ --format\ unix
   " Lint on write, I also bind  F5 to run same on demand
   autocmd BufWritePost *.py,*.js,*.jsx silent make! <afile> | silent redraw!
 augroup END
