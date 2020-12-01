@@ -22,9 +22,6 @@
 [submodule "pack/git-managed/opt/vim-indent-object"]
 	path = pack/git-managed/opt/vim-indent-object
 	url = https://github.com/michaeljsmith/vim-indent-object
-[submodule "pack/git-managed/opt/YouCompleteMe"]
-	path = pack/git-managed/opt/YouCompleteMe
-	url = https://github.com/ycm-core/YouCompleteMe
-[submodule "pack/git-managed/opt/apprentice"]
-	path = pack/git-managed/opt/apprentice
-	url = https://github.com/romainl/apprentice
+[submodule "pack/git-managed/opt/vim-solarized8"]
+	path = pack/git-managed/opt/vim-solarized8
+	url = https://github.com/lifepillar/vim-solarized8

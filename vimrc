@@ -24,9 +24,11 @@ set ignorecase smartcase
 set noswapfile
 set nowrap
 set number relativenumber
+set path=.,,**5
 set signcolumn=yes
 set spelllang=en_ca
 set splitbelow splitright
+set termguicolors
 set thesaurus=~/.vim/thesaurus/english.txt
 set undofile
 set undodir=~/.vim/undodir
@@ -42,7 +44,7 @@ let g:netrw_winsize=15
 " " }}}
 
 " Packages {{{
-packadd! apprentice
+packadd! vim-solarized8
 packadd! targets.vim
 packadd! vim-commentary
 packadd! vim-dispatch
@@ -57,17 +59,17 @@ packadd! vim-unimpaired
 set wildcharm=<C-z>
 
 " Edit/Buffer/Find (adds ignorecase flag for quick completions)
-nnoremap <Leader>e :edit <C-d>\c
-nnoremap <Leader>E :split <C-d>\c
-nnoremap <Leader>ve :vertical split <C-d>\c
+nnoremap <Leader>e :edit <C-d>\c*
+nnoremap <Leader>E :split <C-d>\c*
+nnoremap <Leader>ve :vertical split <C-d>\c*
 
-nnoremap <Leader>b :buffer <C-z><S-Tab>
+nnoremap <Leader>b :buffer <C-d>*
 nnoremap <Leader>B :buffers!<CR>:b
-nnoremap <Leader>vb :vnew<CR>:buffer <C-z><S-Tab>
+nnoremap <Leader>vb :vsplit<CR>:buffer <C-d>*
 
-nnoremap <Leader>f :find <C-d>\c
-nnoremap <Leader>F :split find <C-d>\c
-nnoremap <Leader>vf :vnew<CR>:find <C-d>\c
+nnoremap <Leader>f :find <C-d>\c*
+nnoremap <Leader>F :split find <C-d>\c*
+nnoremap <Leader>vf :vsplit<CR>:find <C-d>\c*
 
 set splitbelow  " horizontal splitting commands open below always.
 set splitright  " vertical splitting commands open to right always.
@@ -153,7 +155,9 @@ endif
 " Needed last {{{
 rviminfo!
 silent! helptags ALL
-colorscheme apprentice
+set background=light
+let g:solarized_extra_hi_groups=1
+colorscheme solarized8
 " }}}
 
 " Playground {{{
