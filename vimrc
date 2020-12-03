@@ -21,12 +21,15 @@ set completeopt=menuone,noinsert,noselect
 set hidden
 set foldnestmax=2
 set ignorecase smartcase
+set laststatus=2
 set noswapfile
 set nowrap
 set number relativenumber
 set path=.,,**5
 set signcolumn=yes
 set spelllang=en_ca
+" default is %<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 set splitbelow splitright
 set termguicolors
 set thesaurus=~/.vim/thesaurus/english.txt
