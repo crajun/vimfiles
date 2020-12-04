@@ -19,3 +19,5 @@ setlocal makeprg=npx\ standard\ --fix
 " for ridding quickfix list of compiler output like version, etc.
 setlocal errorformat=\ \ %f:%l:%c:\ %m,%-G%.%#
 
+
+

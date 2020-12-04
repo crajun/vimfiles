@@ -25,8 +25,9 @@ set laststatus=2
 set noswapfile
 set nowrap
 set number relativenumber
-set path=.,,**5
-set signcolumn=yes
+" Add onto this per filetypes in after/ftplugin/*.vim
+set path=.,,
+set signcolumn=number
 set spelllang=en_ca
 " default is %<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P
@@ -61,17 +62,17 @@ packadd! vim-unimpaired
 set wildcharm=<C-z>
 
 " Edit/Buffer/Find (adds ignorecase flag for quick completions)
-nnoremap <Leader>e :edit <C-d>\c*
-nnoremap <Leader>E :split <C-d>\c*
-nnoremap <Leader>ve :vsplit<CR>:edit <C-d>\c*
+nnoremap <Leader>e :edit **/*<C-z><S-Tab>
+nnoremap <Leader>E :split **/*<C-z><S-Tab>
+nnoremap <Leader>ve :vsplit<CR>:edit **/*<C-z><S-Tab>
 
-nnoremap <Leader>b :buffer <C-d>*
+nnoremap <Leader>b :buffer <C-z><S-Tab>*
 nnoremap <Leader>B :buffers!<CR>:b
-nnoremap <Leader>vb :vsplit<CR>:buffer <C-d>*
+nnoremap <Leader>vb :vsplit<CR>:buffer <C-z><S-Tab>*
 
-nnoremap <Leader>f :find <C-d>\c*
-nnoremap <Leader>F :split find <C-d>\c*
-nnoremap <Leader>vf :vsplit<CR>:find <C-d>\c*
+nnoremap <Leader>f :find **/*<C-z><S-Tab>
+nnoremap <Leader>F :split<CR>:find **/*<C-z><S-Tab>
+nnoremap <Leader>vf :vsplit<CR>:find **/*<C-z><S-Tab>
 
 set splitbelow  " horizontal splitting commands open below always.
 set splitright  " vertical splitting commands open to right always.
