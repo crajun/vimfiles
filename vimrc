@@ -172,3 +172,32 @@ colorscheme photon
 " Alter photon.vim to make comments red.
 highlight Comment ctermfg=167
 
+" Playground / Testing
+
+function! ToggleTerminal()
+  " => Number: -1 if no buffer exists.
+  let term_buffer = bufnr('terminal-toggle')
+
+  if term_buffer == -1
+    terminal ++close ++open ++rows=10
+    file! terminal-toggle
+  else
+    " Buffer exists: try to get window ID
+    " => Number: -1 if no window ID associated
+    let term_window = bufwinnr(term_buffer)
+    if term_window == -1
+      execute 'sbuffer' . term_buffer
+    else
+      execute term_buffer . "wincmd w"
+      " this may not work? might have to escape to normal mode or
+      hide
+    endif
+  endif
+endfunction
+
+nnoremap <Leader>` :call ToggleTerminal()<CR>
+
+if v:version >=# 802
+  " Terminal* autocmds available
+  autocmd init TerminalOpen setlocal nonumber norelativenumber
+endif
