@@ -14,8 +14,6 @@ augroup END
 set autoread
 set belloff=all
 set complete-=i
-" TODO: see how this works with :args **/*.jsx etc., will it scan those?
-" set complete-=u | " Don't scan unloaded buffers in buffer list.
 set completeopt=menuone,noinsert,noselect
 set hidden
 set foldnestmax=2
@@ -87,23 +85,39 @@ nnoremap <Leader>q :bdelete<CR>
 nnoremap <silent><Leader>n :nohlsearch<CR>
 nnoremap <silent><Leader>, :edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
+
+" Any non-Mac unix-like system (wsl, bsd, linuxes)
 if has('unix') && !has('mac')
   " mintty on win 10 sends ^@ which is <Nul> in Vim notation
+  let &t_SI = "\e[5 q"
+  let &t_SR = "\e[4 q"
+  let &t_EI = "\e[1 q"
+  autocmd init * silent !echo -ne "\e[1 q"
   inoremap <Nul> <C-x><C-o>
   nnoremap <Esc>j <C-w>p<C-e><C-w>p
   nnoremap <Esc>k <C-w>p<C-y><C-w>p
   nnoremap <Esc>` :call ToggleTerminal()<CR>
   tnoremap <silent> <Esc>` :call ToggleTerminal()<CR>
 elseif has('mac')
-  " This is for iTerm2 only.
-  nnoremap ê <C-w>p<C-e><C-w>p
-  nnoremap ë <C-w>p<C-y><C-w>p
-  nnoremap à :call ToggleTerminal()<CR>
-  tnoremap à :call ToggleTerminal()<CR>
-  " TODO: setup toggleterminal command mapping like above for mac.
-  " Dropping a bunch of files onto MacVim opens each in its own tab,
-  " and the default is only 10, so bump it up on MacVim.
-  set tabpagemax=100
+  if $TERM_PROGRAM =~? 'iTerm'
+    " iTerm variants and options
+    set termguicolors
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    set cursorline
+    nnoremap ê <C-w>p<C-e><C-w>p
+    nnoremap ë <C-w>p<C-y><C-w>p
+    nnoremap à :call ToggleTerminal()<CR>
+    tnoremap à :call ToggleTerminal()<CR>
+  elseif $TERM_PROGRAM =~? 'Apple*'
+    " Terminal.app: no true colour support, etc.
+    let &t_SI.="\e[6 q" "SI = INSERT mode
+    let &t_SR.="\e[4 q" "SR = REPLACE mode
+    let &t_EI.="\e[2 q" "EI = NORMAL mode (ELSE)
+    nnoremap ∆ <C-w>p<C-e><C-w>p
+    nnoremap ˚ <C-w>p<C-y><C-w>p
+  endif
 endif
 
 inoreabbrev (<CR> (<CR>)<Esc>O
@@ -169,10 +183,9 @@ cnoremap <expr> <CR> CCR()
 
 rviminfo!
 silent! helptags ALL
-set background=light
-colorscheme paramount
+colorscheme photon
 " Make comments red.
-highlight Comment ctermfg=167
+highlight Comment ctermfg=167 guifg=#d75f5f
 
 " Playground / Testing
 
@@ -224,5 +237,4 @@ endfunction
 
 map <F9> :call TermToggle()<CR>
 tmap <F9> <C-W>:call TermToggle()<CR>
-
 
