@@ -45,7 +45,6 @@ packadd! targets.vim
 packadd! vim-commentary
 packadd! vim-dispatch
 packadd! vim-editorconfig
-packadd! vim-endwise
 packadd! vim-indent-object
 packadd! vim-repeat
 packadd! vim-surround
@@ -105,11 +104,11 @@ elseif has('mac')
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_SR = "\<Esc>]50;CursorShape=2\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    set cursorline
     nnoremap ê <C-w>p<C-e><C-w>p
     nnoremap ë <C-w>p<C-y><C-w>p
-    nnoremap à :call ToggleTerminal()<CR>
-    tnoremap à :call ToggleTerminal()<CR>
+    nnoremap à :call TermToggle()<CR>
+    tnoremap à :call TermToggle()<CR>
+    inoremap <C-Space> <C-x><C-o>
   elseif $TERM_PROGRAM =~? 'Apple*'
     " Terminal.app: no true colour support, etc.
     let &t_SI.="\e[6 q" "SI = INSERT mode
@@ -184,58 +183,26 @@ cnoremap <expr> <CR> CCR()
 
 rviminfo!
 silent! helptags ALL
-colorscheme photon
+set background=light
+colorscheme paramount
 " Make comments red.
 highlight Comment ctermfg=167 guifg=#d75f5f
 
 " Playground / Testing
-
-" function! ToggleTerminal()
-"   let term_buffer = bufnr('terminal-toggle')
-"   if term_buffer == -1
-"     terminal ++close ++open ++rows=10
-"     file! terminal-toggle
-"   else
-"     let term_window = bufwinnr(term_buffer)
-"     if term_window == -1
-"       execute 'sbuffer' . term_buffer
-"     else
-"       execute term_buffer . "wincmd w"
-"       hide
-"     endif
-"   endif
-" endfunction
-
-if v:version >=# 802
-  " Terminal* autocmds available
-  autocmd init TerminalOpen setlocal nonumber norelativenumber
+if v:version >=# 802 " Terminal* autocmds available
+  autocmd init TerminalOpen * if &buftype ==# 'terminal' |
+        \ setlocal nonumber norelativenumber bufhidden=hide | endif
 endif
 
-" r/vim/comments/fusqe9/how_can_i_convert_this_simple_neo_vim_terminal/
-let g:term_toggle_buf = 0
-let g:term_toggle_win = 0
-let g:term_toggle_cmd = "/usr/local/bin/bash"
-let g:term_toggle_size = 8 "height of the terminal window in lines
-
 function! TermToggle()
-  " => Number: 0 on failure, 1 on success
-  if win_gotoid(g:term_toggle_win)
-    let g:term_toggle_size = winheight(0)
-    close
-  else
-    try
-      exec "sbuffer ".g:term_toggle_buf
-      exec "resize ".g:term_toggle_size
-    catch
-      exec "terminal ++rows=".g:term_toggle_size." ++close ".g:term_toggle_cmd
-      let g:term_toggle_buf = bufnr("")
-    endtry
-    startinsert!
-    let g:term_toggle_win = win_getid()
-    let g:term_toggle_size = winheight(0)
-  endif
+  " Toggle same terminal open and close on bottom.
+  if !has('terminal') | finish | endif
+  let l:term_options = "++close ++rows=10"
+  execute "botright terminal " . l:term_options
 endfunction
 
-map <F9> :call TermToggle()<CR>
-tmap <F9> <C-W>:call TermToggle()<CR>
-
+function! TermOpenWhenDone(cmd)
+  " Runs 'cmd' in &shell, hidden and then opens when done.
+  if !has('terminal') | finish | endif
+  execute "botright terminal ++hidden ++open " . a:cmd
+endfunction
