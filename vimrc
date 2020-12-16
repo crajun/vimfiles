@@ -1,4 +1,6 @@
 source $VIMRUNTIME/defaults.vim
+source $VIMRUNTIME/ftplugin/man.vim
+
 " Builtins I don't use. Neglible startup increase, but less code is fewer bugs.
 let g:loaded_gzip = 1
 let g:loaded_getscriptPlugin = 1
@@ -9,6 +11,8 @@ let g:loaded_spellfile_plugin = 1
 let g:loaded_tarPlugin = 1
 let g:loaded_2html_plugin = 1
 let g:loaded_zipPlugin = 1
+" Turn on.
+let g:markdown_folding = 1
 
 if (v:version >=# 802)
   packadd! cfilter
@@ -53,7 +57,6 @@ let g:netrw_winsize=15
 packadd! tagbar
 packadd! targets.vim
 packadd! vim-commentary
-packadd! vim-dispatch
 packadd! vim-editorconfig
 packadd! vim-indent-object
 packadd! vim-repeat
@@ -151,8 +154,8 @@ autocmd init BufNewFile,BufRead *.txt,*.md,*.adoc setlocal complete+=k
 autocmd init BufWinEnter */doc/*.txt setlocal nonumber norelativenumber
 autocmd init BufWritePost ~/.vim/vimrc source ~/.vim/vimrc
 
-command! Todo :silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ **<CR>
-command! LocalTodo :lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
+command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ **<CR>
+command! LocalTodo :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
 command! Cd :cd %:h
 command! Only :.+,$bwipeout<CR>
 command! Api :vertical h function-list<CR>
@@ -193,6 +196,7 @@ cnoremap <expr> <CR> CCR()
 
 rviminfo!
 silent! helptags ALL
+set background=light
 colorscheme prose
 
 " Playground / Testing
@@ -200,6 +204,9 @@ if v:version >=# 802 " Terminal* autocmds available
   autocmd init TerminalOpen * if &buftype ==# 'terminal' |
         \ setlocal nonumber norelativenumber bufhidden=hide | endif
 endif
+
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
 
 function! TermToggle()
   " Toggle same terminal open and close on bottom.
@@ -214,5 +221,31 @@ function! TermOpenWhenDone(cmd)
   execute "botright terminal ++hidden ++open " . a:cmd
 endfunction
 
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
+command! -nargs=* TermAsyncRun :call TermOpenWhenDone(<f-args>)<CR>
+
+autocmd init FileType * if &ft ==# 'qf' | set nonu nornu | endif
+
+" Runs a vim command into a scratch buffer
+function! Scratchify(cmd)
+  redir => message
+  silent execute a:cmd
+  redir END
+  if empty(message)
+    echoerr "no output"
+  else
+    botright 10new
+    setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
+    setlocal nornu nonu
+    setlocal nospell colorcolumn=0
+    silent put=message
+  endif
+endfunction
+command! -nargs=+ -complete=command Redir call Scratchify(<q-args>)
+
+if has("multi_byte")
+  " é inserted in insert mode with C-k e/, makes more sense to me than e'
+  digraph e/ 233
+  " è, C-k e\ makes more sense to me than e!
+  digraph e\ 232
+endif
+
