@@ -132,6 +132,13 @@ elseif has('mac')
   endif
 endif
 
+if has("multi_byte")
+  " é inserted in insert mode with C-k e/, makes more sense to me than e'
+  digraph e/ 233
+  " è, C-k e\ makes more sense to me than e!
+  digraph e\ 232
+endif
+
 inoreabbrev (<CR> (<CR>)<Esc>O
 inoreabbrev ({<CR> ({<CR>});<Esc>O
 inoreabbrev {<CR> {<CR>}<Esc>O
@@ -153,6 +160,7 @@ autocmd init BufNewFile,BufRead *.txt,*.md,*.adoc setlocal complete+=k
 " Fixes reviving unlisted buffer (:buffers!), because FileType is not run
 autocmd init BufWinEnter */doc/*.txt setlocal nonumber norelativenumber
 autocmd init BufWritePost ~/.vim/vimrc source ~/.vim/vimrc
+autocmd init FileType * if &ft ==# 'qf' | set nonu nornu | endif
 
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ **<CR>
 command! LocalTodo :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
@@ -220,10 +228,9 @@ function! TermOpenWhenDone(cmd)
   if !has('terminal') | finish | endif
   execute "botright terminal ++hidden ++open " . a:cmd
 endfunction
+command! -nargs=+ -bang -complete=shellcmd -bar TermAsyncRun
+      \ :call TermOpenWhenDone(<f-args>)
 
-command! -nargs=* TermAsyncRun :call TermOpenWhenDone(<f-args>)<CR>
-
-autocmd init FileType * if &ft ==# 'qf' | set nonu nornu | endif
 
 " Runs a vim command into a scratch buffer
 function! Scratchify(cmd)
@@ -240,12 +247,5 @@ function! Scratchify(cmd)
     silent put=message
   endif
 endfunction
-command! -nargs=+ -complete=command Redir call Scratchify(<q-args>)
-
-if has("multi_byte")
-  " é inserted in insert mode with C-k e/, makes more sense to me than e'
-  digraph e/ 233
-  " è, C-k e\ makes more sense to me than e!
-  digraph e\ 232
-endif
+command! -nargs=+ -complete=command -bar Redir call Scratchify(<q-args>)
 
