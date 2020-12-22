@@ -30,6 +30,7 @@ set belloff=all
 set complete-=i
 set completeopt=menuone,noinsert,noselect
 set hidden
+set hlsearch
 set foldnestmax=2
 set ignorecase smartcase
 set laststatus=2
@@ -161,6 +162,8 @@ autocmd init BufNewFile,BufRead *.txt,*.md,*.adoc setlocal complete+=k
 autocmd init BufWinEnter */doc/*.txt setlocal nonumber norelativenumber
 autocmd init BufWritePost ~/.vim/vimrc source ~/.vim/vimrc
 autocmd init FileType * if &ft ==# 'qf' | set nonu nornu | endif
+autocmd init insertenter * set cursorline
+autocmd init insertleave * set nocursorline
 
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ **<CR>
 command! LocalTodo :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
@@ -204,8 +207,13 @@ cnoremap <expr> <CR> CCR()
 
 rviminfo!
 silent! helptags ALL
-set background=light
-colorscheme prose
+" set background=light
+" colorscheme prose
+colorscheme antiphoton
+" I don't like bold in source, and use red as Comment
+hi! Todo ctermbg=NONE ctermfg=red cterm=NONE gui=NONE
+hi! link Comment Todo
+
 
 " Playground / Testing
 if v:version >=# 802 " Terminal* autocmds available
@@ -248,4 +256,3 @@ function! Scratchify(cmd)
   endif
 endfunction
 command! -nargs=+ -complete=command -bar Redir call Scratchify(<q-args>)
-
