@@ -28,9 +28,6 @@ set guioptions-=L
 " Bottom scrollbar off
 set guioptions-=b
 
-" Make Windows/*nix mouse behaviour consistent
-behave xterm
-
 " Macvim you can drop and drop bunch of files onto app icon
 " and it opens each of them in new tabs, so bump this up from 10
 set tabpagemax=100
