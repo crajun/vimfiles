@@ -19,3 +19,6 @@ doc/tags
 private/
 startup
 Session.vim
+swapdir/
+./pack/
+pack/
