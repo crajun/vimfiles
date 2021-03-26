@@ -1,6 +1,6 @@
 " vim: fdm=indent nowrap ft=vim et sts=2 ts=2 sw=2
 " vimrc for 8.2+
-" macOS/Linux/BSD/WSL do: 
+" macOS/Linux/BSD/WSL do:
 " git clone https://github.com/k-takata/minpac ~/.vim/pack/minpac/opt/minpac
 
 " Bare-basics.
@@ -21,7 +21,7 @@ else
   " 2: (Default) Show error messages from external commands.
   " 3: Show start/end messages for each plugin.
   " 4: Show debug messages.
-  call minpac#init({'verbose': 3, 'progress_open': 'vertical'})
+  call minpac#init({'verbose': 2, 'progress_open': 'vertical'})
   call minpac#add('k-takata/minpac', {'type': 'opt'})
   call minpac#add('tpope/vim-scriptease', {'type': 'opt'})
   call minpac#add('tpope/vim-commentary')
@@ -35,112 +35,40 @@ else
   call minpac#add('tpope/vim-projectionist')
   call minpac#add('tpope/vim-dispatch')
   call minpac#add('tpope/vim-fugitive')
-  call minpac#add('arcticicestudio/nord-vim')
+  call minpac#add('lifepillar/vim-solarized8')
+  call minpac#add('cormacrelf/vim-colors-github')
+  call minpac#add('morhetz/gruvbox')
   call minpac#add('vim-airline/vim-airline')
   call minpac#add('vim-airline/vim-airline-themes')
-  " Download binary, update config files for keybindings (bash, zsh), after
-  " every update.
-  call minpac#add('junegunn/fzf', {'do': { -> system('install --all --no-fish') }})
+  call minpac#add('junegunn/fzf')
   call minpac#add('junegunn/fzf.vim')
   call minpac#add('dense-analysis/ale')
   call minpac#add('janko-m/vim-test')
   call minpac#add('sgur/vim-editorconfig')
-  " LSP 
-  call minpac#add('prabirshrestha/asyncomplete.vim')
-  call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
-  call minpac#add('prabirshrestha/asyncomplete-buffer.vim')
-  call minpac#add('prabirshrestha/asyncomplete-file.vim')
-  call minpac#add('prabirshrestha/asyncomplete-tags.vim')
-  call minpac#add('prabirshrestha/vim-lsp')
-  call minpac#add('mattn/vim-lsp-settings')
- 
+  call minpac#add('ycm-core/YouCompleteMe')
+  call minpac#add('christoomey/vim-tmux-navigator')
+  call minpac#add('christoomey/vim-tmux-runner')
+  call minpac#add('thoughtbot/vim-rspec')
+  call minpac#add('sheerun/vim-polyglot')
+
   command! PackUpdate call minpac#update()
   command! PackClean call minpac#clean()
 endif
 
-" ==================
-" Plugin Settings
-" ==================
-" Refer to wiki for individual server setup (manual) if an installer
-" via mattn/vim-lsp-settings is not provided for that language. If supported,
-" we can simply run :LspInstall <server-name>
-" Help: https://github.com/prabirshrestha/vim-lsp/wiki/Servers
-let g:asyncomplete_auto_popup = 1 " default is 1
+" https://github.com/christoomey/vim-tmux-navigator
+" auto rebalance windows on vim resize
+autocmd! VimResized * :wincmd =
 
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-  \ 'name': 'buffer',
-  \ 'allowlist': ['*'],
-  \ 'blocklist': ['go'],
-  \ 'completor': function('asyncomplete#sources#buffer#completor'),
-  \ 'config': {
-  \    'max_buffer_size': 5000000,
-  \  },
-  \ }))
+" zoom a vim pane, <Leader>= to rebalance
+nnoremap <Leader>z :wincmd _<CR>:wincmd \|<CR>
+nnoremap <Leader>= :wincmd =<CR>
 
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-  \ 'name': 'file',
-  \ 'allowlist': ['*'],
-  \ 'priority': 10,
-  \ 'completor': function('asyncomplete#sources#file#completor')
-  \ }))
-
-" Requires we have :echo executable('ctags') to be 1 (installed ctags)
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
-  \ 'name': 'tags',
-  \ 'allowlist': ['c', 'ruby'],
-  \ 'completor': function('asyncomplete#sources#tags#completor'),
-  \ 'config': {
-  \    'max_file_size': 50000000,
-  \  },
-  \ }))
-
-" I find this to be buggy and not work well with Vim folding behaviours. 
-let g:lsp_fold_enabled = 0  
-" 0 to use ALE or other linting plugins. 1 will mean to let server provide
-" diagnostics about the code. I use ALE because not every language has a LSP
-" server, like Vimscript, but does have a linter program we can call with ALE,
-" so we get better coverage of languages by just leaving linting to ALE and
-" using LSP servers for others purposes.
-let g:lsp_diagnostics_enabled = 0 
-" Requires linking to or tweaking highlight group 'lspReference'
-" highlight! link ErrorMsg lspReference
-let g:lsp_document_highlight_enabled = 0
-
-if executable('pyls')
-  " pip install python-language-server
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'allowlist': ['python'],
-        \ })
-endif
-
-function! s:on_lsp_buffer_enabled() abort
-  setlocal omnifunc=lsp#complete
-  setlocal signcolumn=yes
-  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-  nmap <buffer> gd <plug>(lsp-definition)
-  nmap <buffer> gs <plug>(lsp-document-symbol-search)
-  nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-  nmap <buffer> gr <plug>(lsp-references)
-  nmap <buffer> gi <plug>(lsp-implementation)
-  nmap <buffer> gt <plug>(lsp-type-definition)
-  nmap <buffer> <leader>rn <plug>(lsp-rename)
-  nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-  nmap <buffer> K <plug>(lsp-hover)
-  inoremap <buffer> <expr><c-f> lsp#scroll(+4)
-  inoremap <buffer> <expr><c-d> lsp#scroll(-4)
-  let g:lsp_format_sync_timeout = 1000
-  " Example document format on save
-  " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
-endfunction
-
-augroup lsp_install
-  autocmd!
-  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+" https://github.com/thoughtbot/vim-rspec
+" TODO: maybe this can be replaced with more generic vim-test?
+nmap <Leader>rt :call RunCurrentSpecFile()<CR>
+nmap <Leader>rs :call RunNearestSpec()<CR>
+nmap <Leader>rl :call RunLastSpec()<CR>
+nmap <Leader>ra :call RunAllSpecs()<CR>
 
 " https://github.com/dense-analysis/ale
 let g:ale_lint_on_text_changed = 'never'
@@ -156,7 +84,6 @@ nmap <silent> [w <Plug>(ale_previous)
 nmap <silent> ]w <Plug>(ale_next)
 nmap <silent> ]W <Plug>(ale_last)
 
-
 " https://github.com/janko-m/vim-test
 let test#strategy = 'dispatch'
 
@@ -167,9 +94,15 @@ set backspace=indent,eol,start
 set belloff=all
 set clipboard=unnamed,unnamedplus
 set completeopt=menuone,popup
+set foldlevelstart=99
 set hidden
 set history=200
 set hlsearch
+if executable('rg')
+  set grepprg=rg\ --vimgrep
+elseif executable('ag')
+  set grepprg=ag\ --nogroup\ --nocolor
+endif
 set incsearch
 set laststatus=2
 set listchars=eol:$,space:·,
@@ -182,13 +115,20 @@ set path-=/usr/include
 set path+=**10
 set relativenumber
 set ruler
-set scrolloff=5
+set scrolloff=2
 set showcmd
 set showmatch
 set showmode
 set smartcase
 set tags=./tags;,tags;
-set termguicolors
+
+if exists('+termguicolors')
+  " https://github.com/tmux/tmux/issues/1246
+  " Without 2 t_8x lines below termguicolors doesn't work.
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 set ttimeout
 set ttimeoutlen=100
 set wildignore=*/.git/*,*/.hg/*,*/.svn/*,*/.node_modules/*,*.o,*.obj
@@ -227,7 +167,13 @@ nnoremap <Leader>t :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader>l :ALELint<CR>
 nnoremap <Leader>n :<C-u>nohl<CR>
 nnoremap <Leader>b :<C-u>Buffers<CR>
-nnoremap <Leader>r :<C-u>Rg<Space>
+" nnoremap <Leader>* 
+nnoremap <Leader><Leader> :b #<CR>
+
+" Grepping
+nnoremap <Leader>/ :grep<Space>
+cnoremap grep Grep
+command! -nargs=+ -bar Grep :silent! grep! <args>|redraw!
 
 " smaller case does buffer-local, uppercase is project wide
 nnoremap <Leader>T :<C-u>Tags<Space>
@@ -256,11 +202,10 @@ if has('mac') && has('gui_running')
   nnoremap Ê <C-w>p<C-d><C-w>p
   nnoremap Ë <C-w>p<C-u><C-w>p
 elseif has('mac')
-  " Alacritty, usually.
-  nnoremap ∆ <C-w>p<C-e><C-w>p
-  nnoremap ˚ <C-w>p<C-y><C-w>p
-  nnoremap Ô <C-w>p<C-d><C-w>p
-  nnoremap <C-w>p<C-u><C-w>p
+  " iterm2
+  " TODO: rebind iterm2 Command-J etc. to do this instead, easier to reach.
+  nnoremap j <C-w>p<C-e><C-w>p
+  nnoremap k <C-w>p<C-y><C-w>p
 elseif has('win64') && has('gui_running')
   " gVim 64-bit: 'win32' also returns 1
   nnoremap ê <C-w>p<C-e><C-w>p
@@ -269,7 +214,7 @@ elseif has('win64') && has('gui_running')
   nnoremap Ë <C-w>p<C-u><C-w>p
 elseif !has('gui') && !has('gui_running')
   " Use Esc (^[) for terminal emulators for Alt support, e.g.
-  " bash-for-windows/mintty terminal
+  " bash-for-windows/mintty terminal/other term emulators
   nnoremap j <C-w>p<C-e><C-w>p
   nnoremap k <C-w>p<C-y><C-w>p
   nnoremap J <C-w>p<C-d><C-w>p
@@ -338,5 +283,4 @@ if !exists(':DiffOrig')
   \ | wincmd p | diffthis
 endif
 
-colorscheme nord
-
+colorscheme gruvbox
