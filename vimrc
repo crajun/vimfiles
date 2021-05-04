@@ -25,8 +25,9 @@ call plug#begin(expand('~/.vim/plugged'))
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
 Plug 'airblade/vim-gitgutter'
-Plug 'habamax/vim-freyeday'
 Plug 'romainl/Apprentice'
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 " }}}
@@ -49,6 +50,7 @@ set clipboard=unnamed,unnamedplus
 " Another option:
 " set completeopt=menuone,noinsert,noselect,popup
 set completeopt=menuone,popup
+set cursorline
 set foldlevelstart=99
 set hidden
 set history=200
@@ -185,6 +187,8 @@ inoreabbrev [; [<CR>];<Esc>O
 inoreabbrev [, [<CR>],<Esc>O
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+
+nnoremap <Leader>g :G<CR>
 
 " }}}
 
