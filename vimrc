@@ -27,6 +27,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'airblade/vim-gitgutter'
 Plug 'romainl/Apprentice'
 Plug 'tpope/vim-fugitive'
+Plug 'cormacrelf/vim-colors-github'
 
 call plug#end()
 
@@ -119,8 +120,8 @@ if (v:version >=# 802)
   packadd! cfilter
 endif
 
-set background=dark
-colorscheme apprentice
+set background=light
+colorscheme github
 " }}}
 
 " Mappings {{{
