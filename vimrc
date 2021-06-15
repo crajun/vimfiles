@@ -24,12 +24,19 @@ endif
 call plug#begin(expand('~/.vim/plugged'))
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
-Plug 'airblade/vim-gitgutter'
-Plug 'romainl/Apprentice'
+Plug 'kana/vim-textobj-user'
+" ie/ae for entire buffer
+Plug 'kana/vim-textobj-entire'
+" ai/ii similar indented. aI/iI for same exact indentation lines.
+Plug 'kana/vim-textobj-indent'
+Plug 'romainl/apprentice'
+Plug 'romainl/disciple'
 Plug 'tpope/vim-fugitive'
-Plug 'cormacrelf/vim-colors-github'
-
 call plug#end()
+
+" }}}
+
+" Plugin Settings {{{
 
 " }}}
 
@@ -37,6 +44,8 @@ call plug#end()
 filetype plugin on " enable loading plugin/foo.vim files for all filetypes
 filetype indent on " enable loading indent/foo.vim files for all filetypes
 syntax on
+" Good in general, but I also need it here first to accept UTF-8 characters
+" I use in this file.
 set encoding=utf-8
 scriptencoding utf-8
 let mapleader=' '
@@ -63,10 +72,19 @@ elseif executable('ag')
 endif
 set incsearch
 set laststatus=2
-set listchars=eol:$,space:·,
+" Whitespace Display {{{
+" Default for listchars is 'eol:$' which means show EOL
+" character, when ':set list' is in effective, as '$'. I don't
+" need this, but do care about trailing and leading whitespaces, so I
+" add those. Tab is omitted her so it defaults to '^I' character on screen.
+" I add a trailing listchar that matches space character.
+set listchars=space:·,trail:·
+set list
+" }}}
 set modeline
 set mouse=a
 set noswapfile
+set nowrap
 set nrformats-=octal
 set number
 set omnifunc=syntaxcomplete#Complete
@@ -78,7 +96,7 @@ set scrolloff=2
 set showcmd
 set showmatch
 set showmode
-set termguicolors
+set notermguicolors
 set ignorecase smartcase
 set tags=./tags;,tags;
 set thesaurus=~/.vim/thesaurus/english.txt
@@ -120,10 +138,6 @@ if (v:version >=# 802)
   packadd! cfilter
 endif
 
-set background=light
-" more blocky diff markers in signcolumn (e.g. GitGutter)
-let g:github_colors_block_diffmark = 1
-colorscheme github
 " }}}
 
 " Mappings {{{
@@ -279,14 +293,13 @@ autocmd vimrc BufReadPost *
 
 " }}}
 
+" Colorscheme and Syntax {{{
+colorscheme disciple
+"}}}
+
 " Playground {{{
-
-function! <SID>SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-nnoremap gm :call <SID>SynStack()<CR>
-
+" highlight! SpecialKey ctermfg=252
+map <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 " }}}

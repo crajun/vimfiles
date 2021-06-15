@@ -1,6 +1,6 @@
 " prose.vim -- Vim color scheme.
-" Author:      C.D. MacEachern (craigm@fastmail.com)
-" Webpage:     https://github.com/craigmac/prose.vim
+" Author: C.D. MacEachern (craigm@fastmail.com)
+" Webpage: https://github.com/craigmac/prose.vim
 " Description: Minimalist light colourscheme with a philosophy.
 " Last Change: 2020-12-16
 
@@ -13,7 +13,7 @@ endif
 set background=light
 let colors_name = "prose"
 
-highlight Normal ctermbg=15 ctermfg=8 cterm=NONE
+highlight Normal ctermbg=255 ctermfg=8 cterm=NONE
 highlight NonText ctermbg=15 ctermfg=8 cterm=NONE
 highlight Comment ctermbg=15 ctermfg=9 cterm=NONE
 highlight Constant ctermbg=15 ctermfg=8 cterm=NONE
