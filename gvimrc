@@ -5,7 +5,7 @@
 " F10 will still be menu key, unless bound by user.
 set winaltkeys=no
 set belloff=all
-set guifont=JetBrains\ Mono\ NL:h18
+set guifont=JetBrains\ Mono\ NL:h13
 
 " Turn off blinking cursor in all modes
 set guicursor=a:blinkon0

@@ -1,7 +1,17 @@
 " vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0
 
-" Plug {{{
+" Bare-basics {{{
+filetype plugin on " enable loading plugin/foo.vim files for all filetypes
+filetype indent on " enable loading indent/foo.vim files for all filetypes
+syntax on
+" Good in general, but I also need it here first to accept UTF-8 characters
+" I use in this file.
+set encoding=utf-8
+scriptencoding utf-8
+let mapleader=' '
+" }}}
 
+" Plug {{{
 let vimplug_exists=expand('~/.vim/autoload/plug.vim')
 if has('win32') && !has('win64')
   let curl_exists=expand('C:\Windows\Sysnative\curl.exe')
@@ -24,31 +34,103 @@ endif
 call plug#begin(expand('~/.vim/plugged'))
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
-Plug 'kana/vim-textobj-user'
-" ie/ae for entire buffer
-Plug 'kana/vim-textobj-entire'
-" ai/ii similar indented. aI/iI for same exact indentation lines.
-Plug 'kana/vim-textobj-indent'
-Plug 'romainl/apprentice'
-Plug 'romainl/disciple'
+" [cd]cs', ysi[wW]['"<`]
+Plug 'tpope/vim-surround'
+" Allows repeat '.' of surround commands
+Plug 'tpope/vim-repeat'
+" Git interface
 Plug 'tpope/vim-fugitive'
+" Cleaner syntax highlighting for Jekyll Markdown files with
+" liquid syntax, YML frontmatter, etc.
+Plug 'tpope/vim-liquid'
+" Required dependency
+Plug 'kana/vim-textobj-user'
+" vie command to select entire buffer
+Plug 'kana/vim-textobj-entire'
+" vii/ai to select by similar indent level
+Plug 'kana/vim-textobj-indent'
+
+" Utilities
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+" Use signcolumn to show git markers. 'vim-signify' is an alternative
+Plug 'airblade/vim-gitgutter'
+" Shiny
+Plug 'itchyny/lightline.vim'
+
+" UI
+" Medium contrast, good Terminal.app 256 only support
+Plug 'junegunn/seoul256.vim'
+" Light of choice
+Plug 'cormacrelf/vim-colors-github'
+Plug 'morhetz/gruvbox'
+Plug 'mbbill/undotree'
+
 call plug#end()
 
 " }}}
 
 " Plugin Settings {{{
 
-" }}}
+" fugitive
+" set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
+nnoremap <Leader>g :G<CR>
+nnoremap <Leader>gP :G push<CR>
 
-" Bare-basics {{{
-filetype plugin on " enable loading plugin/foo.vim files for all filetypes
-filetype indent on " enable loading indent/foo.vim files for all filetypes
-syntax on
-" Good in general, but I also need it here first to accept UTF-8 characters
-" I use in this file.
-set encoding=utf-8
-scriptencoding utf-8
-let mapleader=' '
+" fzf
+nnoremap <C-p> :FZF<CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>/ :BLines<CR>
+nnoremap <Leader>r :Rg<CR>
+" Function used to populate Quickfix with selected lines from
+" FZF dialog
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+" Switch ctrl-x default to ctrl-s to match <C-w>s method:
+" almost all terminal emulators I want to use can send <C-s> now
+" as non-interrupt signal. We add <C-q> to populate qfix with
+" selected lines, to then do whatever with those results like
+" run macro on each file with :argo @q, etc.
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+" Layout of fzf UI
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.4 } }
+" FZF can start in terminal buffer with later Vim 8.x+ versions with
+" Define terminal ANSI colors exactly to match seoul256
+" let g:terminal_ansi_colors = [
+"   \ '#4e4e4e', '#d68787', '#5f865f', '#d8af5f',
+"   \ '#85add4', '#d7afaf', '#87afaf', '#d0d0d0',
+"   \ '#626262', '#d75f87', '#87af87', '#ffd787',
+"   \ '#add4fb', '#ffafaf', '#87d7d7', '#e4e4e4'
+" \ ]
+" Default toggle preview window key of <C-/> is not,
+" widely supported on terminal emulators. Also it slows things down. Off.
+let g:fzf_preview_window = []
+" Match seoul256 colours for FZF popup
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" Lightline
+let g:lightline = {'colorscheme': 'gruvbox'}
+
 " }}}
 
 " Settings {{{
@@ -96,7 +178,7 @@ set scrolloff=2
 set showcmd
 set showmatch
 set showmode
-set notermguicolors
+set termguicolors
 set ignorecase smartcase
 set tags=./tags;,tags;
 set thesaurus=~/.vim/thesaurus/english.txt
@@ -148,6 +230,13 @@ map Q gq
 xmap < <gv
 xmap > >gv
 
+" If I need to go up/down wrapped lines often so j/k is easier over time
+" Keeping this off now bc :set relativenumber does not work accurately with it
+" bc it assumes j/k to travel linewise not screenwise (gj/gk) and so moving
+" with relativenumber on gets messed up.
+" nnoremap j gj
+" nnoremap k gk
+
 " Move visual selection up/down lines.
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
@@ -178,13 +267,15 @@ nnoremap <D-K> <C-w>p<C-u><C-w>p
 nnoremap <Leader>w :update<CR>
 nnoremap <Leader>q :bdelete<CR>
 nnoremap <Leader>, :edit $MYVIMRC<CR>
-nnoremap <Leader>t :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
+nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader>n :<C-u>nohl<CR>
 nnoremap <Leader><Leader> :b #<CR>
-nnoremap <Leader>/ :grep<Space>
+" Vimdiff
 nnoremap gh :diffget //2<CR>
 nnoremap gl :diffget //3<CR>
 tnoremap <C-v><Esc> <Esc>
+" Tab cycle
+nnoremap <Tab> :tabNext<CR>
 
 " use <C-z> as wild character in mappings, because we can't use <Tab>
 " set wildcharm=<C-z>
@@ -209,10 +300,6 @@ inoreabbrev [; [<CR>];<Esc>O
 inoreabbrev [, [<CR>],<Esc>O
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
-
-" fugitive
-nnoremap <Leader>g :G<CR>
-nnoremap <Leader>gP :G push<CR>
 
 " }}}
 
@@ -294,12 +381,28 @@ autocmd vimrc BufReadPost *
 " }}}
 
 " Colorscheme and Syntax {{{
-colorscheme disciple
+
+" seoul256 - low contrast, good support with junegunn stuff (made by them),
+" uses 256 colors and supported well in Terminal.app (no truecolor).
+" Default bg is 253, lightest is 256 and 252 is darkest
+" let g:seoul256_background = 253
+" colorscheme seoul256-light
+
+" vim-colors-github
+" blocky diff markers in signcolumn
+" let g:github_colors_block_diffmark = 0
+" colorscheme github
+
+" gruvbox
+colorscheme gruvbox
 "}}}
 
 " Playground {{{
-" highlight! SpecialKey ctermfg=252
+
 map <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
   \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 " }}}
+
+" TODO:
+" * make change directory interface for FZF
