@@ -32,7 +32,7 @@ if !filereadable(vimplug_exists)
 endif
 
 call plug#begin(expand('~/.vim/plugged'))
-Plug 'tpope/vim-commentary'
+" gc[motion] to toggle commenting text-object, gcc for line
 Plug 'tpope/vim-unimpaired'
 " [cd]cs', ysi[wW]['"<`]
 Plug 'tpope/vim-surround'
@@ -59,12 +59,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 
 " UI
-" Medium contrast, good Terminal.app 256 only support
-Plug 'junegunn/seoul256.vim'
-" Light of choice
-Plug 'cormacrelf/vim-colors-github'
-Plug 'morhetz/gruvbox'
-Plug 'mbbill/undotree'
+Plug 'lifepillar/vim-solarized8'
 
 call plug#end()
 
@@ -74,7 +69,7 @@ call plug#end()
 
 " fugitive
 " set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
-nnoremap <Leader>g :G<CR>
+nnoremap <Leader>gg :G<CR>
 nnoremap <Leader>gP :G push<CR>
 
 " fzf
@@ -129,7 +124,7 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " Lightline
-let g:lightline = {'colorscheme': 'gruvbox'}
+let g:lightline = {'colorscheme': 'solarized'}
 
 " }}}
 
@@ -160,8 +155,7 @@ set laststatus=2
 " need this, but do care about trailing and leading whitespaces, so I
 " add those. Tab is omitted her so it defaults to '^I' character on screen.
 " I add a trailing listchar that matches space character.
-set listchars=space:·,trail:·
-set list
+  set listchars=space:·,trail:·
 " }}}
 set modeline
 set mouse=a
@@ -230,21 +224,12 @@ map Q gq
 xmap < <gv
 xmap > >gv
 
-" If I need to go up/down wrapped lines often so j/k is easier over time
-" Keeping this off now bc :set relativenumber does not work accurately with it
-" bc it assumes j/k to travel linewise not screenwise (gj/gk) and so moving
-" with relativenumber on gets messed up.
-" nnoremap j gj
-" nnoremap k gk
-
 " Move visual selection up/down lines.
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 
 " '%%' in command-line mode maybe expands to path of current buffer.
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
-"cnoremap :wq :xall
-"cnoremap :write :update
 
 " Function keys
 nnoremap <F3> :call utils#ToggleQuickfixList()<CR>
@@ -253,16 +238,19 @@ nnoremap <F5> :silent! make % <bar> copen <bar> silent redraw!<CR>
 nnoremap <F6> :15Lexplore<CR>
 nnoremap <F9> :set list!<CR>
 nnoremap <F10> :set spell!<CR>
-" iterm
-nnoremap ê <C-w>p<C-e><C-w>p
-nnoremap ë <C-w>p<C-y><C-w>p
-nnoremap Ê <C-w>p<C-d><C-w>p
-nnoremap Ë <C-w>p<C-u><C-w>p
+
+" iTerm2
+nnoremap j <C-w>p<C-e><C-w>p
+nnoremap k <C-w>p<C-y><C-w>p
+nnoremap J <C-w>p<C-d><C-w>p
+nnoremap K <C-w>p<C-u><C-w>p
+
 " macvim-only
 nnoremap <D-j> <C-w>p<C-e><C-w>p
 nnoremap <D-k> <C-w>p<C-y><C-w>p
 nnoremap <D-J> <C-w>p<C-d><C-w>p
 nnoremap <D-K> <C-w>p<C-u><C-w>p
+
 " Leader keys
 nnoremap <Leader>w :update<CR>
 nnoremap <Leader>q :bdelete<CR>
@@ -270,6 +258,7 @@ nnoremap <Leader>, :edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader>n :<C-u>nohl<CR>
 nnoremap <Leader><Leader> :b #<CR>
+
 " Vimdiff
 nnoremap gh :diffget //2<CR>
 nnoremap gl :diffget //3<CR>
@@ -277,13 +266,6 @@ tnoremap <C-v><Esc> <Esc>
 " Tab cycle
 nnoremap <Tab> :tabNext<CR>
 
-" use <C-z> as wild character in mappings, because we can't use <Tab>
-" set wildcharm=<C-z>
-" nnoremap <Leader>e :edit <C-z><C-z>
-" nnoremap <Leader>E :split <C-z><S-Tab>
-" nnoremap <Leader>v :vsplit <C-z><S-Tab>
-" nnoremap <Leader>f :find **/*<C-z><S-Tab>
- 
 " Getting Help Easier
 nnoremap <F1>f :help list-functions<CR>
 nnoremap <F1>k :help keycodes<CR>
@@ -300,6 +282,16 @@ inoreabbrev [; [<CR>];<Esc>O
 inoreabbrev [, [<CR>],<Esc>O
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+
+" vim-unimpaired style
+nnoremap [q :cprevious<CR>
+nnoremap ]q :cnext<CR>
+nnoremap [Q :cfirst<CR>
+nnoremap ]Q :clast<CR>
+nnoremap [l :lprevious<CR>
+nnoremap ]l :lnext<CR>
+nnoremap [L :lfirst<CR>
+nnoremap ]L :llast<CR>
 
 " }}}
 
@@ -364,45 +356,40 @@ autocmd vimrc VimEnter * cwindow
 " (happens when dropping a file on gvim) and for a commit message (it's
 " likely a different one than last time).
 autocmd vimrc BufReadPost *
-  \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-  \ |   exe "normal! g`\""
-  \ | endif
+      \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+      \ |   exe "normal! g`\""
+      \ | endif
 autocmd vimrc BufNewFile,BufRead *.patch set filetype=diff
 
 " Remember the positions in files with some git-specific exceptions.
 autocmd vimrc BufReadPost *
-  \ if line("'\"") > 0 && line("'\"") <= line("$")
-  \           && &filetype !~# 'commit\|gitrebase'
-  \           && expand("%") !~ "ADD_EDIT.patch"
-  \           && expand("%") !~ "addp-hunk-edit.diff" |
-  \   exe "normal g`\"" |
-  \ endif
+      \ if line("'\"") > 0 && line("'\"") <= line("$")
+      \           && &filetype !~# 'commit\|gitrebase'
+      \           && expand("%") !~ "ADD_EDIT.patch"
+      \           && expand("%") !~ "addp-hunk-edit.diff" |
+      \   exe "normal g`\"" |
+      \ endif
 
 " }}}
 
 " Colorscheme and Syntax {{{
 
-" seoul256 - low contrast, good support with junegunn stuff (made by them),
-" uses 256 colors and supported well in Terminal.app (no truecolor).
-" Default bg is 253, lightest is 256 and 252 is darkest
-" let g:seoul256_background = 253
-" colorscheme seoul256-light
+" lifepillar/vim-solarized8
+set background=light
+colorscheme solarized8_high
 
-" vim-colors-github
-" blocky diff markers in signcolumn
-" let g:github_colors_block_diffmark = 0
-" colorscheme github
+" Display hightlighting groups of thing under cursor
+map <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+      \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+      \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
-" gruvbox
-colorscheme gruvbox
 "}}}
 
 " Playground {{{
 
-map <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 " }}}
 
 " TODO:
 " * make change directory interface for FZF
+" * Make live Rg grep for FZF
+"
