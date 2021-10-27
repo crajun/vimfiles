@@ -1,11 +1,8 @@
 " vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0
 
 " Bare-basics {{{
-filetype plugin on " enable loading plugin/foo.vim files for all filetypes
-filetype indent on " enable loading indent/foo.vim files for all filetypes
-syntax on
-" Good in general, but I also need it here first to accept UTF-8 characters
-" I use in this file.
+unlet! skip_defaults_vim
+source $VIMRUNTIME/defaults.vim
 set encoding=utf-8
 scriptencoding utf-8
 let mapleader=' '
@@ -32,34 +29,29 @@ if !filereadable(vimplug_exists)
 endif
 
 call plug#begin(expand('~/.vim/plugged'))
-" gc[motion] to toggle commenting text-object, gcc for line
 Plug 'tpope/vim-unimpaired'
-" [cd]cs', ysi[wW]['"<`]
 Plug 'tpope/vim-surround'
-" Allows repeat '.' of surround commands
+" Allows repeat '.' of vim-surround commands
 Plug 'tpope/vim-repeat'
-" Git interface
-Plug 'tpope/vim-fugitive'
-" Cleaner syntax highlighting for Jekyll Markdown files with
-" liquid syntax, YML frontmatter, etc.
 Plug 'tpope/vim-liquid'
 " Required dependency
 Plug 'kana/vim-textobj-user'
-" vie command to select entire buffer
+" 'vie' command to select entire buffer
 Plug 'kana/vim-textobj-entire'
-" vii/ai to select by similar indent level
+" 'vii/ai' to select by similar indent level
 Plug 'kana/vim-textobj-indent'
 
 " Utilities
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" Use signcolumn to show git markers. 'vim-signify' is an alternative
 Plug 'airblade/vim-gitgutter'
-" Shiny
-Plug 'itchyny/lightline.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+Plug 'christoomey/vim-tmux-navigator'
 
 " UI
 Plug 'lifepillar/vim-solarized8'
+Plug 'itchyny/lightline.vim'
 
 call plug#end()
 
@@ -68,27 +60,31 @@ call plug#end()
 " Plugin Settings {{{
 
 " fugitive
-" set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
 nnoremap <Leader>gg :G<CR>
 nnoremap <Leader>gP :G push<CR>
+nnoremap <Leader>gp :G pull<CR>
+nnoremap <Leader>gd :Gvdiffsplit<CR>
 
 " fzf
-nnoremap <C-p> :FZF<CR>
+nnoremap <C-p> :GFiles<CR>
+" FZF from directory buffer is in, use this when not in Git repo
+nnoremap <Leader>e :FZF %:h<CR>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>/ :BLines<CR>
 nnoremap <Leader>r :Rg<CR>
-" Function used to populate Quickfix with selected lines from
-" FZF dialog
+" Change to git project directory
+nnoremap <Leader>c :FZFCd ~/git<CR>
+nnoremap <Leader>C :FZFCd!<CR>
+command! -bang -bar -nargs=? -complete=dir FZFCd
+    \ call fzf#run(fzf#wrap(
+    \ {'source': 'find '.( empty("<args>") ? ( <bang>0 ? "~" : "." ) : "<args>" ) .' -type d',
+    \ 'sink': 'cd'}))
+" Function used to populate Quickfix with selected lines
 function! s:build_quickfix_list(lines)
   call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
   copen
   cc
 endfunction
-" Switch ctrl-x default to ctrl-s to match <C-w>s method:
-" almost all terminal emulators I want to use can send <C-s> now
-" as non-interrupt signal. We add <C-q> to populate qfix with
-" selected lines, to then do whatever with those results like
-" run macro on each file with :argo @q, etc.
 let g:fzf_action = {
   \ 'ctrl-q': function('s:build_quickfix_list'),
   \ 'ctrl-t': 'tab split',
@@ -96,18 +92,9 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 " Layout of fzf UI
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.4 } }
-" FZF can start in terminal buffer with later Vim 8.x+ versions with
-" Define terminal ANSI colors exactly to match seoul256
-" let g:terminal_ansi_colors = [
-"   \ '#4e4e4e', '#d68787', '#5f865f', '#d8af5f',
-"   \ '#85add4', '#d7afaf', '#87afaf', '#d0d0d0',
-"   \ '#626262', '#d75f87', '#87af87', '#ffd787',
-"   \ '#add4fb', '#ffafaf', '#87d7d7', '#e4e4e4'
-" \ ]
 " Default toggle preview window key of <C-/> is not,
 " widely supported on terminal emulators. Also it slows things down. Off.
 let g:fzf_preview_window = []
-" Match seoul256 colours for FZF popup
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -124,24 +111,44 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " Lightline
-let g:lightline = {'colorscheme': 'solarized'}
-
+" Lightline, requires vim-gitbranch and vim-fugitive plugins.
+" Trim mode names down to single character to save space for long git branches
+let g:lightline = {
+      \ 'colorscheme': 'solarized',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'FugitiveHead'
+      \ },
+      \ 'mode_map': {
+        \ 'n' : 'N',
+        \ 'i' : 'I',
+        \ 'R' : 'R',
+        \ 'v' : 'V',
+        \ 'V' : 'VL',
+        \ "\<C-v>": 'VB',
+        \ 'c' : 'C',
+        \ 's' : 'S',
+        \ 'S' : 'SL',
+        \ "\<C-s>": 'SB',
+        \ 't': 'T',
+        \ },
+      \ }
 " }}}
 
 " Settings {{{
-set autoindent
-set autoread
-set backspace=indent,eol,start
-set belloff=all
-set clipboard=unnamed,unnamedplus
-" Another option:
-" set completeopt=menuone,noinsert,noselect,popup
-set completeopt=menuone,popup
-set nocursorline
-set foldlevelstart=99
-set hidden
-set history=200
-set hlsearch
+
+set autochdir
+set autoindent autoread belloff=all clipboard=unnamed,unnamedplus
+set completeopt=menuone,popup nocursorline foldlevelstart=99 hidden hlsearch
+set laststatus=2 listchars=space:·,trail:·
+set modeline noswapfile nowrap number relativenumber
+set shortmess+=c showcmd showmatch noshowmode signcolumn=yes
+set ignorecase smartcase thesaurus=~/.vim/thesaurus/english.txt
+set undofile undodir=~/.vim/undodir
+
 if executable('rg')
   set grepprg=rg\ --vimgrep
 elseif executable('ag')
@@ -157,39 +164,13 @@ set laststatus=2
 " I add a trailing listchar that matches space character.
   set listchars=space:·,trail:·
 " }}}
-set modeline
-set mouse=a
-set noswapfile
-set nowrap
-set nrformats-=octal
-set number
-set omnifunc=syntaxcomplete#Complete
-set path-=/usr/include
-set path+=**10
-set relativenumber
-set ruler
-set scrolloff=2
-set showcmd
-set showmatch
-set showmode
-set termguicolors
-set ignorecase smartcase
-set tags=./tags;,tags;
-set thesaurus=~/.vim/thesaurus/english.txt
-set ttimeout
-set ttimeoutlen=100
-set undofile undodir=~/.vim/undodir
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.node_modules/*
-set wildignore+=*.o,*.obj,*.exe,*.bin,*.zip
-set wildignore+=*.bmp,*.jpg,*.jpeg,*.svg,*.png
-set wildmenu
-" set wildmode=list:longest,longest:full
-
-let g:netrw_banner=0
-let g:netrw_liststyle=3
-let g:netrw_sizestyle='h'
-let g:netrw_winsize=15
-let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$'
+if exists('+termguicolors')
+  " https://github.com/tmux/tmux/issues/1246
+  " Without 2 t_8x lines below termguicolors doesn't work.
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 
 " enable use of folding with ft-markdown-plugin
 let g:markdown_folding = 1
@@ -198,27 +179,9 @@ let g:markdown_folding = 1
 runtime ftplugin/man.vim
 let g:ft_man_folding_enable=1
 
-" I don't use these. Negligible cost to load but don't need them.
-let g:loaded_gzip=1
-let g:loaded_getscriptPlugin=1
-let g:loaded_vimballPlugin=1
-let g:loaded_logiPat=1
-let g:loaded_rrhelper=1
-let g:loaded_spellfile_plugin=1
-let g:loaded_tarPlugin=1
-let g:loaded_2html_plugin=1
-let g:loaded_zipPlugin=1
-
-" Feature/Version detection
-if (v:version >=# 802)
-  packadd! cfilter
-endif
-
 " }}}
 
 " Mappings {{{
-" Don't use Ex mode, use Q for formatting instead.
-map Q gq
 
 " Re-select visually selected area after indenting/dedenting.
 xmap < <gv
@@ -232,7 +195,7 @@ xnoremap K :m '<-2<CR>gv=gv
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " Function keys
-nnoremap <F3> :call utils#ToggleQuickfixList()<CR>
+nnoremap <silent><F3> :call utils#ToggleQuickfixList()<CR>
 nnoremap <F4> :call utils#ToggleLocationList()<CR>
 nnoremap <F5> :silent! make % <bar> copen <bar> silent redraw!<CR>
 nnoremap <F6> :15Lexplore<CR>
@@ -244,12 +207,6 @@ nnoremap j <C-w>p<C-e><C-w>p
 nnoremap k <C-w>p<C-y><C-w>p
 nnoremap J <C-w>p<C-d><C-w>p
 nnoremap K <C-w>p<C-u><C-w>p
-
-" macvim-only
-nnoremap <D-j> <C-w>p<C-e><C-w>p
-nnoremap <D-k> <C-w>p<C-y><C-w>p
-nnoremap <D-J> <C-w>p<C-d><C-w>p
-nnoremap <D-K> <C-w>p<C-u><C-w>p
 
 " Leader keys
 nnoremap <Leader>w :update<CR>
@@ -271,15 +228,6 @@ nnoremap <F1>f :help list-functions<CR>
 nnoremap <F1>k :help keycodes<CR>
 nnoremap <F1><F1> :help<CR>
 nnoremap <F1>m :help user-manual<CR>
-
-inoreabbrev (<CR> (<CR>)<Esc>O
-inoreabbrev ({<CR> ({<CR>});<Esc>O
-inoreabbrev {<CR> {<CR>}<Esc>O
-inoreabbrev {; {<CR>};<Esc>O
-inoreabbrev {, {<CR>},<Esc>O
-inoreabbrev [<CR> [<CR>]<Esc>O
-inoreabbrev [; [<CR>];<Esc>O
-inoreabbrev [, [<CR>],<Esc>O
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
@@ -296,40 +244,10 @@ nnoremap ]L :llast<CR>
 " }}}
 
 " Commands {{{
-
-cnoremap grep Grep
-command! -nargs=+ -bar Grep :silent! grep! <args>|redraw!
 command! Api :help list-functions<CR>
 command! Cd :cd %:h
 command! TodoLocal :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
-command! Only :.+,$bwipeout<CR>
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-" Revert with: ":delcommand DiffOrig"
-if !exists(':DiffOrig')
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-  \ | wincmd p | diffthis
-endif
-
-" Runs a vim command into a scratch buffer
-function! Scratchify(cmd)
-  redir => message
-  silent execute a:cmd
-  redir END
-  if empty(message)
-    echoerr "no output"
-  else
-    botright 10new
-    setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nomodified
-    setlocal nornu nonu
-    setlocal nospell colorcolumn=0
-    silent put=message
-  endif
-endfunction
-command! -nargs=+ -complete=command -bar Redir call Scratchify(<q-args>)
-
 " }}}
 
 " Autocmd {{{
@@ -339,36 +257,17 @@ augroup vimrc
   autocmd!
 augroup END
 
-autocmd vimrc BufNewFile,BufRead *.txt,*.md,*.adoc setlocal complete+=k
-autocmd vimrc BufNewFile,BufRead *.txt,*.md,*.adoc setlocal tw=78 spell
+autocmd vimrc BufNewFile,BufRead *.md setlocal complete+=k spell
 autocmd vimrc BufWinEnter */doc/*.txt setlocal nonumber norelativenumber
-autocmd vimrc BufWritePost ~/.vim/vimrc source ~/.vim/vimrc
+autocmd vimrc BufWritePost $MYVIMRC nested source $MYVIMRC
 autocmd vimrc BufWritePre /tmp/* setlocal noundofile
+autocmd vimrc FileType liquid setlocal list
 
 " Quickfix/Location List
 autocmd vimrc FileType * if &ft ==# 'qf' | setlocal nonu nornu | endif
 autocmd vimrc QuickFixCmdPost [^l]* cwindow
 autocmd vimrc QuickFixCmdPost  l* lwindow
 autocmd vimrc VimEnter * cwindow
-
-" When editing a file, always jump to the last known cursor position.
-" Don't do it when the position is invalid, when inside an event handler
-" (happens when dropping a file on gvim) and for a commit message (it's
-" likely a different one than last time).
-autocmd vimrc BufReadPost *
-      \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-      \ |   exe "normal! g`\""
-      \ | endif
-autocmd vimrc BufNewFile,BufRead *.patch set filetype=diff
-
-" Remember the positions in files with some git-specific exceptions.
-autocmd vimrc BufReadPost *
-      \ if line("'\"") > 0 && line("'\"") <= line("$")
-      \           && &filetype !~# 'commit\|gitrebase'
-      \           && expand("%") !~ "ADD_EDIT.patch"
-      \           && expand("%") !~ "addp-hunk-edit.diff" |
-      \   exe "normal g`\"" |
-      \ endif
 
 " }}}
 
@@ -377,19 +276,38 @@ autocmd vimrc BufReadPost *
 " lifepillar/vim-solarized8
 set background=light
 colorscheme solarized8_high
+" https://ethanschoonover.com/solarized/#the-values
+" For colouring 'nbsp', 'tab', and 'trail'
+" original guifg=#657b83
+highlight! SpecialKey guibg=#fdf6e3
+
+" Use same bg as LineNr to blend all together
+highlight! SignColumn guibg=#eee8d5
+highlight! GitGutterAdd guibg=#eee8d5
+highlight! GitGutterChange guibg=#eee8d5
+highlight! GitGutterDelete guibg=#eee8d5
 
 " Display hightlighting groups of thing under cursor
 map <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
       \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
       \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
+" Add comment highlighting support for 'JSONC' (JSON w/ comments)
+autocmd vimrc FileType json syntax match Comment +\/\/.\+$+
+
+" To capture release-notes.md and migration-notes.md which are snippet files
+autocmd vimrc BufNewFile,BufRead *.markdown,*.mkd,*.mkdn,*.md
+      \ if getline(1) =~# "^We\.re excited" |
+      \   let b:liquid_subtype = 'markdown' |
+      \   set ft=liquid |
+      \ elseif getline(1) =~# "^\\d.\\d\\d is the first generally" |
+      \   let b:liquid_subtype = 'markdown' |
+      \   set ft=liquid | 
+      \ endif
 "}}}
 
 " Playground {{{
 
 " }}}
-
 " TODO:
-" * make change directory interface for FZF
-" * Make live Rg grep for FZF
-"
+" * 
