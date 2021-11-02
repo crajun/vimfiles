@@ -94,7 +94,6 @@ let g:lightline = {
 
 " Settings {{{
 
-set autochdir
 set autoindent autoread belloff=all clipboard=unnamed,unnamedplus
 set expandtab 
 set completeopt=menuone,popup nocursorline foldlevelstart=99 hidden hlsearch
