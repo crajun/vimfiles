@@ -19,6 +19,8 @@ nnoremap <Leader>gP :G push<CR>
 nnoremap <Leader>gp :G pull<CR>
 nnoremap <Leader>gd :Gvdiffsplit<CR>
 nnoremap <Leader>gb :G blame<CR>
+nnoremap <Leader>gl :Gclog<CR>
+nnoremap <Leader>gc :G commit -av<CR>
 
 " fzf.vim
 nnoremap <C-p> :GFiles<CR>
