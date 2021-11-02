@@ -21,3 +21,5 @@ startup
 Session.vim
 swapdir/
 *.spl
+pack/**/doc/tags
+doc/tags

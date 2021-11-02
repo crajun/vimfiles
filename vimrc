@@ -18,6 +18,7 @@ nnoremap <Leader>gg :G<CR>
 nnoremap <Leader>gP :G push<CR>
 nnoremap <Leader>gp :G pull<CR>
 nnoremap <Leader>gd :Gvdiffsplit<CR>
+nnoremap <Leader>gb :G blame<CR>
 
 " fzf.vim
 nnoremap <C-p> :GFiles<CR>
