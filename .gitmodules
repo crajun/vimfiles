@@ -40,12 +40,6 @@
 [submodule "pack/git/start/vim-solarized8"]
 	path = pack/git/start/vim-solarized8
 	url = https://github.com/lifepillar/vim-solarized8
-[submodule "pack/git/start/lightline.vim"]
-	path = pack/git/start/lightline.vim
-	url = https://github.com/itchyny/lightline.vim
 [submodule "pack/git/opt/vim-polyglot"]
 	path = pack/git/opt/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot
-[submodule "pack/git/start/zenbones.nvim"]
-	path = pack/git/start/zenbones.nvim
-	url = https://github.com/mcchrish/zenbones.nvim

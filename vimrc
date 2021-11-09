@@ -70,29 +70,29 @@ let g:fzf_colors =
 " Lightline
 " Lightline, requires vim-gitbranch or vim-fugitive plugins.
 " Trim mode names down to single character to save space for long git branches
-let g:lightline = {
-  \ 'colorscheme': 'solarized',
-  \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-  \ },
-  \ 'component_function': {
-  \   'gitbranch': 'FugitiveHead'
-  \ },
-  \ 'mode_map': {
-    \ 'n' : 'N',
-    \ 'i' : 'I',
-    \ 'R' : 'R',
-    \ 'v' : 'V',
-    \ 'V' : 'VL',
-    \ "\<C-v>": 'VB',
-    \ 'c' : 'C',
-    \ 's' : 'S',
-    \ 'S' : 'SL',
-    \ "\<C-s>": 'SB',
-    \ 't': 'T',
-  \ },
-\ }
+" let g:lightline = {
+"   \ 'colorscheme': 'zenbones',
+"   \ 'active': {
+"   \   'left': [ [ 'mode', 'paste' ],
+"   \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+"   \ },
+"   \ 'component_function': {
+"   \   'gitbranch': 'FugitiveHead'
+"   \ },
+"   \ 'mode_map': {
+"     \ 'n' : 'N',
+"     \ 'i' : 'I',
+"     \ 'R' : 'R',
+"     \ 'v' : 'V',
+"     \ 'V' : 'VL',
+"     \ "\<C-v>": 'VB',
+"     \ 'c' : 'C',
+"     \ 's' : 'S',
+"     \ 'S' : 'SL',
+"     \ "\<C-s>": 'SB',
+"     \ 't': 'T',
+"   \ },
+" \ }
 
 " }}}
 
@@ -232,18 +232,20 @@ augroup END
 
 " Colorscheme and Syntax {{{
 
-" lifepillar/vim-solarized8
+" zenbones light/dark
 set background=light
-colorscheme solarized8_high
+colorscheme zenbones_light
+
+" lifepillar/vim-solarized8
 " https://ethanschoonover.com/solarized/#the-values
 " For colouring 'nbsp', 'tab', and 'trail'
 " original guifg=#657b83
-highlight! SpecialKey guibg=#fdf6e3 guifg=#eee8d5
+" highlight! SpecialKey guibg=#fdf6e3 guifg=#eee8d5
 " Use same bg as LineNr to blend all together
-highlight! SignColumn guibg=#eee8d5
-highlight! GitGutterAdd guibg=#eee8d5
-highlight! GitGutterChange guibg=#eee8d5
-highlight! GitGutterDelete guibg=#eee8d5
+" highlight! SignColumn guibg=#eee8d5
+" highlight! GitGutterAdd guibg=#eee8d5
+" highlight! GitGutterChange guibg=#eee8d5
+" highlight! GitGutterDelete guibg=#eee8d5
 
 " Display highlighting groups of thing under cursor
 map <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
