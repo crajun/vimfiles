@@ -66,34 +66,6 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
-
-" Lightline
-" Lightline, requires vim-gitbranch or vim-fugitive plugins.
-" Trim mode names down to single character to save space for long git branches
-" let g:lightline = {
-"   \ 'colorscheme': 'zenbones',
-"   \ 'active': {
-"   \   'left': [ [ 'mode', 'paste' ],
-"   \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-"   \ },
-"   \ 'component_function': {
-"   \   'gitbranch': 'FugitiveHead'
-"   \ },
-"   \ 'mode_map': {
-"     \ 'n' : 'N',
-"     \ 'i' : 'I',
-"     \ 'R' : 'R',
-"     \ 'v' : 'V',
-"     \ 'V' : 'VL',
-"     \ "\<C-v>": 'VB',
-"     \ 'c' : 'C',
-"     \ 's' : 'S',
-"     \ 'S' : 'SL',
-"     \ "\<C-s>": 'SB',
-"     \ 't': 'T',
-"   \ },
-" \ }
-
 " }}}
 
 " Options {{{
@@ -127,6 +99,10 @@ set nowrap " defaults to line wrapping on
 set number relativenumber " current line number shown - rest shown relative
 set signcolumn=yes | " Always show sign column, instead of popping open/closed
 set showmatch " on brackets briefly jump to matching to show it
+set statusline=%F
+set statusline+=%=
+set statusline+=%{FugitiveStatusline()}
+set statusline+=%y
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
 set thesaurus=~/.vim/thesaurus/english.txt | " Use for :h i_CTRL-X_CTRL-T
 set undofile undodir=~/.vim/undodir | " persistent undo on and where to save
@@ -191,7 +167,8 @@ nnoremap <Leader>q :bdelete<CR>
 nnoremap <Leader>, :edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader>n :<C-u>nohl<CR>
-nnoremap <Leader><Leader> :b #<CR>
+nnoremap <Leader><Leader> :buffer #<CR>
+nnoremap <Leader>k :bdelete!<CR>
 
 " Vimdiff
 nnoremap gh :diffget //2<CR>
