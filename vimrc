@@ -172,7 +172,8 @@ nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
 nnoremap ]t :tabnext<CR>
 nnoremap [t :tabprev<CR>
-nnoremap ]T :tab term<CR>
+nnoremap ]T :tablast<CR>
+nnoremap [t :tabfirst<CR>
 " }}}
 
 " Commands {{{
@@ -203,6 +204,9 @@ augroup END
 " :so $VIMRUNTIME/syntax/hitest.vim
 
 set background=light
+colorscheme default
+hi! Comment cterm=italic gui=italic
+hi! SpecialKey guifg=LightBlue
 
 " lifepillar/vim-solarized8
 " https://ethanschoonover.com/solarized/#the-values
@@ -212,8 +216,7 @@ set background=light
 " highlight! SpecialKey guibg=#fdf6e3 guifg=#eee8d5
 " Use same bg as LineNr to blend all together
 
-function! SynGroup()
-  " Outputs both the name of the syntax group, AND the translated syntax
+function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
   " group of the character the cursor is on.
   " line('.') and col('.') return the current position
   " synID(...) returns a numeric syntax ID
@@ -233,5 +236,6 @@ nnoremap <F2> :call SynGroup()<CR>
 nnoremap <Leader>s :silent grep! '' **/*.md <Bar> silent redraw!
 nnoremap <Leader>/ :noautocmd vimgrep //j **/*.md<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 
+nnoremap <Leader>gg :botright vertical terminal ++close lazygit<CR> 
 " }}}
 

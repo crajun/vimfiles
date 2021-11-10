@@ -35,3 +35,6 @@ set guioptions-=b
 " Macvim you can drop and drop bunch of files onto app icon
 " and it opens each of them in new tabs, so bump this up from 10
 set tabpagemax=100
+
+" cd to directory of this file, macvim sets 'cd' to ~ by default
+call chdir(fnameescape(expand("~/.vim")))
