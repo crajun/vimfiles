@@ -5,8 +5,12 @@
 " F10 will still be menu key, unless bound by user.
 set winaltkeys=no
 set belloff=all
-" set guifont=IBM\ Plex\ Mono:h14
-set guifont=BlexMono\ Nerd\ Font\ Mono:h14
+set guifont=IBM\ Plex\ Mono:h14
+
+" Start full screen on my mac
+set lines=59
+set columns=239
+
 
 " Turn off blinking cursor in all modes
 set guicursor=a:blinkon0
