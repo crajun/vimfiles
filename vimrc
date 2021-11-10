@@ -13,6 +13,17 @@ let mapleader=' '
 " pack/git/opt/<plugin>
 packadd cfilter " quickfix reducer :Cfilter [v]/re/
 packadd matchit " extended 'matchpairs', basically
+packadd vim-fugitive
+packadd vim-gitgutter
+
+" vim-fugitive
+nnoremap <Leader>gg :G<CR>
+nnoremap <Leader>gP :G push<CR>
+nnoremap <Leader>gp :G pull<CR>
+nnoremap <Leader>gd :Gvdiffsplit<CR>
+nnoremap <Leader>gb :G blame<CR>
+nnoremap <Leader>gl :Gclog<CR>
+nnoremap <Leader>gc :G commit -av<CR>
 
 " fzf.vim
 nnoremap <C-p> :GFiles<CR>
@@ -208,14 +219,6 @@ colorscheme default
 hi! Comment cterm=italic gui=italic
 hi! SpecialKey guifg=LightBlue
 
-" lifepillar/vim-solarized8
-" https://ethanschoonover.com/solarized/#the-values
-" For colouring 'nbsp', 'tab', and 'trail'
-" original guifg=#657b83
-" colorscheme solarized8
-" highlight! SpecialKey guibg=#fdf6e3 guifg=#eee8d5
-" Use same bg as LineNr to blend all together
-
 function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
   " group of the character the cursor is on.
   " line('.') and col('.') return the current position
@@ -236,6 +239,6 @@ nnoremap <F2> :call SynGroup()<CR>
 nnoremap <Leader>s :silent grep! '' **/*.md <Bar> silent redraw!
 nnoremap <Leader>/ :noautocmd vimgrep //j **/*.md<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 
-nnoremap <Leader>gg :botright vertical terminal ++close lazygit<CR> 
+nnoremap <Leader>gl :botright vertical terminal ++close lazygit<CR> 
 " }}}
 

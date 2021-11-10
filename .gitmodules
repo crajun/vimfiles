@@ -43,3 +43,12 @@
 [submodule "pack/git/opt/vim-polyglot"]
 	path = pack/git/opt/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot
+[submodule "pack/git/opt/vim-fugitive"]
+	path = pack/git/opt/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
+[submodule "pack/git/opt/vim-rhubarb"]
+	path = pack/git/opt/vim-rhubarb
+	url = https://github.com/tpope/vim-rhubarb
+[submodule "pack/git/opt/vim-gitgutter"]
+	path = pack/git/opt/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter
