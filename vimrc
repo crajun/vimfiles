@@ -70,7 +70,6 @@ let g:fzf_colors =
 " }}}
 
 " Options {{{
-
 " Indenting/Formatting
 " copy above line indent on enter
 set autoindent
@@ -98,6 +97,7 @@ set listchars=space:·,trail:· | " strings to show when :set list is on
 set noswapfile " no annoying *.foo~ files left around
 set nowrap " defaults to line wrapping on
 set number relativenumber " current line number shown - rest shown relative
+set path=.,** | " Very slow on bigger projects, ok on small
 set showmatch " on brackets briefly jump to matching to show it
 set statusline=%F%=%y
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
@@ -206,10 +206,16 @@ augroup END
 " See all active highlight groups with:
 " :so $VIMRUNTIME/syntax/hitest.vim
 
+set termguicolors
 set background=light
-colorscheme default
-hi! Comment cterm=italic gui=italic
-hi! SpecialKey guifg=LightBlue
+" Works with iTerm2 with italic checked under Text
+hi! Comment cterm=italic
+hi! SignColumn ctermbg=15 guibg=White
+
+" GitGutter
+hi! GitGutterAdd    guifg=#009900 ctermfg=2 guibg=White ctermbg=15
+hi! GitGutterChange guifg=#bbbb00 ctermfg=3 guibg=White ctermbg=15
+hi! GitGutterDelete guifg=#ff2222 ctermfg=1 guibg=White ctermbg=15
 
 function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
   " group of the character the cursor is on.
@@ -233,5 +239,4 @@ nnoremap <Leader>/ :noautocmd vimgrep //j **/*.md<Left><Left><Left><Left><Left><
 
 nnoremap <Leader>gl :botright vertical terminal ++close lazygit<CR> 
 " }}}
-"
 
