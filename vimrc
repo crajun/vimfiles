@@ -28,10 +28,30 @@ nnoremap <Leader>gc :G commit -av<CR>
 nnoremap <C-p> :GFiles<CR>
 " FZF from directory buffer is in, use this when not in Git repo
 nnoremap <Leader>e :FZF %:h<CR>
-nnoremap <Leader>b :Buffers<CR>
+" Only show buffers from current tabpage
+nnoremap <Leader>b :FZFTabBuffers<CR>
+" Show buffers from everywhere, note selecting from here will open that
+" buffer in current tabpage replacing current buffer opened, this is because
+" a buffer number can be in any number of tabpages
+nnoremap <Leader>B :Buffers<CR>
+
+command! -bar FZFTabBuffers
+  \ call fzf#run(fzf#wrap(
+  \ {'source': mapnew(tabpagebuflist(), {_, val -> bufname(val)}),
+  \ 'sink': 'b'}))
+
+" :bwipeout! selected buffers using :ls! to show all hidden buffers
+" getbufinfo() => list of dicts, one for each buffer
+nnoremap <Leader>! :FZFWipeSelectedBuffers<CR>
+command! FZFWipeSelectedBuffers
+  \ call fzf#run(fzf#wrap({'source': mapnew(getbufinfo(), {_, val -> val.name}),
+  \ 'sink': 'bwipeout!',
+  \ 'options': '--multi'}))
+
 " Change to git project directory
 nnoremap <Leader>c :FZFCd ~/git<CR>
 nnoremap <Leader>C :FZFCd!<CR>
+nnoremap <Leader><C-]> :Tags<CR>
 command! -bang -bar -nargs=? -complete=dir FZFCd
   \ call fzf#run(fzf#wrap(
   \ {'source': 'find '.( empty("<args>") ? ( <bang>0 ? "~" : "." ) : "<args>" ) .' -type d',
@@ -90,6 +110,7 @@ set clipboard=unnamed,unnamedplus
 set completeopt=menuone,popup
 set diffopt+=algorithm:patience | " http://vimways.org/2018/the-power-of-diff/
 set hidden " hide buffers without needing to save them
+set history=10000 | " Max possible value, use <C-f> in commandline to browse
 set hlsearch " highlight all search matches until :nohl run
 set laststatus=2 | " always show statuslines in all windows
 set listchars=space:·,trail:· | " strings to show when :set list is on
@@ -170,7 +191,10 @@ nnoremap <Leader>q :bdelete<CR>
 nnoremap <Leader>, :edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader><Leader> :buffer #<CR>
-nnoremap <Leader>k :bdelete!<CR>
+" Really, really lose everything from this buffer, can't switch back to it
+" either, with :bdelete! I could switch back to it. I set help filetypes to
+" setlocal bufhidden=wipe to auto do this for help buffers
+nnoremap <Leader>k :bwipeout!<CR>
 
 " Vimdiff
 nnoremap gh :diffget //2<CR>
@@ -283,14 +307,8 @@ function! MyTabLabel(n)
   " return bufname(buflist[winnr - 1])
 endfunction
 
-" Never mistype q: again
-nnoremap q: :q
-
-" Never mis-sudo again:
-" (w) the whole buffer to stdout stream (usually current file), but here instead
-" run external program (!) 'sudo cat' which takes stdin stream and outputs to it
-" to file (%) which is replaced by the current buffer name on expansion.  :w
-" !sudo cat %
+" Never mistype q: again option
+" nnoremap q: :q
 
 " }}}
 

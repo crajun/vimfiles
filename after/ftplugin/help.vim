@@ -1,5 +1,6 @@
 setlocal nonumber
 setlocal norelativenumber
 setlocal nospell
-
-let b:undo_ftplugin .= '|setlocal number< relativenumber< spell<'
+" Don't keep help buffers around in :buffers! (default is keep just set as
+" hidden)
+setlocal bufhidden=wipe
