@@ -1,4 +1,4 @@
-" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0
+" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0 fdc=2
 
 " Bare-basics {{{
 unlet! skip_defaults_vim
@@ -28,14 +28,9 @@ nnoremap <Leader>gc :G commit -av<CR>
 nnoremap <C-p> :GFiles<CR>
 " FZF from directory buffer is in, use this when not in Git repo
 nnoremap <Leader>e :FZF %:h<CR>
-nnoremap <Leader>b :Buffers<CR>
-
-" :bwipeout! selected buffers using :ls! to show all hidden buffers
-nnoremap <Leader>! :FZFWipeSelectedBuffers<CR>
-command! FZFWipeSelectedBuffers
-  \ call fzf#run(fzf#wrap({'source': mapnew(getbufinfo(), {_, val -> val.name}),
-  \ 'sink': 'bwipeout!',
-  \ 'options': '--multi'}))
+" Jump to buffer in existing window if possible with this option
+let g:fzf_buffers_jump = 1
+nnoremap <Leader><Tab> :Buffers<CR>
 
 " Change to git project directory
 nnoremap <Leader>c :FZFCd ~/git<CR>
@@ -57,23 +52,28 @@ let g:fzf_action = {
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
 " Layout of fzf UI
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.4 } }
-" Default toggle preview window key of <C-/> is not,
-" widely supported on terminal emulators. Also it slows things down. Off.
-let g:fzf_preview_window = []
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+" Default toggle preview window key of <C-/> is not widely supported on
+" terminal emulators. Also it slows things down. Off until toggled on.
+let g:fzf_preview_window = ['right:60%:hidden', 'ctrl-o']
+" TODO: not working? C-n/p in C-p menu doesn't recall searches
+let g:fzf_history_dir = '~/.local/share/fzf-history'
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
+  \ 'hl':      ['bg', 'Error'],
+  \ 'fg+':     ['fg', 'Pmenu'],
+  \ 'bg+':     ['bg', 'Pmenu'],
+  \ 'hl+':     ['bg', 'Error'],
+  \ 'info':    ['fg', 'Normal'],
   \ 'border':  ['fg', 'Normal'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
+  \ 'prompt':  ['fg', 'Statement'],
+  \ 'pointer': ['fg', 'Statement'],
+  \ 'marker':  ['fg', 'Statement'],
+  \ 'gutter':  ['bg', 'Normal'],
   \ 'spinner': ['fg', 'Label'],
+  \ 'preview-fg': ['fg', 'Normal'],
+  \ 'preview-bg': ['bg', 'Normal'],
   \ 'header':  ['fg', 'Comment'] }
 " }}}
 
@@ -94,10 +94,13 @@ set belloff=all | " no sounds for all possible bell events
 " This isn't supposed to work without :echo has('X11') and
 " :echo has('xterm_clipboard') but in my tests on macos both are 0 but work!
 set clipboard=unnamed,unnamedplus
+set complete+=d | " C-n/p scans include i_CTRL-X_CTRL-D results too
 " completion menu can show even when only one match, and instead of preview
 " window if there's extra information, use the 'popupwin' feature
 set completeopt=menuone,popup
 set diffopt+=algorithm:patience | " http://vimways.org/2018/the-power-of-diff/
+set foldcolumn=2 | " Show 2 levels of folds on left-hand side visual markers
+set foldlevelstart=99 | " No folds closed by default. Modeline 'fdls' overrules 
 set hidden " hide buffers without needing to save them
 set history=10000 | " Max possible value, use <C-f> in commandline to browse
 set hlsearch " highlight all search matches until :nohl run
@@ -106,23 +109,29 @@ set listchars=space:·,trail:· | " strings to show when :set list is on
 set noswapfile " no annoying *.foo~ files left around
 set nowrap " defaults to line wrapping on
 set number relativenumber " current line number shown - rest shown relative
-set path=.,** | " Very slow on bigger projects, ok on small
+set path-=/usr/include |  set path+=** | " Look recursively from ':pwd'
 set showmatch " on brackets briefly jump to matching to show it
 set statusline=%F%=%y
-set showtabline=2 | " Always show tabline, I set it to show &pwd and use :lcd in each
+set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
+set showtabline=2 | " Always show tabline, I show &pwd and use :lcd in each
 " Use for non-gui tabline, for gui use :h 'guitablabel'
 set tabline=%!MyTabLine()
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
 set splitbelow " new horizontal split window always goes below current
 set splitright " same but with new vertical split window
+set tags=./tags;,tags; | " pwd and search up til root dir for tags file
 set thesaurus=~/.vim/thesaurus/english.txt | " Use for :h i_CTRL-X_CTRL-T
 set undofile undodir=~/.vim/undodir | " persistent undo on and where to save
+" Character to act as 'wildchar' in a macro because <Tab> is unrecognized there
+" Use in mapping to do auto-expansion like this:
+" set wcm=<C-Z> | cnnoremap ss so $VIM/sessions/*.vim<C-Z>
+set wildcharm=<C-z>
 set wildoptions=tagfile | " :tag <C-d> will show tag kind and file
 
 if executable('rg')
   set grepprg=rg\ --vimgrep
-elseif executable('ag')
-  set grepprg=ag\ --nogroup\ --nocolor
+else
+  set grepprg=LC_ALL=C\ grep\ -nrsH
 endif
 
 " enable use of folding with ft-markdown-plugin
@@ -140,6 +149,56 @@ endif
 " }}}
 
 " Mappings {{{
+
+" manual expansions, when I want it
+inoremap (<CR> (<CR>)<Esc>O
+inoremap (; (<CR>);<Esc>O
+inoremap (, (<CR>),<Esc>O
+inoremap {<CR> {<CR>}<Esc>O
+inoremap {; {<CR>};<Esc>O
+inoremap {, {<CR>},<Esc>O
+inoremap [<CR> [<CR>]<Esc>O
+inoremap [; [<CR>];<Esc>O
+inoremap [, [<CR>],<Esc>O
+
+" e.g. typing ':help g<C-p>' by default does not search history and simply
+" goes to previous entry, but ':help g<Up>' will search history for previous
+" pattern matching ':help g'. Also Up/Down go in/out of subfolders listings
+" when wildmenu showing - default C-n/p here is to traverse results, equivalent
+" to <Tab>/<S-Tab>.
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+
+" :find (&path aware) and :edit niceties
+nnoremap <Leader>ff :find *
+nnoremap <Leader>fs :sfind *
+nnoremap <Leader>fv :vert sfind *
+" Tab-expand to show wildmenu then untab to unselect but still see menu
+nnoremap <Leader>ee :edit *<C-z><S-Tab>
+nnoremap <Leader>es :split *<C-z><S-Tab>
+nnoremap <Leader>ev :vert split *<C-z><S-Tab>
+
+" :buffer for showing listed buffers, :buffers! for everything
+nnoremap <Leader>bb :buffer *<C-z><S-Tab>
+nnoremap <Leader>bs :sbuffer *<C-z><S-Tab>
+nnoremap <Leader>bv :vert sbuffer *<C-z><S-Tab>
+
+" tags
+nnoremap <Leader>tj :tjump /
+" preview window, close with C-w z
+nnoremap <Leader>tp :ptjump /
+
+" defines/includes jumping
+nnoremap <Leader>d :dlist /
+" instead of just showing where the definition is setup to do the jump
+nnoremap [D [D:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
+nnoremap ]D ]D:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
+nnoremap <Leader>i :ilist /
+" Fill it out ready to do the jump
+nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
+nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
+
+
 
 " Match C,D, behaviour, yank to line end from cursor position
 nnoremap Y y$
@@ -176,7 +235,6 @@ nnoremap K <C-w>p<C-u><C-w>p
 
 " Leader keys
 nnoremap <Leader>w :update<CR>
-nnoremap <Leader>q :bdelete<CR>
 nnoremap <Leader>, :edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader><Leader> :buffer #<CR>
@@ -208,6 +266,27 @@ command! Api :help list-functions<CR>
 command! Cd :cd %:h
 command! TodoLocal :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
+
+" https://github.com/romainl/minivimrc
+" Sugar to make common non-interactive commands like :jumps friendlier by
+" setting you up to then jump. Otherwise nothing added.
+cnoremap <expr> <CR> <SID>CCR()
+function! s:CCR()
+  command! -bar Z silent set more|delcommand Z
+  if getcmdtype() == ":"
+    let cmdline = getcmdline()
+    if cmdline =~ '\v\C^(dli|il)' | return "\<CR>:" . cmdline[0] . "jump   " . split(cmdline, " ")[1] . "\<S-Left>\<Left>\<Left>"
+    elseif cmdline =~ '\v\C^(cli|lli)' | return "\<CR>:silent " . repeat(cmdline[0], 2) . "\<Space>"
+    elseif cmdline =~ '\C^changes' | set nomore | return "\<CR>:Z|norm! g;\<S-Left>"
+    elseif cmdline =~ '\C^ju' | set nomore | return "\<CR>:Z|norm! \<C-o>\<S-Left>"
+    elseif cmdline =~ '\v\C(#|nu|num|numb|numbe|number)$' | return "\<CR>:"
+    elseif cmdline =~ '\C^ol' | set nomore | return "\<CR>:Z|e #<"
+    elseif cmdline =~ '\v\C^(ls|files|buffers)' | return "\<CR>:b"
+    elseif cmdline =~ '\C^marks' | return "\<CR>:norm! `"
+    elseif cmdline =~ '\C^undol' | return "\<CR>:u "
+    else | return "\<CR>" | endif
+  else | return "\<CR>" | endif
+endfunction
 " }}}
 
 " Autocmd {{{
@@ -251,8 +330,20 @@ nnoremap <F2> :call SynGroup()<CR>
 " * play with t_SI t_EI et al to modify cursor on mode changes
 nnoremap <Leader>s :silent grep! '' **/*.md <Bar> silent redraw!
 nnoremap <Leader>/ :noautocmd vimgrep //j **/*.md<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+nnoremap <Leader>? :Grep<Space>
 
-nnoremap <Leader>gl :botright vertical terminal ++close lazygit<CR> 
+
+" https://github.com/romainl/minivimrc
+" Smoother grep searching, adjusted &grepprg in Options to use rg if there
+command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr system(&grepprg . ' <args>')
+" Smoother searching e.g., /command<Tab> will loop over results of search
+" rather that do nothing, otherwise you search hit enter to go to first one,
+" then use n/N to move to next/prev matches. This lets you tab through on the
+" spot and alter search quickly
+cnoremap <expr> <Tab>   getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"
+cnoremap <expr> <S-Tab> getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"
+
+" nnoremap <Leader>gl :botright vertical terminal ++close lazygit<CR> 
 
 function! MyTabLine()
   " Loop over pages and define labels for them, then get label for each tab
@@ -297,5 +388,21 @@ endfunction
 " Never mistype q: again option
 " nnoremap q: :q
 
+" set an exrc or after/ftplugin for work directories where I set a relative path
+" like:
+" Recurse down pwd first,and then everywhere in docs/ folder second
+" set path=.,,,**,~/git/devx/docs/**
+" see :h file-searching
+" To search down and then recurse up until given dir  use ';'
+" set path=**;~/git/devx/docs/_ver_6.14
+
+" TODO:
+" * 
 " }}}
 
+" Neovim backports {{{
+" Don't restore global maps/options, let vimrc handle that
+set viewoptions-=options
+set sessionoptions-=options
+"
+" }}}

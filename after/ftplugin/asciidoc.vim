@@ -7,7 +7,7 @@ iabbrev <expr> dts strftime('%Y-%m-%d')
 
 iabbrev hdr [[header-name]]
       \<CR>= Header Name
-      \<CR>Craig MacEachern <craig.maceachern@calian.ca>
+      \<CR>Craig MacEachern 
       \<CR>2020-04-23
       \<CR>:toc:
       \<CR>:sectanchors:
@@ -15,7 +15,7 @@ iabbrev hdr [[header-name]]
 
 iabbrev stub [[article-stub]]
       \<CR>= Article Stub
-      \<CR>Craig MacEachern <craig.maceachern@calian.ca>
+      \<CR>Craig MacEachern
       \<CR>2020-04-23
       \<CR>:toc:
       \<CR>:sectanchors:

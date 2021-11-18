@@ -121,4 +121,5 @@ hi! GitGutterDelete guifg=#800000 ctermfg=1 guibg=#ffffff ctermbg=1
 
 " &ft = 'help'
 hi! helpHyperTextEntry cterm=underline gui=underline 
+hi! helpHyperTextJump cterm=underline gui=underline
 
