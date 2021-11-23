@@ -55,3 +55,6 @@
 [submodule "pack/git/opt/syntastic"]
 	path = pack/git/opt/syntastic
 	url = https://github.com/vim-syntastic/syntastic
+[submodule "pack/git/start/--force"]
+	path = pack/git/start/--force
+	url = https://github.com/christoomey/vim-tmux-navigator

@@ -1,4 +1,4 @@
-" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0 fdc=2
+" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0
 
 " Bare-basics {{{
 unlet! skip_defaults_vim
@@ -14,6 +14,14 @@ let mapleader=' '
 packadd cfilter " quickfix reducer :Cfilter [v]/re/
 packadd matchit " extended 'matchpairs', basically
 packadd vim-fugitive
+packadd syntastic
+
+" vim-syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_sort_aggregated_errors = 1
+let g:syntastic_aggregate_errors = 1
+" let g:syntastic_liquid_checkers = ['vale', 'markdownlint-cli2']
 
 " vim-fugitive
 nnoremap <Leader>gg :G<CR>
@@ -99,7 +107,7 @@ set complete+=d | " C-n/p scans include i_CTRL-X_CTRL-D results too
 " window if there's extra information, use the 'popupwin' feature
 set completeopt=menuone,popup
 set diffopt+=algorithm:patience | " http://vimways.org/2018/the-power-of-diff/
-set foldcolumn=2 | " Show 2 levels of folds on left-hand side visual markers
+set exrc | " Enable .vimrc/.exrc/.gvimrc auto read from pwd, for projects
 set foldlevelstart=99 | " No folds closed by default. Modeline 'fdls' overrules 
 set hidden " hide buffers without needing to save them
 set history=10000 | " Max possible value, use <C-f> in commandline to browse
@@ -110,10 +118,17 @@ set noswapfile " no annoying *.foo~ files left around
 set nowrap " defaults to line wrapping on
 set number relativenumber " current line number shown - rest shown relative
 set path-=/usr/include |  set path+=** | " Look recursively from ':pwd'
+set secure " autocmd, shell, and write commands not allow in dir exrc
 set showmatch " on brackets briefly jump to matching to show it
-set statusline=%F%=%y
+set statusline=%F
+" Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+" End Syntastic
+set statusline+=%=
+set statusline+=%y
 set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
-set showtabline=2 | " Always show tabline, I show &pwd and use :lcd in each
 " Use for non-gui tabline, for gui use :h 'guitablabel'
 set tabline=%!MyTabLine()
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
@@ -216,6 +231,8 @@ xmap > >gv
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 
+" TODO: map [e and ]e to lnext/lprev for loc list movement
+"
 " '%%' in command-line mode maybe expands to path of current buffer.
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
@@ -385,9 +402,6 @@ function! MyTabLabel(n)
   " return bufname(buflist[winnr - 1])
 endfunction
 
-" Never mistype q: again option
-" nnoremap q: :q
-
 " set an exrc or after/ftplugin for work directories where I set a relative path
 " like:
 " Recurse down pwd first,and then everywhere in docs/ folder second
@@ -406,3 +420,4 @@ set viewoptions-=options
 set sessionoptions-=options
 "
 " }}}
+
