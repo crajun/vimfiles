@@ -98,7 +98,7 @@ hi! WildMenu ctermbg=7 guibg=#c0c0c0
 hi! ColorColumn ctermbg=7 guibg=#c0c0c0
 
 " Preferred groups
-hi! Comment ctermfg=8 ctermbg=15 cterm=italic gui=italic
+hi! Comment ctermfg=8 ctermbg=15 cterm=NONE gui=NONE guifg=#000000 guibg=#ffffff
 hi! Constant ctermfg=8 ctermbg=15 cterm=NONE gui=NONE guifg=#000000 guibg=#ffffff
 hi! Identifier ctermfg=0 ctermbg=15 cterm=NONE gui=NONE guifg=#000000 guibg=#ffffff
 hi! Statement ctermfg=0 ctermbg=15 cterm=bold gui=bold guifg=#000000 guibg=#ffffff
