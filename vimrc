@@ -182,7 +182,10 @@ inoremap [, [<CR>],<Esc>O
 " goes to previous entry, but ':help g<Up>' will search history for previous
 " pattern matching ':help g'. Also Up/Down go in/out of subfolders listings
 " when wildmenu showing - default C-n/p here is to traverse results, equivalent
-" to <Tab>/<S-Tab>.
+" to <Tab>/<S-Tab>. Will need to adjust on Neovim with:
+" cnoremap <expr> <C-p> wildmenumode() ? "<C-P>" : "<Up>"
+" cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
+" See: https://github.com/neovim/neovim/issues/16637
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
 
@@ -351,23 +354,29 @@ nnoremap <F2> :call SynGroup()<CR>
 " Playground {{{
 " TODO:
 " * play with t_SI t_EI et al to modify cursor on mode changes
+
+" Terminal cursors:
+"https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
+" Cursor settings:
+"  1 -> blinking block
+"  2 -> solid block 
+"  3 -> blinking underscore
+"  4 -> solid underscore
+"  5 -> blinking vertical bar
+"  6 -> solid vertical bar
+" Insert mode
+let &t_SI = "\e[6 q"
+" Normal mode
+let &t_EI = "\e[2 q"
+
+" Grepping
 nnoremap <Leader>s :silent grep! '' **/*.md <Bar> silent redraw!
 nnoremap <Leader>/ :noautocmd vimgrep //j **/*.md<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 nnoremap <Leader>? :Grep<Space>
-
-
 " https://github.com/romainl/minivimrc
-" Smoother grep searching, adjusted &grepprg in Options to use rg if there
 command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr system(&grepprg . ' <args>')
-" Smoother searching e.g., /command<Tab> will loop over results of search
-" rather that do nothing, otherwise you search hit enter to go to first one,
-" then use n/N to move to next/prev matches. This lets you tab through on the
-" spot and alter search quickly
-cnoremap <expr> <Tab>   getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"
-cnoremap <expr> <S-Tab> getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"
 
-" nnoremap <Leader>gl :botright vertical terminal ++close lazygit<CR> 
-
+" Tabline
 function! MyTabLine()
   " Loop over pages and define labels for them, then get label for each tab
   " page use MyTabLabel(). See :h 'statusline' for formatting, e.g., T, %, #, etc.
