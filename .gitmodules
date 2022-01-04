@@ -55,3 +55,6 @@
 [submodule "pack/git/start/vim-liquid"]
 	path = pack/git/start/vim-liquid
 	url = https://github.com/tpope/vim-liquid
+[submodule "pack/git/start/vim-gitbranch"]
+	path = pack/git/start/vim-gitbranch
+	url = https://github.com/itchyny/vim-gitbranch

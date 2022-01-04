@@ -108,7 +108,6 @@ try " 8.1 something this became an option
 catch /E474/
   set diffopt=vertical,iwhiteall,filler
 endtry
-
 set exrc | " Enable .vimrc/.exrc/.gvimrc auto read from pwd, for projects
 set foldlevelstart=99 | " No folds closed by default. Modeline 'fdls' overrules 
 set hidden " hide buffers without needing to save them
@@ -122,9 +121,14 @@ set number relativenumber " current line number shown - rest shown relative
 set path-=/usr/include |  set path+=** | " Look recursively from ':pwd'
 set secure " autocmd, shell, and write commands not allow in dir exrc
 set showmatch " on brackets briefly jump to matching to show it
-set statusline=%F
-set statusline+=%=
-set statusline+=%y
+set statusline=%F | " Absolute path to buffer name
+set statusline+=%m%r%h | " [+] when modified, [-] no modify [RO] and [help]
+set statusline+=%= | " Start right-hand side of statusline
+" Requires https://github.com/itchyny/vim-gitbranch function
+set statusline+=%-30.{gitbranch#name()} | " master
+" Setting min and max 30 and right-align stops branch name jumping around
+" as you scroll through file and right-side expands/shrinks.
+set statusline+=%30.30(\ %p%%\ \|\ %c:%l\ %L\ %y%) | " e.g. 28% | 6:131 450 [vim]
 set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
 " Use for non-gui tabline, for gui use :h 'guitablabel'
 set tabline=%!MyTabLine()
@@ -317,6 +321,11 @@ function! s:CCR()
     else | return "\<CR>" | endif
   else | return "\<CR>" | endif
 endfunction
+
+function! MyGitBranch() abort
+  return system('git rev-parse --abbrev-ref HEAD')
+endfunction
+
 " }}}
 
 " Autocmd {{{
@@ -339,15 +348,15 @@ augroup END
 
 " See all active highlight groups with:
 " :so $VIMRUNTIME/syntax/hitest.vim
-set background=light
-colorscheme quiet
+set background=dark
+colorscheme apprentice
 
 " Colorscheme Extras for Plugins {{{
-hi! link diffAdded DiffAdd
-hi! link diffRemoved DiffDelete
-hi! link diffBDiffer DiffText
-hi! link diffDiffer DiffText
-hi! link diffChanged DiffChange
+" hi! link diffAdded DiffAdd
+" hi! link diffRemoved DiffDelete
+" hi! link diffBDiffer DiffText
+" hi! link diffDiffer DiffText
+" hi! link diffChanged DiffChange
 "}}}
 
 function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
