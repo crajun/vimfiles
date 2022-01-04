@@ -328,17 +328,20 @@ augroup vimrc
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost  l* lwindow
   autocmd VimEnter * cwindow
+  autocmd FileType fugitiveblame call feedkeys('A')
 augroup END
 
 " }}}
 
 " Colorscheme and Syntax {{{
-" https://upload.wikimedia.org/wikipedia/commons/1/15/Xterm_256color_chart.svg
 
 " See all active highlight groups with:
 " :so $VIMRUNTIME/syntax/hitest.vim
 set background=light
 colorscheme quiet
+hi! link diffAdded DiffAdd
+hi! link diffRemoved DiffDelete
+
 
 function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
   " group of the character the cursor is on.
@@ -361,12 +364,8 @@ nnoremap <F2> :call SynGroup()<CR>
 " Terminal cursors:
 "https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
 " Cursor settings:
-"  1 -> blinking block
-"  2 -> solid block 
-"  3 -> blinking underscore
-"  4 -> solid underscore
-"  5 -> blinking vertical bar
-"  6 -> solid vertical bar
+"  1 -> blinking block  2 -> solid block  3 -> blinking underscore  4 -> solid underscore
+"  5 -> blinking vertical bar 6 -> solid vertical bar
 " Insert mode
 let &t_SI = "\e[6 q"
 " Normal mode
@@ -419,18 +418,6 @@ function! MyTabLabel(n)
   return getcwd(winnr, a:n)
   " return bufname(buflist[winnr - 1])
 endfunction
-
-" set an exrc or after/ftplugin for work directories where I set a relative path
-" like:
-" Recurse down pwd first,and then everywhere in docs/ folder second
-" set path=.,,,**,~/git/devx/docs/**
-" see :h file-searching
-" To search down and then recurse up until given dir  use ';'
-" set path=**;~/git/devx/docs/_ver_6.14
-
-" HMM how to get this work right?
-" This is char code for ^@ (ctrl-space) on Terminal.app
-" cnoremap <Nul> <Esc>:<Up><C-d>
 
 " TODO:
 " * 
