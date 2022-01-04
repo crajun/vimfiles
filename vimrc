@@ -101,7 +101,13 @@ set complete+=d | " C-n/p scans include i_CTRL-X_CTRL-D results too
 " completion menu can show even when only one match, and instead of preview
 " window if there's extra information, use the 'popupwin' feature
 set completeopt=menuone,popup
-set diffopt+=algorithm:patience | " http://vimways.org/2018/the-power-of-diff/
+set cursorline
+try " 8.1 something this became an option
+  set diffopt+=algorithm:patience | " http://vimways.org/2018/the-power-of-diff/
+catch /E474/
+  set diffopt=vertical,iwhiteall,filler
+endtry
+
 set exrc | " Enable .vimrc/.exrc/.gvimrc auto read from pwd, for projects
 set foldlevelstart=99 | " No folds closed by default. Modeline 'fdls' overrules 
 set hidden " hide buffers without needing to save them
@@ -142,6 +148,13 @@ if exists('+termguicolors')
   if !$TERM_PROGRAM =~ "Apple_Terminal"
     set termguicolors
   endif
+endif
+
+if $TERM_PROGRAM =~ "xterm_kitty"
+  " https://sw.kovidgoyal.net/kitty/faq/
+  " vim uses background color erase even if the terminfo file does not contain
+  " the bce capability. This is a bug in vim. This is workaround for kitty:
+ let &t_ut=''
 endif
 
 if executable('rg')
@@ -218,11 +231,6 @@ nnoremap <Leader>i :ilist /
 nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 
-" Match C,D, behaviour, yank to line end from cursor position
-nnoremap Y y$
-" Clear highlighting, call :diffupdate
-nnoremap <Leader>n <Cmd>nohlsearch<Bar>diffupdate<CR><C-l>
-
 nnoremap <Leader>tv :vertical terminal<CR> 
 nnoremap <Leader>ts :terminal<CR> 
 
@@ -234,9 +242,8 @@ xmap > >gv
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 
-" TODO: map [e and ]e to lnext/lprev changed here! for loc list movement
-nnoremap <silent> [e :silent! lprevious<CR>
-nnoremap <silent> ]e :silent! lnext<CR>
+nnoremap <silent> [l :silent! lprevious<CR>
+nnoremap <silent> ]l :silent! lnext<CR>
 "
 " '%%' in command-line mode maybe expands to path of current buffer.
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
@@ -330,12 +337,8 @@ augroup END
 
 " See all active highlight groups with:
 " :so $VIMRUNTIME/syntax/hitest.vim
-
 set background=light
-colorscheme enso
-" Terminal.app for some reason doesn't respect the cterm=italic on Comment
-" unless done AFTER enso is loaded
-hi! Comment cterm=italic
+colorscheme quiet
 
 function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
   " group of the character the cursor is on.
@@ -438,6 +441,13 @@ endfunction
 " Don't restore global maps/options, let vimrc handle that
 set viewoptions-=options
 set sessionoptions-=options
-"
+" Neovim really maps Q to execute last recorded macro which could be any
+" register, but I mostly just use qq so no need to create elaborate backport
+nnoremap Q @q
+nnoremap Y y$
+nnoremap <C-L> <Cmd>nohlsearch<Bar>diffupdate<CR><C-L>
+inoremap <C-U> <C-G>u<C-U>
+inoremap <C-W> <C-G>u<C-W>
+
 " }}}
 
