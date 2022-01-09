@@ -5,7 +5,7 @@
 " F10 will still be menu key, unless bound by user.
 set winaltkeys=no
 set belloff=all
-set guifont=IBM\ Plex\ Mono:h14
+set guifont=BlexMono\ Nerd\ Font\ Mono:h18
 
 " Start full screen on my mac
 set lines=59

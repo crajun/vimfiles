@@ -3,12 +3,23 @@
 Just stuff I forget/need to reference that I often forget and/or want
 out of my brain!
 
-# Scripting
+## Summary of special things to use in a plugin file
+
+(Copied wholesale from a part of `:h usr_41.txt`)
+
+* `s:name`: Variables local to the script.
+* `<SID>`: Script-ID, used for mappings and functions local to the script.
+* `hasmapto()`: Function to test if the user already defined a mapping for functionality the script offers.
+* `<Leader>`: Value of "mapleader", which the user defines as the keys that plugin mappings start with.
+* `:map <unique>`: Give a warning if a mapping already exists.
+* `:noremap <script>`: Use only mappings local to the script, not global mappings.
+* `exists(":Cmd")`: Check if a user command already exists.
 
 ## Gotchas and Best Practices
 
 * `:help eval.txt` is the bible and final say.
 * I added `:API` command to bring up `:h function-list`
+* For X type functions try e.g., `:h string-functions`, `:h dict-functions`
 * always use mapping variants to don't look for mappings in the 'rhs'
 (right hand side) of the mapping: use `:noremap`, `:nnoremap`, `:inoremap`
 , etc. This is almost always what you want, unless you want the rhs
@@ -19,8 +30,8 @@ commands. To include one use the <Bar> symbolic, e.g.,
 `:noremap <F8> :write <Bar> !ls<CR>`. For literal spaces use <Space>, e.g.,
 `:noremap <Space> W`
 * You cannot put comment after a mapping because it will consider it
-part of the mapping. End the map with '|' first the use a comment, e.g.,
-`:map <Space> W| " use spacebar to move forward a Word.
+part of the mapping. End the map with '|' first then use a comment, e.g.,
+`:map <Space> W | " use spacebar to move forward a Word.
 * <script> : make mapping local to the script run in.
 * <buffer> : make mapping local to that buffer.
 * <unique> : make mapping fail if it exists already. Default is to overwrite.
@@ -30,6 +41,12 @@ part of the mapping. End the map with '|' first the use a comment, e.g.,
 Also no underscores. Digits ok, but discouraged.
 * Always add '!' to `:command` and `:function` definitions to allow resourcing
 and overwriting existing function of same name.
+* always add `abort` keyword after parentheses in old vimscript, vim9 doesn't need it, e.g.
+`function! OldWay() abort`. Otherwise parser will just keep executing after it runs a line
+and there's an error.
+
+## Commands
+
 * Command arguments:
   * e.g., `:command! -nargs=0 DeleteFirst 1delete` (0 default nargs opt. here)
   * -nargs=0 No args
@@ -80,7 +97,7 @@ any special meaning of the <..> items.
 :augroup init
   :autocmd!
   :autocmd BufReadPost *.c,*.h set sw=4 sts=4
-	:autocmd BufReadPost *.cpp   :set sw=3 sts=3
+ :autocmd BufReadPost *.cpp   :set sw=3 sts=3
 :augroup END
 " 'nested' will allow the autocmd to trigger other ones, usually won't
 :autocmd FileChangedShell * nested edit

@@ -11,6 +11,7 @@ let mapleader=' '
 " Plugin Settings {{{
 
 " pack/git/opt/<plugin>
+packadd cfilter " quickfix reducer :Cfilter [v]/re/
 packadd matchit " extended 'matchpairs', basically
 packadd vim-fugitive
 
@@ -325,9 +326,27 @@ function! MyGitBranch() abort
   return system('git rev-parse --abbrev-ref HEAD')
 endfunction
 
-" Jekyll
-command! JekyllOpen call utils#JekyllOpenLive()
-nnoremap <Leader>@ :JekyllOpen<CR> 
+let g:latest_docs = '6.15'
+function! s:JekyllOpenLive() abort
+  " FIXME: fn still works when buffer path does not contain 'devx',
+  " which would be more robust solution, just check for re /devx/ in buf path
+  if !getcwd() =~ 'devx'
+    echom 'Command only works when &pwd is "devx"'
+    return
+  endif
+  let relpath = expand('%:.')
+        \ ->substitute('_ver_', '', '')
+        \ ->substitute('^docs', '', '')
+        \ ->substitute('\.md$', '/', '')
+  let topicversion = relpath->matchstr('\d\.\d\d\?') " => 6.14, 6.7, 7.0
+  let host = g:latest_docs ==# topicversion ? 'https://localhost.com:8080' : 'https://developer-staging.youi.tv'
+  let url = host .. relpath
+  echom url
+  call system('open ' .. url)
+endfunction
+
+command! JekyllOpen call s:JekyllOpenLive()
+nnoremap <Space>@ JekyllOpen<CR> 
 
 " TODO:
 " Create command to Yank full path of current file to system clipboard, relative
@@ -435,10 +454,10 @@ function! MyTabLabel(n)
   " return bufname(buflist[winnr - 1])
 endfunction
 
+" TODO:
+" * g; to do g;zl
 nnoremap g; g;zv
 nnoremap g, g,zv
-nnoremap <silent> } :keepjumps normal! }<CR>
-nnoremap <silent> { :keepjumps normal! {<CR>
 
 " }}}
 
