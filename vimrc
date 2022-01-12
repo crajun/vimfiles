@@ -358,7 +358,9 @@ augroup vimrc
   autocmd FileType gitcommit call feedkeys('i')
   autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
   autocmd WinLeave * setlocal nocursorline
-  autocmd BufWritePost *.vim source '%'
+  " I also set this in utils#Redir because it does 'nobuflisted'
+  " This one catches other things that open 'nofile' buffers
+  autocmd BufEnter * if &buftype ==# 'nofile' | nnoremap <buffer> q :bwipeout!<CR> | endif
 augroup END
 
 " }}}
@@ -370,14 +372,9 @@ augroup END
 "
 " Colorscheme Extras for Plugins {{{
 " macOS ships without +termguicolors on Big Sur when using /usr/bin/vim
-if has('+termguicolors')
-  set termguicolors
-  set background=light
-  colorscheme zenbones
-else
-  set background=dark
-  colorscheme apprentice " widest support
-endif
+if has('+termguicolors') | set termguicolors | endif
+set background=dark
+colorscheme apprentice " widest support
 "}}}
 
 function! SynGroup() " Outputs both the name of the syntax group, AND the translated syntax
@@ -413,8 +410,10 @@ nnoremap <Leader>s :silent grep! '' **/*.md <Bar> silent redraw!
 " Add 'noautocmd' before :vimgrep to increase speed, but no copen happens
 nnoremap <Leader>/ :vimgrep //j **/*.md<S-Left><S-Left><Right>
 nnoremap <Leader>? :Grep<Space>
-" https://github.com/romainl/minivimrc
+" From https://github.com/romainl/minivimrc
 command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr system(&grepprg . ' <args>')
+command! -nargs=1 Redir call utils#Redir(<q-args>)
+nnoremap <Leader>! :Redir<Space>
 
 " Tabline
 function! MyTabLine()
@@ -472,20 +471,10 @@ set sessionoptions-=options
 " register, but I mostly just use qq so no need to create elaborate backport
 nnoremap Q @q
 nnoremap Y y$
-" TODO call an expr to determine/call this and then go tmux right?
-" nnoremap <C-L> <Cmd>nohlsearch<Bar>diffupdate<CR><C-L>
+nnoremap <C-L> <Cmd>nohlsearch<Bar>diffupdate<CR><C-L>
 inoremap <C-U> <C-G>u<C-U>
 inoremap <C-W> <C-G>u<C-W>
 
-" NOTE: tnoremap not done due to conflicts with fzf and others that use
-" terminal buffer and use <C-j/k> keys by default. It also allows us to use
-" <C-l> to clear screen when in a terminal buffer, as normal
-let g:tmux_navigator_no_mappings=1
-nnoremap <silent> <C-l> <Cmd>nohlsearch<Bar>diffupdate<Bar>TmuxNavigateRight<CR>
-nnoremap <silent> <C-h> <Cmd>TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> <Cmd>TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> <Cmd>TmuxNavigateUp<cr>
-nnoremap <silent> <C-\> <Cmd>TmuxNavigatePrevious<cr>
-
 " }}}
+
 

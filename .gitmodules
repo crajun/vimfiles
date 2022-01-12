@@ -40,9 +40,6 @@
 [submodule "pack/git/start/--force"]
 	path = pack/git/start/--force
 	url = https://github.com/christoomey/vim-tmux-navigator
-[submodule "pack/git/start/vim-tmux-navigator"]
-	path = pack/git/start/vim-tmux-navigator
-	url = https://github.com/christoomey/vim-tmux-navigator
 [submodule "pack/git/start/vim-liquid"]
 	path = pack/git/start/vim-liquid
 	url = https://github.com/tpope/vim-liquid

@@ -184,5 +184,6 @@ function! utils#Redir(cmd) abort
   let output = execute(a:cmd)
   botright split +enew
   setlocal nobuflisted nonumber norelativenumber buftype=nofile bufhidden=wipe noswapfile
+  nnoremap <buffer> q :bwipeout!<CR>
   call setline(1, split(output, "\n"))
 endfunction
