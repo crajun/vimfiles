@@ -1,4 +1,4 @@
-" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=0
+" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=99
 
 " Bare-basics {{{
 unlet! skip_defaults_vim
@@ -302,6 +302,8 @@ nnoremap ]t :tabnext<CR>
 nnoremap [t :tabprev<CR>
 nnoremap ]T :tablast<CR>
 nnoremap [t :tabfirst<CR>
+
+nnoremap <Leader><CR> :source %<CR>
 " }}}
 
 " Commands {{{
@@ -476,5 +478,4 @@ inoremap <C-U> <C-G>u<C-U>
 inoremap <C-W> <C-G>u<C-W>
 
 " }}}
-
 
