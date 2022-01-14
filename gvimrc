@@ -46,8 +46,9 @@ if has('gui_macvim')
   " Under macvim gui make sure that .zprofile is linked to .zshrc, otherwise
   " you'll only get /etc/zprofile sourced and just have default macOS paths
   nnoremap <F11> :set fullscreen!<CR>
-  nnoremap ∆ <C-w>p<C-e><C-w>p
-  nnoremap ˚ <C-w>p<C-y><C-w>p
-  nnoremap Ô <C-w>p<C-d><C-w>p
-  nnoremap  <C-w>p<C-u><C-w>p
+  set macmeta
+  nnoremap <M-j> <C-w>p<C-e><C-w>p
+  nnoremap <M-k> <C-w>p<C-y><C-w>p
+  nnoremap <M-J> <C-w>p<C-d><C-w>p
+  nnoremap <M-K> <C-w>p<C-u><C-w>p
 endif
