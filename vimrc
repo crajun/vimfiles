@@ -301,7 +301,7 @@ nnoremap <Leader><CR> :source %<CR>
 
 " Commands {{{
 command! Api :help list-functions<CR>
-command! Cd :cd %:h
+command! Cd :lcd %:h
 command! TodoLocal :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
 
@@ -481,4 +481,10 @@ function! JekyllLint() abort
   let vale_results = ['one', 'two', 'three'] 
   call setloclist(0, ['one', 'two', 'three'])
 endfunction
+
+" Experimental qflist movement, maybe shift for loclist?
+nnoremap <C-j> <Cmd>cnext<CR>
+nnoremap <C-k> <Cmd>cprev<CR>
+
+nnoremap gf :call gofile#Gf()<CR>
 

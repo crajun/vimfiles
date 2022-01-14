@@ -2,7 +2,10 @@ setlocal expandtab
 setlocal shiftwidth=2
 setlocal softtabstop=2
 setlocal textwidth=80
-setlocal foldmethod=marker
+setlocal foldmethod=indent
+" create 1 fold inside a function/endfunction, no more
+setlocal foldnestmax=1
+setlocal foldlevel=0
 
 setlocal cinwords+=function!
 setlocal cinwords+=abort
