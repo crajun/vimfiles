@@ -18,9 +18,11 @@ if executable('fzf') && has('mac')
     set runtimepath+=/usr/local/opt/fzf
 endif
 
-" vim-fugitive
+" vim-fugitive (using asyncrun.vim)
+command! -bang -bar -nargs=* Gpush execute 'AsyncRun<bang> -cwd=' ..
+      \ fnameescape(FugitiveGitDir()) 'git push' <q-args>
 nnoremap <Leader>gg :G<CR>
-nnoremap <Leader>gP :G push<CR>
+nnoremap <Leader>gP :Gpush<CR>
 nnoremap <Leader>gp :G pull<CR>
 nnoremap <Leader>gd :Gvdiffsplit<CR>
 nnoremap <Leader>gb :G blame<CR>
@@ -255,10 +257,11 @@ nnoremap <silent><F2> :AsyncRun make lint<CR>
 nnoremap <silent><F3> :call utils#ToggleQuickfixList()<CR>
 nnoremap <silent><F4> :call utils#ToggleLocationList()<CR>
 nnoremap <silent><F5> :AsyncRun make<CR>
-nnoremap <silent><F5> :AsyncRun make run<CR>
+nnoremap <silent><F6> :AsyncRun make run<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><F10> :set spell!<CR>
+nnoremap <silent><Leader>* :AsyncRun! grep -Hnri <cword> .<CR>
 
 " iTerm2/Terminal.app: gvimrc sets these for macvim
 nnoremap j <C-w>p<C-e><C-w>p
@@ -271,15 +274,10 @@ nnoremap <Leader>w :update<CR>
 nnoremap <Leader>, :edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader><Leader> :buffer #<CR>
-" leave this a bdelete because wipeout erases jump points etc for navigation
-nnoremap <Leader>k :bdelete!<CR>
 
 " Vimdiff
 nnoremap gh :diffget //2<CR>
 nnoremap gl :diffget //3<CR>
-
-" A way to send actual Esc char to terminal buffer if needed
-tnoremap <C-v><Esc> <Esc>
 
 " vim-unimpaired style
 nnoremap [q :cprevious<CR>
@@ -438,11 +436,6 @@ inoremap <C-W> <C-G>u<C-W>
   " call setloclist(0, ['one', 'two', 'three'])
 " endfunction
 
-" Experimental qflist movement, maybe shift for loclist?
-nnoremap <C-j> <Cmd>cnext<CR>
-nnoremap <C-k> <Cmd>cprev<CR>
-
-                 
 " nnoremap <expr> <CR><CR> <SID>SendLine(getline('.')->trim())
 " Worry about getting single line send to REPL correct first
 " then think about multi lines, and blank lines separating spots in a function,

@@ -14,4 +14,5 @@ if exists(':CompilerSet') != 2
 endif
 
 CompilerSet makeprg=vint\ %
-CompilerSet errorformat=%f:%l:%c:%m
+" Only Add otherwise it wipes out all others
+CompilerSet errorformat+=%f:%l:%c:%m

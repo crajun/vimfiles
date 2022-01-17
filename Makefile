@@ -1,0 +1,2 @@
+lint:
+	vint $1
