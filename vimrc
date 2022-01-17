@@ -118,6 +118,7 @@ set nowrap " defaults to line wrapping on
 set number relativenumber " current line number shown - rest shown relative
 set path-=/usr/include |  set path+=** | " Look recursively from ':pwd'
 set secure " autocmd, shell, and write commands not allow in dir exrc
+set shell=$SHELL | " macvim supposed to use this, but doesn't and sets 'sh'
 set showmatch " on brackets briefly jump to matching to show it
 set statusline=\ %f | " buffer name relative to :pwd
 set statusline+=%m%r%h | " [+] when modified, [-] no modify [RO] and [help]
@@ -127,6 +128,7 @@ set statusline+=%{gitbranch#name()} | " master
 set statusline+=\ [%Y]
 set statusline+=\ %P
 set statusline +=\ %l:%c\ 
+set suffixes+=.png,.jpeg,.jpg,.exe | " 
 set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
 " Use for non-gui tabline, for gui use :h 'guitablabel'
 set tabline=%!MyTabLine()
@@ -144,11 +146,8 @@ set wildcharm=<C-z>
 set wildoptions=tagfile | " :tag <C-d> will show tag kind and file
 
 if exists('+termguicolors')
-  " To work with tmux we needs these as well
-  " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   " Terminal.app only supports 256 still (in 2021...)
-  if $TERM_PROGRAM =~# 'Apple_Terminal'
+  if !$TERM_PROGRAM =~# 'Apple_Terminal'
     set termguicolors
   endif
 endif
@@ -198,8 +197,8 @@ cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
 
 " If completion menu open use C-j/k instead of arrow keys to navigate
 " parent/child folders.
-cnoremap <expr> <C-j> wildmenumode() ? "<Down>" : "<C-j>"
-cnoremap <expr> <C-k> wildmenumode() ? "<Up>" : "<C-k>"
+cnoremap <expr> <C-j> wildmenumode() ? "\<Down>\<C-z>" : "\<C-j>"
+cnoremap <expr> <C-k> wildmenumode() ? "\<Up>\<C-z>" : "\<C-k>"
 
 
 " keeps marks, settings, and you can still do e.g., <C-o> to jump to it
@@ -240,8 +239,10 @@ nnoremap <Leader>i :ilist /
 nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 
-nnoremap <Leader>tv :vertical terminal<CR> 
-nnoremap <Leader>ts :terminal<CR> 
+nnoremap <Leader>tv :vertical ++close terminal zsh<CR> 
+nnoremap <Leader>ts :terminal ++close zsh<CR> 
+nnoremap <Leader>tg :terminal ++close lazygit<CR>
+nnoremap <Leader>t<CR> :terminal make<CR>
 
 " Re-select visually selected area after indenting/dedenting.
 xmap < <gv
@@ -371,8 +372,6 @@ augroup END
 " :so $VIMRUNTIME/syntax/hitest.vim
 "
 " Colorscheme Extras for Plugins {{{
-" macOS ships without +termguicolors on Big Sur when using /usr/bin/vim
-if has('+termguicolors') | set termguicolors | endif
 " colorscheme apprentice " widest support
 set background=dark
 colorscheme apprentice
@@ -489,4 +488,17 @@ endfunction
 nnoremap <C-j> <Cmd>cnext<CR>
 nnoremap <C-k> <Cmd>cprev<CR>
 
+nnoremap <expr> <CR><CR> <SID>SendLine(getline('.')->trim())
+                 
+" Worry about getting single line send to REPL correct first
+" then think about multi lines, and blank lines separating spots in a function,
+" do we want to send those? No reason to enter blank lines in a REPL is there?
+function! s:SendLine(line) abort
+  if empty(a:line) | return | endif
+  echom 'SendLine() received: ' .. a:line
+  " 1. need bufnr
+  " maybe buflisted(buf) will help with hidden terminals
+  " 2. call term_sendkeys(bufnr, keys)
+endfunction
 
+" TODO: insert cursor in terminal mode with guicursor?
