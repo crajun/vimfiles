@@ -37,4 +37,3 @@ else
   tnoremap <silent> ` <C-w>:call TermToggle()<CR>
 endif
 
-

@@ -49,3 +49,6 @@
 [submodule "pack/git/start/zenbones.nvim"]
 	path = pack/git/start/zenbones.nvim
 	url = https://github.com/mcchrish/zenbones.nvim
+[submodule "pack/git/start/asyncrun.vim"]
+	path = pack/git/start/asyncrun.vim
+	url = https://github.com/skywind3000/asyncrun.vim

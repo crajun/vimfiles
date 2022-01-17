@@ -131,7 +131,7 @@ set statusline +=\ %l:%c\
 set suffixes+=.png,.jpeg,.jpg,.exe | " 
 set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
 " Use for non-gui tabline, for gui use :h 'guitablabel'
-set tabline=%!MyTabLine()
+let &tabline = utils#MyTabLine()
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
 set signcolumn=yes | " Always show it, too jarring when pops in/out
 set splitbelow " new horizontal split window always goes below current
@@ -152,12 +152,7 @@ if exists('+termguicolors')
   endif
 endif
 
-if executable('rg')
-  set grepprg=rg\ --vimgrep
-else
-  set grepprg=LC_ALL=C\ grep\ -nrsH
-endif
-
+" TODO: maybe off? investigate
 " enable use of folding with ft-markdown-plugin
 let g:markdown_folding = 1
 
@@ -172,7 +167,7 @@ let g:ft_man_folding_enable=1
 if has('gui_macvim')
   " I set this later, so just set it to non zero so $VIM/gvimrc
   " detects it's not empty and doesn't set it to %M%t
-  set guitablabel=%!MyTabLine()
+  let &guitablabel = utils#MyTabLine()
   let g:macvim_skip_cmd_opt_movement = 1
 endif
 
@@ -200,13 +195,10 @@ cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
 cnoremap <expr> <C-j> wildmenumode() ? "\<Down>\<C-z>" : "\<C-j>"
 cnoremap <expr> <C-k> wildmenumode() ? "\<Up>\<C-z>" : "\<C-k>"
 
-
 " keeps marks, settings, and you can still do e.g., <C-o> to jump to it
 nnoremap <Leader>dd <Cmd>bdelete!<CR> 
 " REALLY delete the buffer.
 nnoremap <Leader>D <Cmd>bwipeout!<CR>
-" Make THIS the only buffer, mnemonic, alternate to D is Alt-D
-nnoremap <Leader>d <Cmd>only!<CR>
 
 " :find (&path aware) and :edit niceties
 nnoremap <Leader>ff :find *
@@ -259,10 +251,12 @@ nnoremap <silent> ]l :silent! lnext<CR>
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " Function keys
+nnoremap <silent><F2> :AsyncRun make lint<CR>
 nnoremap <silent><F3> :call utils#ToggleQuickfixList()<CR>
 nnoremap <silent><F4> :call utils#ToggleLocationList()<CR>
-nnoremap <silent><F5> :silent! make! <bar> silent! redraw!<CR>
-nnoremap <silent><F6> :15Lexplore<CR>
+nnoremap <silent><F5> :AsyncRun make<CR>
+nnoremap <silent><F5> :AsyncRun make run<CR>
+nnoremap <silent><F7> :15Lexplore<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><F10> :set spell!<CR>
 
@@ -406,55 +400,13 @@ let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
 
 " Grepping
-nnoremap <Leader>s :silent grep! '' **/*.md <Bar> silent redraw!
-" Add 'noautocmd' before :vimgrep to increase speed, but no copen happens
-nnoremap <Leader>/ :vimgrep //j **/*.md<S-Left><S-Left><Right>
-nnoremap <Leader>? :Grep<Space>
-" From https://github.com/romainl/minivimrc
-command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr system(&grepprg . ' <args>')
+" github.com/skywind3000/asyncrun.vim - small wrapper for jobstart()
+nnoremap <Leader>/ :Grep<Space>
+
+nnoremap <Leader>? :vimgrep //j **/*.md<S-Left><S-Left><Right>
+
 command! -nargs=1 Redir call utils#Redir(<q-args>)
 nnoremap <Leader>! :Redir<Space>
-
-" Tabline
-function! MyTabLine()
-  " Loop over pages and define labels for them, then get label for each tab
-  " page use MyTabLabel(). See :h 'statusline' for formatting, e.g., T, %, #, etc.
-  let s = ''
-  for i in range(tabpagenr('$'))
-    if i + 1 == tabpagenr()
-      " use hl-TabLineSel for current tabpage
-      let s .= '%#TabLineSel#'
-    else
-      let s .= '%#TabLine#'
-    endif
-
-    " set the tab page number, for mouse clicks
-    let s .= '%' . (i + 1) . 'T'
-
-    " call MyTabLabel() to make the label
-    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
-  endfor
-
-  " After last tab fill with hl-TabLineFill and reset tab page nr with %T
-  let s .= '%#TabLineFill#%T'
-
-  " Right-align (%=) hl-TabLine (%#TabLine#) style and use %999X for a close
-  " current tab mark, with 'X' as the character
-  if tabpagenr('$') > 1
-    let s .= '%=%#TabLine#%999XX'
-  endif
-
-  return s
-endfunction
-
-function! MyTabLabel(n)
-  " Give tabpage number n create a string to display on tabline
-  let buflist = tabpagebuflist(a:n)
-  let winnr = tabpagewinnr(a:n)
-  " return getcwd(winnr)
-  return getcwd(winnr, a:n)
-  " return bufname(buflist[winnr - 1])
-endfunction
 
 nnoremap g; g;zv
 nnoremap g, g,zv
@@ -477,28 +429,36 @@ inoremap <C-W> <C-G>u<C-W>
 
 " }}}
 
-function! JekyllLint() abort
+" Experimental {{{
+
+" function! JekyllLint() abort
   " Runs vale and markdownlint-cli2 on current file, and loads results into
   " location list, sorted by line number ascending
-  let vale_results = ['one', 'two', 'three'] 
-  call setloclist(0, ['one', 'two', 'three'])
-endfunction
+  " let vale_results = ['one', 'two', 'three'] 
+  " call setloclist(0, ['one', 'two', 'three'])
+" endfunction
 
 " Experimental qflist movement, maybe shift for loclist?
 nnoremap <C-j> <Cmd>cnext<CR>
 nnoremap <C-k> <Cmd>cprev<CR>
 
-nnoremap <expr> <CR><CR> <SID>SendLine(getline('.')->trim())
                  
+" nnoremap <expr> <CR><CR> <SID>SendLine(getline('.')->trim())
 " Worry about getting single line send to REPL correct first
 " then think about multi lines, and blank lines separating spots in a function,
 " do we want to send those? No reason to enter blank lines in a REPL is there?
-function! s:SendLine(line) abort
-  if empty(a:line) | return | endif
-  echom 'SendLine() received: ' .. a:line
+" function! s:SendLine(line) abort
+"   if empty(a:line) | return | endif
+"   echom 'SendLine() received: ' .. a:line
   " 1. need bufnr
   " maybe buflisted(buf) will help with hidden terminals
   " 2. call term_sendkeys(bufnr, keys)
-endfunction
+" endfunction
+
+" Command to load files changed in commit(?) from SO here:
+" https://vi.stackexchange.com/questions/13433/how-to-load-list-of-files-in-commit-into-quickfix
+" command -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}'))
 
 " TODO: insert cursor in terminal mode with guicursor?
+
+" }}}
