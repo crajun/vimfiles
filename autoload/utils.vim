@@ -53,55 +53,6 @@ EOF
     endif
 endfunction
 
-function! utils#ToggleQuickfixList() abort
-  for bufnum in map(filter(split(s:GetBufferList(), '\n'), 'v:val =~# "Quickfix List"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-    if bufwinnr(bufnum) != -1
-      " is open, so close
-      cclose
-      return
-    endif
-  endfor
-  let winnr = winnr()
-  copen 5
-  if winnr() != winnr
-    wincmd p
-  endif
-endfunction
-
-function! utils#ToggleLocationList() abort
-  let curbufnr = winbufnr(0)
-  for bufnum in map(filter(split(s:GetBufferList(), '\n'), 'v:val =~# "Location List"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-    if curbufnr == bufnum
-      lclose
-      return
-    endif
-  endfor
-  let winnr = winnr()
-  let prevwinnr = winnr('#')
-  let nextbufnr = winbufnr(winnr + 1)
-  try
-    lopen 5
-  catch /E776/
-      echohl ErrorMsg
-      echo 'Location List is Empty.'
-      echohl None
-      return
-  endtry
-  if winbufnr(0) == nextbufnr
-    lclose
-    if prevwinnr > winnr
-      let prevwinnr-=1
-    endif
-  else
-    if prevwinnr > winnr
-      let prevwinnr+=1
-    endif
-  endif
-  " restore previous window
-  exec prevwinnr.'wincmd w'
-  exec winnr.'wincmd w'
-endfunction
-
 " Modified from github/milkypostman/vim-togglelist
 function! s:GetBufferList() abort
   redir =>buflist
@@ -147,10 +98,6 @@ function! utils#MaybeReplaceCrWithCrColon() abort
   endif
 endfunction
 
-function! utils#Hello() abort
-  echo 'hello from autoload/utils.vim -> hello() function'
-endfunction
-
 function! utils#JekyllOpenLive() abort
   " Requires 'devx' as &pwd for '%:.' to work correctly with forming the final URL to open
   if !getcwd() =~ 'devx' 
@@ -186,45 +133,5 @@ function! utils#Redir(cmd) abort
   setlocal nobuflisted nonumber norelativenumber buftype=nofile bufhidden=wipe noswapfile
   nnoremap <buffer> q :bwipeout!<CR>
   call setline(1, split(output, "\n"))
-endfunction
-
-function! utils#MyTabLine()
-  " Loop over pages and define labels for them, then get label for each tab
-  " page use MyTabLabel(). See :h 'statusline' for formatting, e.g., T, %, #, etc.
-  let s = ''
-  for i in range(tabpagenr('$'))
-    if i + 1 == tabpagenr()
-      " use hl-TabLineSel for current tabpage
-      let s .= '%#TabLineSel#'
-    else
-      let s .= '%#TabLine#'
-    endif
-
-    " set the tab page number, for mouse clicks
-    let s .= '%' . (i + 1) . 'T'
-
-    " call MyTabLabel() to make the label
-    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
-  endfor
-
-  " After last tab fill with hl-TabLineFill and reset tab page nr with %T
-  let s .= '%#TabLineFill#%T'
-
-  " Right-align (%=) hl-TabLine (%#TabLine#) style and use %999X for a close
-  " current tab mark, with 'X' as the character
-  if tabpagenr('$') > 1
-    let s .= '%=%#TabLine#%999XX'
-  endif
-
-  return s
-endfunction
-
-function! utils#MyTabLabel(n)
-  " Give tabpage number n create a string to display on tabline
-  let buflist = tabpagebuflist(a:n)
-  let winnr = tabpagewinnr(a:n)
-  " return getcwd(winnr)
-  return getcwd(winnr, a:n)
-  " return bufname(buflist[winnr - 1])
 endfunction
 

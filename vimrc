@@ -130,8 +130,9 @@ set statusline +=\ %l:%c\
 set suffixes+=.png,.jpeg,.jpg,.exe | " 
 set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
 " Use for non-gui tabline, for gui use :h 'guitablabel'
-let &tabline = utils#MyTabLine()
+set tabline=%!vim9utils#mytabline()
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
+set showtabline=2 | " Always show tabline
 set signcolumn=yes | " Always show it, too jarring when pops in/out
 set splitbelow " new horizontal split window always goes below current
 set splitright " same but with new vertical split window
@@ -142,6 +143,10 @@ set undofile undodir=~/.vim/undodir | " persistent undo on and where to save
 " Use in mapping to do auto-expansion like this:
 " set wcm=<C-Z> | cnnoremap ss so $VIM/sessions/*.vim<C-Z>
 set wildcharm=<C-z>
+set wildignore=*.o,*.obj
+set wildignore+=*.exe,*.dylib,%*
+set wildignore+=*.png,*.jpeg,*.bmp,*.jpg
+set wildignore+=*.pyc
 set wildoptions=tagfile | " :tag <C-d> will show tag kind and file
 
 if exists('+termguicolors')
@@ -163,10 +168,9 @@ let g:ft_man_folding_enable=1
 
 " Mappings {{{
 
-if has('gui_macvim')
-  " I set this later, so just set it to non zero so $VIM/gvimrc
-  " detects it's not empty and doesn't set it to %M%t
-  let &guitablabel = utils#MyTabLine()
+if has('gui_macvim') && has('gui_running')
+  " macvim installation 'vim' binary requires check if gui_running as well
+  set guitablabel=%!vim9utils#myguitablabel()
   let g:macvim_skip_cmd_opt_movement = 1
 endif
 
@@ -230,7 +234,7 @@ nnoremap <Leader>i :ilist /
 nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 
-nnoremap <Leader>tv :vertical ++close terminal zsh<CR> 
+nnoremap <Leader>tv :vertical terminal ++close zsh<CR> 
 nnoremap <Leader>ts :terminal ++close zsh<CR> 
 nnoremap <Leader>tg :terminal ++close lazygit<CR>
 nnoremap <Leader>t<CR> :terminal make<CR>
@@ -250,8 +254,8 @@ nnoremap <silent> ]l :silent! lnext<CR>
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " Function keys
-nnoremap <silent><F3> :call utils#ToggleQuickfixList()<CR>
-nnoremap <silent><F4> :call utils#ToggleLocationList()<CR>
+nnoremap <silent><F3> :call vim9utils#ToggleQuickfixList()<CR>
+nnoremap <silent><F4> :call vim9utils#ToggleLocationList()<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><F10> :set spell!<CR>
@@ -433,5 +437,43 @@ inoremap <C-W> <C-G>u<C-W>
 " command -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}'))
 
 " TODO: insert cursor in terminal mode with guicursor?
+
+function! MyTabLabel(n) abort
+  " Give tabpage number n create a string to display on tabline
+  let buflist = tabpagebuflist(a:n)
+  let winnr = tabpagewinnr(a:n)
+  return getcwd(winnr, a:n)
+endfunction
+
+function! MyTabLine() abort
+  " Loop over pages and define labels for them, then get label for each tab
+  " page use MyTabLabel(). See :h 'statusline' for formatting, e.g., T, %, #, etc.
+  let s = ''
+  for i in range(tabpagenr('$'))
+    if i + 1 == tabpagenr()
+      " use hl-TabLineSel for current tabpage
+      let s .= '%#TabLineSel#'
+    else
+      let s .= '%#TabLine#'
+    endif
+
+    " set the tab page number, for mouse clicks
+    let s .= '%' . (i + 1) . 'T'
+
+    " call MyTabLabel() to make the label
+    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+  endfor
+
+  " After last tab fill with hl-TabLineFill and reset tab page nr with %T
+  let s .= '%#TabLineFill#%T'
+
+  " Right-align (%=) hl-TabLine (%#TabLine#) style and use %999X for a close
+  " current tab mark, with 'X' as the character
+  if tabpagenr('$') > 1
+    let s .= '%=%#TabLine#%999XX'
+  endif
+
+  return s
+endfunction
 
 " }}}
