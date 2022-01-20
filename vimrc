@@ -230,14 +230,23 @@ nnoremap <Leader>i :ilist /
 nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 
-nnoremap <C-i>v :vertical terminal ++close zsh<CR> 
-nnoremap <C-i>s :terminal ++close zsh<CR> 
-nnoremap <C-i>g :terminal ++close lazygit<CR>
-nnoremap <C-i><CR> :terminal make<CR>
-tnoremap <C-i>v <C-\><C-n>:vertical terminal ++close zsh<CR> 
-tnoremap <C-i>s <C-\><C-n>:terminal ++close zsh<CR> 
-tnoremap <C-i>g <C-\><C-n>:terminal ++close lazygit<CR>
-tnoremap <C-i><CR> <C-\><C-n>:terminal make<CR>
+" Tmux functionality that I used
+nnoremap <silent><C-b>v :vertical terminal ++close zsh<CR> 
+nnoremap <silent><C-b>s :terminal ++close zsh<CR> 
+tnoremap <silent><C-b>v <C-\><C-n>:vertical terminal ++close zsh<CR> 
+tnoremap <silent><C-b>s <C-\><C-n>:terminal ++close zsh<CR> 
+tnoremap <silent><C-b>g <C-\><C-n>:terminal ++close lazygit<CR>
+nnoremap <silent><C-b>! <C-w>T
+
+" resizing windows
+nnoremap <silent><S-Up> <Cmd>2wincmd+<CR>
+nnoremap <silent><S-Down> <Cmd>2wincmd-<CR>
+nnoremap <silent><S-Left> <Cmd>2wincmd <<CR>
+nnoremap <silent><S-Right> <Cmd>2wincmd ><CR>
+
+" one off terminal buffer
+nnoremap <silent><C-b>g :terminal ++close lazygit<CR>
+nnoremap <silent><C-b><CR> :terminal make<CR>
 
 " Re-select visually selected area after indenting/dedenting.
 xmap < <gv
