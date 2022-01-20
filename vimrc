@@ -18,15 +18,6 @@ if executable('fzf') && has('mac')
     set runtimepath+=/usr/local/opt/fzf
 endif
 
-" nnoremap <Leader>gg :G<CR>
-" nnoremap <Leader>gP :G push<CR>
-" nnoremap <Leader>gp :G pull<CR>
-" nnoremap <Leader>gd :Gvdiffsplit<CR>
-" nnoremap <Leader>gb :G blame<CR>
-" nnoremap <Leader>gl :Gclog<CR>
-" nnoremap <Leader>gc :G commit -av<CR>
-" nnoremap <Leader>g/ :Ggrep! --quiet<Space>
-
 " fzf.vim
 nnoremap <C-p> :GFiles<CR>
 " FZF from directory buffer is in, use this when not in Git repo
@@ -156,6 +147,12 @@ if has('termguicolors')
   endif
 endif
 
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ 
+else
+  set grepprg=grep\ -Hnri
+endif
+
 " TODO: maybe off? investigate
 " enable use of folding with ft-markdown-plugin
 let g:markdown_folding = 1
@@ -173,7 +170,6 @@ if has('gui_macvim') && has('gui_running')
   set guitablabel=%!vim9utils#myguitablabel()
   let g:macvim_skip_cmd_opt_movement = 1
 endif
-
 
 " manual expansions, when I want it
 inoremap (<CR> (<CR>)<Esc>O
@@ -234,10 +230,14 @@ nnoremap <Leader>i :ilist /
 nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 
-nnoremap <Leader>tv :vertical terminal ++close zsh<CR> 
-nnoremap <Leader>ts :terminal ++close zsh<CR> 
-nnoremap <Leader>tg :terminal ++close lazygit<CR>
-nnoremap <Leader>t<CR> :terminal make<CR>
+nnoremap <C-i>v :vertical terminal ++close zsh<CR> 
+nnoremap <C-i>s :terminal ++close zsh<CR> 
+nnoremap <C-i>g :terminal ++close lazygit<CR>
+nnoremap <C-i><CR> :terminal make<CR>
+tnoremap <C-i>v <C-\><C-n>:vertical terminal ++close zsh<CR> 
+tnoremap <C-i>s <C-\><C-n>:terminal ++close zsh<CR> 
+tnoremap <C-i>g <C-\><C-n>:terminal ++close lazygit<CR>
+tnoremap <C-i><CR> <C-\><C-n>:terminal make<CR>
 
 " Re-select visually selected area after indenting/dedenting.
 xmap < <gv
@@ -259,8 +259,7 @@ nnoremap <silent><F4> :call vim9utils#ToggleLocationList()<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><F10> :set spell!<CR>
-" TODO: make better.
-nnoremap <silent><Leader>* :grep -Hnri <cword> .<CR>
+nnoremap <silent><Leader>* :Grep <cword><CR>
 
 " iTerm2/Terminal.app: gvimrc sets these for macvim
 nnoremap j <C-w>p<C-e><C-w>p
@@ -294,9 +293,19 @@ nnoremap [t :tabfirst<CR>
 " }}}
 
 " Commands {{{
+
+" Based on: https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
+function! Grep(...) " accepts any number of args
+  " return system(join([&grepprg] + a:000))
+  echom 'Grep() running: ' .. &grepprg .. join(a:000)
+  return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+endfunction
+command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
+command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
+
 command! Api :help list-functions<CR>
 command! Cd :lcd %:h
-command! TodoLocal :botright lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
+command! TodoLocal :botright silent! lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
 
 " https://github.com/romainl/minivimrc
