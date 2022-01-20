@@ -360,8 +360,8 @@ augroup vimrc
   autocmd!
   autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
   autocmd BufWritePre /tmp/* setlocal noundofile
-  autocmd QuickFixCmdPost [^l]* cwindow
-  autocmd QuickFixCmdPost  l* lwindow
+  autocmd QuickFixCmdPost [^l]* botright cwindow
+  autocmd QuickFixCmdPost  l* botright lwindow
   autocmd VimEnter * cwindow
   autocmd FileType gitcommit call feedkeys('i')
   autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
