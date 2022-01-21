@@ -28,3 +28,9 @@
 [submodule "pack/third-party/opt/vim-gitbranch"]
 	path = pack/third-party/opt/vim-gitbranch
 	url = https://github.com/itchyny/vim-gitbranch
+[submodule "pack/third-party/opt/vim-fugitive"]
+	path = pack/third-party/opt/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
+[submodule "pack/third-party/opt/vim-rhubarb"]
+	path = pack/third-party/opt/vim-rhubarb
+	url = https://github.com/tpope/vim-rhubarb

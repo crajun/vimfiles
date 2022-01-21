@@ -36,6 +36,8 @@ packadd! vim-surround
 packadd! vim-textobj-user
 packadd! vim-textobj-entire
 packadd! vim-textobj-indent
+packadd! vim-fugitive
+packadd! vim-rhubarb
 
 " brew install fzf first
 if executable('fzf') && has('mac')
