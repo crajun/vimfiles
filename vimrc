@@ -334,14 +334,26 @@ nnoremap [t :tabfirst<CR>
 
 " Commands {{{
 
-function! Grep(...) abort " accepts any number of args
-  " Based on: https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
-  " expandcmd allows us to do :Grep 'leader' % and have % expanded to current
-  " file like default :grep cmd does
-  return system(join([&grepprg] + [expandcmd(join(a:000))]))
-endfunction
-command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
-command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
+" <f-args> macro expansion explained/notes {{{
+" <f-args> is maybe replaced with list of all whitespace/tab separated arguments
+" to the command, e.g., :Grep argone -argtwo 'argthree' preserve\ literall
+" spaces\ here\ for\ this\ argument
+" => ['argone', '-argtwo', 'argthree', 'preserve literal spaces here for this
+" argument']. 
+"
+" Command         <f-args> transform args to:
+" :grep           (Nothing, <f-args> is removed)
+" :grep ab        ['ab']
+" :grep a\b       ['a\b']
+" :grep a\ b      ['a b']
+" :grep a\  b     ['a ', 'b']
+" :grep a\\ b     ['a\', 'b']
+" :grep a\\\b     ['a\\b']
+" :grep a\\\ b    ['a\ b']
+" :grep a\\\\b    ['a\\b']
+" }}}
+command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr vim9utils#Grep(<f-args>)
+command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr vim9utils#Grep(<f-args>)
 " replace standard :grep with ours automatically
 cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
@@ -351,30 +363,7 @@ command! Cd :lcd %:h
 command! TodoLocal :botright silent! lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
 
-" https://github.com/romainl/minivimrc
-" Sugar to make common non-interactive commands like :jumps friendlier by
-" setting you up to then jump. Otherwise nothing added.
-cnoremap <expr> <CR> <SID>CCR()
-function! s:CCR()
-  command! -bar Z silent set more|delcommand Z
-  if getcmdtype() ==# ':'
-    let cmdline = getcmdline()
-    " TODO: maybe wrap these in a try to catch cancelled jump and send <CR>
-    " to avoid the dreaded hit enter prompt
-    " :dlist|ilist becomes :djump/ijump instead
-    if cmdline =~# '\v\C^(dli|il)' | return "\<CR>:" . cmdline[0] . "jump   " . split(cmdline, " ")[1] . "\<S-Left>\<Left>\<Left>"
-    elseif cmdline =~# '\v\C^(cli|lli)' | return "\<CR>:silent " . repeat(cmdline[0], 2) . "\<Space>"
-    elseif cmdline =~# '\C^changes' | set nomore | return "\<CR>:Z|norm! g;\<S-Left>"
-    elseif cmdline =~# '\C^ju' | set nomore | return "\<CR>:Z|norm! \<C-o>\<S-Left>"
-    elseif cmdline =~# '\v\C(#|nu|num|numb|numbe|number)$' | return "\<CR>:"
-    elseif cmdline =~# '\C^ol' | set nomore | return "\<CR>:Z|e #<"
-    elseif cmdline =~# '\v\C^(ls|files|buffers)' | return "\<CR>:b"
-    elseif cmdline =~# '\C^marks' | return "\<CR>:norm! `"
-    elseif cmdline =~# '\C^undol' | return "\<CR>:u "
-    else | return "\<CR>" | endif
-  else | return "\<CR>" | endif
-endfunction
-
+" cnoremap <expr> <CR> vim9utils#CCR()
 " Jekyll
 command! JekyllOpen call utils#JekyllOpenLive()
 nnoremap <Leader>@ :JekyllOpen<CR> 
