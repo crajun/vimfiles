@@ -29,7 +29,6 @@ packadd! cfilter
 packadd! apprentice
 packadd! fzf.vim
 packadd! vim-commentary
-packadd! vim-gitbranch
 packadd vim-liquid " needs no ! here to load ftdetect/liquid.vim
 packadd! vim-repeat
 packadd! vim-surround
@@ -93,6 +92,16 @@ let g:fzf_colors =
   \ 'preview-fg': ['fg', 'Normal'],
   \ 'preview-bg': ['bg', 'Normal'],
   \ 'header':  ['fg', 'Comment'] }
+
+" vim-fugitive
+nnoremap <silent><Leader>gg :G<CR>
+noremap <silent><Leader>gb :G blame<CR>
+nnoremap <silent><Leader>gl :Gclog<CR>
+nnoremap <silent><Leader>gc :G commit -av<CR>
+nnoremap <silent><Leader>g/ :Ggrep! --quiet<Space>
+nnoremap <silent><Leader>gP :G push<CR>
+nnoremap <silent><Leader>gp :G pull<CR>
+
 " }}}
 
 " Options {{{
@@ -139,8 +148,7 @@ set showmatch " on brackets briefly jump to matching to show it
 set statusline=\ %f | " buffer name relative to :pwd
 set statusline+=%m%r%h | " [+] when modified, [-] no modify [RO] and [help]
 set statusline+=%= | " Start right-hand side of statusline
-" Requires https://github.com/itchyny/vim-gitbranch function
-set statusline+=%{gitbranch#name()} | " master
+set statusline+=%{FugitiveStatusline()}
 set statusline+=\ [%Y]
 set statusline+=\ %P
 set statusline +=\ %l:%c\ 
