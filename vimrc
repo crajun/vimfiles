@@ -125,7 +125,7 @@ set hidden " hide buffers without needing to save them
 set history=10000 | " Max possible value, use <C-f> in commandline to browse
 set hlsearch " highlight all search matches until :nohl run
 set laststatus=2 | " always show statuslines in all windows
-set listchars=tab:\|\ ,space:·,trail:· | " strings to show when :set list is on
+set listchars=tab:\│\ ,space:·,trail:·,eol:¬ | " strings to show when :set list is on
 set mouse=a
 set noswapfile " no annoying *.foo~ files left around
 set nowrap " defaults to line wrapping on
