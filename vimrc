@@ -130,7 +130,7 @@ set mouse=a
 set noswapfile " no annoying *.foo~ files left around
 set nowrap " defaults to line wrapping on
 set number relativenumber " current line number shown - rest shown relative
-set path-=/usr/include |  set path+=** | " Look recursively from ':pwd'
+set path-=/usr/include |  set path+=**5 | " Look recursively from ':pwd'
 set secure " autocmd, shell, and write commands not allow in dir exrc
 set shell=$SHELL | " macvim supposed to use this, but doesn't and sets 'sh'
 set showmatch " on brackets briefly jump to matching to show it
