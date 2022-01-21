@@ -55,3 +55,6 @@
 [submodule "pack/git/start/apprentice"]
 	path = pack/git/start/apprentice
 	url = https://github.com/romainl/apprentice
+[submodule "pack/git/start/colorschemes"]
+	path = pack/git/start/colorschemes
+	url = https://github.com/vim/colorschemes
