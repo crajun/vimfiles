@@ -178,6 +178,12 @@ def vim9utils#Grep(...args: list<string>): string
   return system(join([&grepprg] + [expandcmd(join(args))]))
 enddef
 
+def vim9utils#Make(): string
+  # TODO: works for simple cases but I will need to escape more I think to get
+  # things like makeprg value of :compiler liquid to work correctly.
+  return system(expandcmd(&makeprg))
+enddef
+
 def vim9utils#CCR(): string
   # Local command we'll keep using to deal with more prompts
   command! -bar Z silent set more|delcommand Z

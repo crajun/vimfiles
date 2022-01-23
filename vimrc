@@ -465,4 +465,17 @@ inoremap <C-W> <C-G>u<C-W>
 " https://vi.stackexchange.com/questions/13433/how-to-load-list-of-files-in-commit-into-quickfix
 command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
 
+" Better :make
+" Not working with compiler liquid for some reason, weird zsh error about bad
+" math and doc/_ver
+command! -bar Make :silent! lgetexpr vim9utils#Make() <Bar> lwindow
+" cnoreabbrev <expr> make (getcmdtype() ==# ':' && getcmdline() ==# 'make')  ? 'Make'  : 'make'
+
 " }}}
+"
+" TODO:
+" * Make for :make replacement, following :Grep in autoload/vim9utils.vim
+" * when last window/buffer closed in tabpage, do not close tabpage, I like to
+" have each tabpage set to a git dit with :tcd 
+" * autocmd BufWritePost in after/ftplugin/liquid and markdown files to run
+" :make which should cnoremap to :Make
