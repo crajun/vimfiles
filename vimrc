@@ -103,6 +103,11 @@ nnoremap <silent><Leader>gd :Gvdiffsplit<CR>
 nnoremap <Leader>g/ :Ggrep! -Hnri --quiet<Space>
 nnoremap <silent><Leader>gP :G push<CR>
 nnoremap <silent><Leader>gp :G pull<CR>
+" Requires vim-rhubarb, visual selection appends anchors to URL to highlight
+" Reminder: ["x]y<C-g> to yank relative path to clipboard
+" Reminder: :GBrowse! doesn't open URL just yanks it to clipboard
+nnoremap <Leader>g@ :GBrowse<CR>
+xnoremap <Leader>g@ :GBrowse<CR>
 
 " }}}
 
@@ -293,6 +298,7 @@ nnoremap <silent><F3> :call vim9utils#ToggleQuickfixList()<CR>
 nnoremap <silent><F4> :call vim9utils#ToggleLocationList()<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
 nnoremap <silent><F8> :TagbarOpenAutoClose<CR>
+nnoremap <silent>gO :TagbarOpenAutoClose<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><F10> :set spell!<CR>
 nnoremap <silent><Leader>* :grep <cword><CR>
@@ -364,9 +370,7 @@ command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
 command! JekyllOpen call utils#JekyllOpenLive()
 nnoremap <Leader>@ :JekyllOpen<CR> 
 
-" TODO:
-" Create command to Yank full path of current file to system clipboard, relative
-" to the git directory.
+
 " }}}
 
 " Autocmd {{{
