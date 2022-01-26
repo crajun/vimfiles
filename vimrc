@@ -29,7 +29,6 @@ packadd! cfilter
 packadd! apprentice
 packadd! fzf.vim
 packadd! vim-commentary
-packadd vim-liquid " needs no ! here to load ftdetect/liquid.vim
 packadd! vim-repeat
 packadd! vim-surround
 packadd! vim-textobj-user
@@ -180,8 +179,7 @@ else
   set grepprg=grep\ -Hnri
 endif
 
-" TODO: maybe off? investigate
-" enable use of folding with ft-markdown-plugin
+" $VIMRUNTIME/ftplugin/markdown.vim
 let g:markdown_folding = 1
 
 " }}}
