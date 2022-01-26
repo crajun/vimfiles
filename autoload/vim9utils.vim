@@ -205,10 +205,9 @@ def vim9utils#CCR(): string
   else | return "\<CR>" | endif
 enddef
 
-
 # TODO: finish this. takes a 'site', next, nextonly, prod, etc.
 # to determine which prefix URL to use
-def vim9utils#JekyllOpen(site)
+def vim9utils#JekyllOpen(site: string)
   # Requires 'devx' as &pwd for '%:.' to work correctly with forming the final URL to open
   if !getcwd() =~ 'devx' 
     echoerr 'Command only works when &pwd is "devx"'

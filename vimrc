@@ -98,6 +98,7 @@ nnoremap <silent><Leader>gg :G<CR>
 noremap <silent><Leader>gb :G blame<CR>
 nnoremap <silent><Leader>gl :Gclog<CR>
 nnoremap <silent><Leader>gc :G commit -av<CR>
+nnoremap <silent><Leader>gd :Gvdiffsplit<CR>
 nnoremap <Leader>g/ :Ggrep! -Hnri --quiet<Space>
 nnoremap <silent><Leader>gP :G push<CR>
 nnoremap <silent><Leader>gp :G pull<CR>
@@ -180,6 +181,7 @@ else
 endif
 
 " $VIMRUNTIME/ftplugin/markdown.vim
+let g:markdown_fenced_languages = ['javascript', 'cpp', 'shell']
 let g:markdown_folding = 1
 
 " }}}
@@ -392,9 +394,9 @@ augroup END
 " :so $VIMRUNTIME/syntax/hitest.vim
 "
 " Colorscheme Extras for Plugins {{{
-" colorscheme apprentice " widest support
+
 " colorscheme apprentice
-colorscheme apprentice
+colorscheme elflord
 
 
 "}}}
