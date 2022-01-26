@@ -466,8 +466,12 @@ command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty=''
 command! -bar Make :silent! lgetexpr vim9utils#Make() <Bar> lwindow
 " cnoreabbrev <expr> make (getcmdtype() ==# ':' && getcmdline() ==# 'make')  ? 'Make'  : 'make'
 
-" }}}
-"
+" Check out PR # using gh pr checkout command and completion
+command! -complete=customlist,Ghlistprs -nargs=1 Ghprcheckout silent! !gh pr checkout <args>
+function! Ghlistprs(ArgLead, CmdLine, CursorPos)
+  return systemlist('gh pr list | cut -f1')
+endfunction
+
 " TODO:
 " * Make for :make replacement, following :Grep in autoload/vim9utils.vim
 " * when last window/buffer closed in tabpage, do not close tabpage, I like to
