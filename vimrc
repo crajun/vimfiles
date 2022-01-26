@@ -37,6 +37,7 @@ packadd! vim-textobj-entire
 packadd! vim-textobj-indent
 packadd! vim-fugitive
 packadd! vim-rhubarb
+packadd! tagbar
 
 " brew install fzf first
 if executable('fzf') && has('mac')
@@ -289,6 +290,7 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 nnoremap <silent><F3> :call vim9utils#ToggleQuickfixList()<CR>
 nnoremap <silent><F4> :call vim9utils#ToggleLocationList()<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
+nnoremap <silent><F8> :TagbarOpenAutoClose<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><F10> :set spell!<CR>
 nnoremap <silent><Leader>* :grep <cword><CR>

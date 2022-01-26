@@ -37,3 +37,6 @@
 [submodule "pack/third-party/opt/vim-dispatch"]
 	path = pack/third-party/opt/vim-dispatch
 	url = https://github.com/tpope/vim-dispatch
+[submodule "pack/third-party/opt/tagbar"]
+	path = pack/third-party/opt/tagbar
+	url = https://github.com/preservim/tagbar
