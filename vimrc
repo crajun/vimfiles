@@ -29,7 +29,7 @@ packadd! cfilter
 packadd! apprentice
 packadd! fzf.vim
 packadd! vim-commentary
-packadd vim-liquid | " no ! here so it loads ftdetects (not lazy loaded)
+packadd vim-markdown
 packadd! vim-repeat
 packadd! vim-surround
 packadd! vim-textobj-user
@@ -38,11 +38,23 @@ packadd! vim-textobj-indent
 packadd! vim-fugitive
 packadd! vim-rhubarb
 packadd! tagbar
+packadd! ale
 
 " brew install fzf first
 if executable('fzf') && has('mac')
     set runtimepath+=/usr/local/opt/fzf
 endif
+
+" ale
+let g:ale_linters_explicit = 1
+let g:ale_linters = {
+  \ 'markdown': ['vale', 'cspell'],
+  \ 'vim': ['vint'],
+\}
+" let g:ale_fixers = {}
+
+" vim-markdown
+let g:vim_markdown_frontmatter = 1
 
 " fzf.vim
 nnoremap <C-p> :GFiles<CR>
@@ -157,7 +169,7 @@ set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
 set tabline=%!vim9utils#mytabline()
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
 set showtabline=2 | " Always show tabline
-set signcolumn=number
+set signcolumn=yes
 set splitbelow " new horizontal split window always goes below current
 set splitright " same but with new vertical split window
 set tags=./tags;,tags; | " pwd and search up til root dir for tags file
@@ -287,8 +299,8 @@ xmap > >gv
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 
-nnoremap <silent> [l :silent! lprevious<CR>
-nnoremap <silent> ]l :silent! lnext<CR>
+nnoremap <silent><C-k> :silent! lprevious<CR>
+nnoremap <silent><C-j> :silent! lnext<CR>
 "
 " '%%' in command-line mode maybe expands to path of current buffer.
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
@@ -298,9 +310,7 @@ nnoremap <silent><F3> :call vim9utils#ToggleQuickfixList()<CR>
 nnoremap <silent><F4> :call vim9utils#ToggleLocationList()<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
 nnoremap <silent><F8> :TagbarOpenAutoClose<CR>
-nnoremap <silent>gO :TagbarOpenAutoClose<CR>
 nnoremap <silent><F9> :set list!<CR>
-nnoremap <silent><F10> :set spell!<CR>
 nnoremap <silent><Leader>* :grep <cword><CR>
 
 " iTerm2/Terminal.app: gvimrc sets these for macvim
@@ -320,13 +330,14 @@ nnoremap <Leader><CR> :source %<CR>
 nnoremap gh :diffget //2<CR>
 nnoremap gl :diffget //3<CR>
 
-" vim-unimpaired style
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
 nnoremap [Q :cfirst<CR>
 nnoremap ]Q :clast<CR>
-nnoremap [l :lprevious<CR>
-nnoremap ]l :lnext<CR>
+nnoremap [e :lprevious<CR>
+nnoremap ]e :lnext<CR>
+nnoremap ]E :llast<CR>
+nnoremap [E :lfirst<CR>
 nnoremap ]t :tabnext<CR>
 nnoremap [t :tabprev<CR>
 nnoremap ]T :tablast<CR>
@@ -468,8 +479,6 @@ inoremap <C-W> <C-G>u<C-W>
 command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
 
 " Better :make
-" Not working with compiler liquid for some reason, weird zsh error about bad
-" math and doc/_ver
 command! -bar Make :silent! lgetexpr vim9utils#Make() <Bar> lwindow
 " cnoreabbrev <expr> make (getcmdtype() ==# ':' && getcmdline() ==# 'make')  ? 'Make'  : 'make'
 
@@ -479,9 +488,3 @@ function! Ghlistprs(ArgLead, CmdLine, CursorPos)
   return systemlist('gh pr list | cut -f1')
 endfunction
 
-" TODO:
-" * Make for :make replacement, following :Grep in autoload/vim9utils.vim
-" * when last window/buffer closed in tabpage, do not close tabpage, I like to
-" have each tabpage set to a git dit with :tcd 
-" * autocmd BufWritePost in after/ftplugin/liquid and markdown files to run
-" :make which should cnoremap to :Make

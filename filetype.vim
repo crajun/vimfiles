@@ -1,5 +1,4 @@
 " ~/vimfiles/filetype.vim -- local filetype.vim autodetection
-" Last Modified: 2020-05-20
 " Description: User-specific primary filetype definitiions. Vim will use try
 " to match here before any other locations such as default $VIM/filetype.vim.
 " So to override a default filetype detection mirror the line from

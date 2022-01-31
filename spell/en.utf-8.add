@@ -104,3 +104,6 @@ Config
 stylesheet
 endcomment
 endraw
+AEPlugin
+EasyProfiler
+fzf
