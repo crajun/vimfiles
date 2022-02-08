@@ -4,7 +4,7 @@ vim9script
 
 # TODO: make ftdetect to set vim9script ft if found in first line, and
 # create a after/ftplugin/vim9script file with better include/defines
-def vim9utils#SwitchSourceHeader()
+def SwitchSourceHeader()
   # Switch between cpp/.h files, user must set relevant 'path'
   # value for this to work, e.g., 'set path=.,,**5'
   if &ft ==# 'cpp'
@@ -18,7 +18,7 @@ def vim9utils#SwitchSourceHeader()
   endif
 enddef
 
-def vim9utils#StripTrailingWhitespaces()
+def StripTrailingWhitespaces()
   # Don't touch binary files or diff files
   if !&binary && &filetype !=# 'diff'
     var _s = @
@@ -28,7 +28,7 @@ def vim9utils#StripTrailingWhitespaces()
   endif
 enddef
 
-def vim9utils#ToggleQuickfixList()
+def ToggleQuickfixList()
   var qwinid = getqflist({'winid': 0}).winid
   if qwinid > 0
     cclose
@@ -37,7 +37,7 @@ def vim9utils#ToggleQuickfixList()
   endif
 enddef
 
-def vim9utils#ToggleLocationList()
+def ToggleLocationList()
   # Tries to toggle open/close location list for current window,
   # if no loclist exists then just ignore error stating such
   var lwinid = getloclist(0, {'winid': 0}).winid
@@ -55,7 +55,7 @@ def vim9utils#ToggleLocationList()
   endif
 enddef
 
-def vim9utils#MaybeReplaceCrWithCrColon()
+def MaybeReplaceCrWithCrColon()
   # Return <CR>: and maybe followed by a 'b' or 'u' or more, depending on what
   # the command requires to user to enter to work.
   # https://gist.github.com/romainl/047aca21e338df7ccf771f96858edb86
@@ -92,7 +92,7 @@ def vim9utils#MaybeReplaceCrWithCrColon()
   endif
 enddef
 
-def vim9utils#Redir(cmd: string)
+def Redir(cmd: string)
   var output = execute(cmd)
   botright split +enew
   setlocal nobuflisted nonumber norelativenumber buftype=nofile bufhidden=wipe noswapfile
@@ -100,7 +100,7 @@ def vim9utils#Redir(cmd: string)
   call setline(1, split(output, "\n"))
 enddef
 
-def vim9utils#JekyllOpenLive()
+def JekyllOpenLive()
   # Requires 'devx' as &pwd for '%:.' to work correctly with forming the final URL to open
   if !getcwd() =~ 'devx' 
     echoerr 'Command only works when &pwd is "devx"'
@@ -125,7 +125,7 @@ def vim9utils#JekyllOpenLive()
   execute "silent! !open " . finalurl
 enddef
 
-def vim9utils#mytabline(): string
+export def MyTabline(): string
   def GetCurrentTabLabel(tabnr: number): string
     # Give tabpage number return string of :getcwd for that tabpage
     var buflist = tabpagebuflist(tabnr)
@@ -155,7 +155,7 @@ def vim9utils#mytabline(): string
   return s
 enddef
 
-def vim9utils#myguitabline(): string
+export def Myguitabline(): string
   def GetCurrentTabLabel(tabnr: number): string
     # Give tabpage number return string of :getcwd for that tabpage
     var buflist = tabpagebuflist(tabnr)
@@ -169,7 +169,7 @@ def vim9utils#myguitabline(): string
   return s
 enddef
 
-def vim9utils#Grep(...args: list<string>): string
+def Grep(...args: list<string>): string
   # Based on: https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
   #
   # 'expandcmd' allows us to do :Grep 'leader' % and have % expanded to current
@@ -178,13 +178,13 @@ def vim9utils#Grep(...args: list<string>): string
   return system(join([&grepprg] + [expandcmd(join(args))]))
 enddef
 
-def vim9utils#Make(): string
+def Make(): string
   # TODO: works for simple cases but I will need to escape more I think to get
   # things like makeprg value of :compiler liquid to work correctly.
   return system(expandcmd(&makeprg))
 enddef
 
-def vim9utils#CCR(): string
+def CCR(): string
   # Local command we'll keep using to deal with more prompts
   command! -bar Z silent set more|delcommand Z
   if getcmdtype() ==# ':'
@@ -207,7 +207,7 @@ enddef
 
 # TODO: finish this. takes a 'site', next, nextonly, prod, etc.
 # to determine which prefix URL to use
-def vim9utils#JekyllOpen(site: string)
+def JekyllOpen(site: string)
   # Requires 'devx' as &pwd for '%:.' to work correctly with forming the final URL to open
   if !getcwd() =~ 'devx' 
     echoerr 'Command only works when &pwd is "devx"'
