@@ -306,10 +306,10 @@ nnoremap [I [I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 nnoremap ]I ]I:djump<Space><Space><Space><C-r><C-w><S-Left><Left>
 
 " Tmux functionality that I used
-nnoremap <silent><C-b>v :vertical terminal ++close zsh<CR> 
-nnoremap <silent><C-b>s :terminal ++close zsh<CR> 
-tnoremap <silent><C-b>v <C-\><C-n>:vertical terminal ++close zsh<CR> 
-tnoremap <silent><C-b>s <C-\><C-n>:terminal ++close zsh<CR> 
+nnoremap <silent><C-b>v :vertical terminal ++close zsh<CR>
+nnoremap <silent><C-b>s :terminal ++close zsh<CR>
+tnoremap <silent><C-b>v <C-\><C-n>:vertical terminal ++close zsh<CR>
+tnoremap <silent><C-b>s <C-\><C-n>:terminal ++close zsh<CR>
 tnoremap <silent><C-b>g <C-\><C-n>:terminal ++close lazygit<CR>
 nnoremap <silent><C-b>! <C-w>T
 
@@ -319,8 +319,6 @@ nnoremap <silent><S-Down> <Cmd>2wincmd-<CR>
 nnoremap <silent><S-Left> <Cmd>2wincmd <<CR>
 nnoremap <silent><S-Right> <Cmd>2wincmd ><CR>
 
-" one off terminal buffer
-nnoremap <silent><C-b>g :terminal ++close lazygit<CR>
 nnoremap <silent><C-b><CR> :terminal make<CR>
 
 " Re-select visually selected area after indenting/dedenting.
@@ -336,8 +334,32 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 if $TERM_PROGRAM =~# 'Apple_Terminal'
   inoremap <Nul> <C-x><C-o>
+  tnoremap h <C-\><C-n><C-w>h
+  tnoremap h <C-\><C-n><C-w>j
+  tnoremap k <C-\><C-n><C-w>k
+  tnoremap k <C-\><C-n><C-w>l
+  nnoremap h <C-\><C-n><C-w>h
+  nnoremap j <C-\><C-n><C-w>j
+  nnoremap k <C-\><C-n><C-w>k
+  nnoremap l <C-\><C-n><C-w>l
+  nnoremap <silent>OA <Cmd>2wincmd+<CR>
+  nnoremap <silent>OB <Cmd>2wincmd-<CR>
+  nnoremap <silent>[1;5D <Cmd>2wincmd <<CR>
+  nnoremap <silent>[1;5C <Cmd>2wincmd ><CR>
 else
   inoremap <C-Space> <C-x><C-o>
+  tnoremap <M-h> <C-\><C-n><C-w>h
+  tnoremap <M-j> <C-\><C-n><C-w>j
+  tnoremap <M-k> <C-\><C-n><C-w>k
+  tnoremap <M-l> <C-\><C-n><C-w>l
+  nnoremap <M-h> <C-\><C-n><C-w>h
+  nnoremap <M-j> <C-\><C-n><C-w>j
+  nnoremap <M-k> <C-\><C-n><C-w>k
+  nnoremap <M-l> <C-\><C-n><C-w>l
+  nnoremap <silent><C-Up> <Cmd>2wincmd+<CR>
+  nnoremap <silent><C-Down> <Cmd>2wincmd-<CR>
+  nnoremap <silent><C-Left> <Cmd>2wincmd <<CR>
+  nnoremap <silent><C-Right> <Cmd>2wincmd ><CR>
 endif
 
 " Function keys
@@ -348,35 +370,29 @@ nnoremap <silent><F8> :TagbarOpenAutoClose<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><Leader>* :grep <cword><CR>
 
-" iTerm2/Terminal.app: gvimrc sets these for macvim
-nnoremap j <C-w>p<C-e><C-w>p
-nnoremap k <C-w>p<C-y><C-w>p
-nnoremap J <C-w>p<C-d><C-w>p
-nnoremap K <C-w>p<C-u><C-w>p
-
 " Leader keys
-nnoremap <Leader>w :update<CR>
-nnoremap <Leader>, :edit $MYVIMRC<CR>
+nnoremap <Leader>w <cmd>update<CR>
+nnoremap <Leader>, <cmd>edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
-nnoremap <Leader><Leader> :buffer #<CR>
+nnoremap <Leader><Leader> <cmd>buffer #<CR>
 nnoremap <Leader><CR> :source %<CR>
 
 " Vimdiff
 nnoremap gh :diffget //2<CR>
 nnoremap gl :diffget //3<CR>
 
-nnoremap [q :cprevious<CR>
-nnoremap ]q :cnext<CR>
-nnoremap [Q :cfirst<CR>
-nnoremap ]Q :clast<CR>
-nnoremap [e :lprevious<CR>
-nnoremap ]e :lnext<CR>
-nnoremap ]E :llast<CR>
-nnoremap [E :lfirst<CR>
-nnoremap ]t :tabnext<CR>
-nnoremap [t :tabprev<CR>
-nnoremap ]T :tablast<CR>
-nnoremap [t :tabfirst<CR>
+nnoremap [q <cmd>cprevious<CR>
+nnoremap ]q <cmd>cnext<CR>
+nnoremap [Q <cmd>cfirst<CR>
+nnoremap ]Q <cmd>clast<CR>
+nnoremap [e <cmd>lprevious<CR>
+nnoremap ]e <cmd>lnext<CR>
+nnoremap ]E <cmd>llast<CR>
+nnoremap [E <cmd>lfirst<CR>
+nnoremap ]t <cmd>tabnext<CR>
+nnoremap [t <cmd>tabprev<CR>
+nnoremap ]T <cmd>tablast<CR>
+nnoremap [t <cmd>tabfirst<CR>
 
 " }}}
 
