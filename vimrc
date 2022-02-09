@@ -248,6 +248,9 @@ if has('gui_macvim') && has('gui_running')
   let g:macvim_skip_cmd_opt_movement = 1
 endif
 
+" quicker commandline
+nnoremap ; :
+
 " manual expansions, when I want it
 inoremap (<CR> (<CR>)<Esc>O
 inoremap (; (<CR>);<Esc>O
@@ -271,12 +274,9 @@ cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
 cnoremap <expr> <C-j> wildmenumode() ? "\<Left>\<C-z>" : "\<C-j>"
 cnoremap <expr> <C-k> wildmenumode() ? "\<Right>\<C-z>" : "\<C-k>"
 
-" keeps marks, settings, and you can still do e.g., <C-o> to jump to it
-nnoremap <Leader>dd <Cmd>bdelete!<CR> 
-" REALLY delete the buffer.
-nnoremap <Leader>D <Cmd>bwipeout!<CR>
+" when I use this, I want a buffer GONE completely, no traces left.
+nnoremap <Leader>dd <Cmd>bwipeout!<CR> 
 
-" :find (&path aware) and :edit niceties
 nnoremap <Leader>ff :find *
 nnoremap <Leader>fs :sfind *
 nnoremap <Leader>fv :vert sfind *
@@ -284,10 +284,10 @@ nnoremap <Leader>fv :vert sfind *
 nnoremap <Leader>ee :edit *<C-z><S-Tab>
 nnoremap <Leader>es :split *<C-z><S-Tab>
 nnoremap <Leader>ev :vert split *<C-z><S-Tab>
-
 " buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
-" those using filter.
-nnoremap <leader>bb :filter! /^\~\\|^\// ls t<CR>:b
+" those using filter magic. No wildmenu though, bummer.
+nnoremap <Leader>b. :filter! /^\~\\|^\// ls t<CR>:b
+nnoremap <Leader>bb :buffer *<C-z><S-Tab>
 nnoremap <Leader>bs :sbuffer <C-d>
 nnoremap <Leader>bv :vert sbuffer <C-d>
 
@@ -313,7 +313,6 @@ nnoremap <silent><C-b>v :vertical terminal ++close zsh<CR>
 nnoremap <silent><C-b>s :terminal ++close zsh<CR>
 tnoremap <silent><C-b>v <C-\><C-n>:vertical terminal ++close zsh<CR>
 tnoremap <silent><C-b>s <C-\><C-n>:terminal ++close zsh<CR>
-tnoremap <silent><C-b>g <C-\><C-n>:terminal ++close lazygit<CR>
 nnoremap <silent><C-b>! <C-w>T
 
 " resizing windows
@@ -337,28 +336,12 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 if $TERM_PROGRAM =~# 'Apple_Terminal'
   inoremap <Nul> <C-x><C-o>
-  tnoremap h <C-\><C-n><C-w>h
-  tnoremap h <C-\><C-n><C-w>j
-  tnoremap k <C-\><C-n><C-w>k
-  tnoremap k <C-\><C-n><C-w>l
-  nnoremap h <C-\><C-n><C-w>h
-  nnoremap j <C-\><C-n><C-w>j
-  nnoremap k <C-\><C-n><C-w>k
-  nnoremap l <C-\><C-n><C-w>l
   nnoremap <silent>OA <Cmd>2wincmd+<CR>
   nnoremap <silent>OB <Cmd>2wincmd-<CR>
   nnoremap <silent>[1;5D <Cmd>2wincmd <<CR>
   nnoremap <silent>[1;5C <Cmd>2wincmd ><CR>
 else
   inoremap <C-Space> <C-x><C-o>
-  tnoremap <M-h> <C-\><C-n><C-w>h
-  tnoremap <M-j> <C-\><C-n><C-w>j
-  tnoremap <M-k> <C-\><C-n><C-w>k
-  tnoremap <M-l> <C-\><C-n><C-w>l
-  nnoremap <M-h> <C-\><C-n><C-w>h
-  nnoremap <M-j> <C-\><C-n><C-w>j
-  nnoremap <M-k> <C-\><C-n><C-w>k
-  nnoremap <M-l> <C-\><C-n><C-w>l
   nnoremap <silent><C-Up> <Cmd>2wincmd+<CR>
   nnoremap <silent><C-Down> <Cmd>2wincmd-<CR>
   nnoremap <silent><C-Left> <Cmd>2wincmd <<CR>
@@ -369,6 +352,7 @@ endif
 nnoremap <silent><F3> :call vim9utils#ToggleQuickfixList()<CR>
 nnoremap <silent><F4> :call vim9utils#ToggleLocationList()<CR>
 nnoremap <silent><F7> :15Lexplore<CR>
+nnoremap <silent>gO :TagbarOpenAutoClose<CR>
 nnoremap <silent><F8> :TagbarOpenAutoClose<CR>
 nnoremap <silent><F9> :set list!<CR>
 nnoremap <silent><Leader>* :grep <cword><CR>
@@ -394,6 +378,7 @@ nnoremap ]E <cmd>llast<CR>
 nnoremap [E <cmd>lfirst<CR>
 nnoremap ]t <cmd>tabnext<CR>
 nnoremap [t <cmd>tabprev<CR>
+nnoremap [T <cmd>tabfirst<CR>
 nnoremap ]T <cmd>tablast<CR>
 nnoremap [t <cmd>tabfirst<CR>
 
