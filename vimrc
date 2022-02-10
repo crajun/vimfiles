@@ -29,6 +29,7 @@ packadd! cfilter
 packadd! apprentice
 packadd! fzf.vim
 packadd! vim-commentary
+" no ! here to load ftdetect scripts it provides, immediately
 packadd vim-markdown
 packadd! vim-repeat
 packadd! vim-surround
@@ -38,13 +39,22 @@ packadd! vim-textobj-indent
 packadd! vim-fugitive
 packadd! vim-rhubarb
 packadd! tagbar
-packadd! ale
-packadd! YouCompleteMe
+packadd! ale | " https://github.com/wOrp/ale
+packadd! YouCompleteMe | " https://github.com/ycm-core/YouCompleteMe
 
 " brew install fzf first
 if executable('fzf') && has('mac')
     set runtimepath+=/usr/local/opt/fzf
 endif
+
+" YouCompleteMe
+let g:ycm_auto_trigger = 0
+let g:ycm_min_num_of_chars_for_completion = 99
+let g:ycm_key_detailed_diagnostics = ''
+nmap k <plug>(YCMHover)
+let g:ycm_key_invoke_completion = ''
+let g:ycm_disable_for_files_larger_than_kb = 0
+let g:ycm_update_diagnostics_in_insert_mode = 0
 
 " ale
 let g:ale_linters_explicit = 1
@@ -249,8 +259,10 @@ if has('gui_macvim') && has('gui_running')
   let g:macvim_skip_cmd_opt_movement = 1
 endif
 
-" quicker commandline
-nnoremap ; :
+" I want C-n/C-p to always be nearest and/or in same buffer,
+" if I need to go further I'll use C-Space for YCM
+inoremap <C-p> <C-x><C-p>
+inoremap <C-n> <C-x><C-n>
 
 " manual expansions, when I want it
 inoremap (<CR> (<CR>)<Esc>O
