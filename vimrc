@@ -52,7 +52,7 @@ let g:ycm_auto_trigger = 0
 let g:ycm_min_num_of_chars_for_completion = 99
 let g:ycm_key_detailed_diagnostics = ''
 nmap k <plug>(YCMHover)
-let g:ycm_key_invoke_completion = ''
+let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_disable_for_files_larger_than_kb = 0
 let g:ycm_update_diagnostics_in_insert_mode = 0
 
@@ -348,7 +348,7 @@ xnoremap K :m '<-2<CR>gv=gv
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 if $TERM_PROGRAM =~# 'Apple_Terminal'
-  inoremap <Nul> <C-x><C-o>
+  " inoremap <Nul> <C-x><C-o>
   nnoremap <silent>OA <Cmd>2wincmd+<CR>
   nnoremap <silent>OB <Cmd>2wincmd-<CR>
   nnoremap <silent>[1;5D <Cmd>2wincmd <<CR>
@@ -437,7 +437,6 @@ command! JekyllOpen call utils#JekyllOpenLive()
 " create one.
 command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
 
-
 " }}}
 
 " Autocmd {{{
@@ -445,6 +444,7 @@ command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty=''
 " safe to be re-sourced, by clearing all first with autocmd!
 augroup vimrc
   autocmd!
+  autocmd FileType * if !&omnifunc | setlocal omnifunc=syntaxcomplete#Complete | endif
   autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
   autocmd BufEnter $MYVIMRC setlocal fdm=marker
   autocmd BufWritePre /tmp/* setlocal noundofile
