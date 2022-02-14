@@ -51,6 +51,8 @@ if executable('fzf') && has('mac')
 endif
 
 " ale
+let g:ale_set_signs = 0
+let g:ale_virtualtext_cursor = 1
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
   \ 'markdown': ['vale', 'cspell'],
