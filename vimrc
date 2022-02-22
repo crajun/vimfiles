@@ -299,13 +299,14 @@ nnoremap <Leader>ev :vert split *<C-z><S-Tab>
 " buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
 " those using filter magic. No wildmenu though, bummer.
 nnoremap <Leader>b. :filter! /^\~\\|^\// ls t<CR>:b
-nnoremap <Leader>bb :buffer *<C-z><S-Tab>
+nnoremap <Leader>b<Tab> :buffer *<C-z><S-Tab>
 nnoremap <Leader>bs :sbuffer <C-d>
 nnoremap <Leader>bv :vert sbuffer <C-d>
 
 " NOTE: these need nmap to fire the CCR() function to determine how
 " to handle the <CR> key at the end.
 " tags
+cnoremap <expr> <CR> vim9utils#CCR()
 nmap <Leader>tj :tjump /<CR>
 " preview window, close with C-w z
 nmap <Leader>tp :ptjump /<CR>
@@ -429,6 +430,7 @@ command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
 command! -nargs=1 Redir call utils#Redir(<q-args>)
 command! JekyllOpen call utils#JekyllOpenLive()
 
+" Git-related
 " :Gshow<CR> || :Gshow <SHA> || :Gshow HEAD^^
 " https://vi.stackexchange.com/questions/13433/how-to-load-list-of-files-in-commit-into-quickfix
 " for expr2 in map() here we use string where v:val is index of current item in
@@ -436,6 +438,11 @@ command! JekyllOpen call utils#JekyllOpenLive()
 " create one.
 command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
 command! -bar Gprfiles call setqflist(map(systemlist("git diff --name-only $(git merge-base HEAD develop)"), '{"filename": v:val, "lnum": 1}')) | copen
+" Check out PR # using gh pr checkout command and completion
+command! -complete=customlist,Ghlistprs -nargs=1 Ghprcheckout silent! !gh pr checkout <args>
+function! Ghlistprs(ArgLead, CmdLine, CursorPos) abort
+  return systemlist('gh pr list | cut -f1')
+endfunction
 
 " }}}
 
@@ -526,10 +533,5 @@ inoremap <C-W> <C-G>u<C-W>
 " Better :make
 command! -bar Make :silent! lgetexpr vim9utils#Make() <Bar> lwindow
 " cnoreabbrev <expr> make (getcmdtype() ==# ':' && getcmdline() ==# 'make')  ? 'Make'  : 'make'
-
-" Check out PR # using gh pr checkout command and completion
-command! -complete=customlist,Ghlistprs -nargs=1 Ghprcheckout silent! !gh pr checkout <args>
-function! Ghlistprs(ArgLead, CmdLine, CursorPos)
-  return systemlist('gh pr list | cut -f1')
-endfunction
+" }}}
 

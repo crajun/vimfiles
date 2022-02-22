@@ -183,7 +183,8 @@ export def Make(): string
 enddef
 
 export def CCR(): string
-  # Local command we'll keep using to deal with more prompts
+  # https://gist.github.com/romainl/5b2cfb2b81f02d44e1d90b74ef555e31
+  # Local command to reset temporary 'nomore', then delete the command
   command! -bar Z silent set more|delcommand Z
   if getcmdtype() ==# ':'
     var cmdline = getcmdline()
@@ -194,11 +195,12 @@ export def CCR(): string
     elseif cmdline =~# '\v\C^(cli|lli)' | return "\<CR>:silent " .. repeat(cmdline[0], 2) .. "\<Space>"
     elseif cmdline =~# '\C^changes' | set nomore | return "\<CR>:Z|norm! g;\<S-Left>"
     elseif cmdline =~# '\C^ju' | set nomore | return "\<CR>:Z|norm! \<C-o>\<S-Left>"
-    elseif cmdline =~# '\v\C(#|nu|num|numb|numbe|number)$' | return "\<CR>:"
+    elseif cmdline =~# '\v\C(#|nu|num|numb|numbe|number|l|li|lis|list)$' | return "\<CR>:"
     elseif cmdline =~# '\C^ol' | set nomore | return "\<CR>:Z|e #<"
     elseif cmdline =~# '\v\C^(ls|files|buffers)' | return "\<CR>:b"
     elseif cmdline =~# '\C^marks' | return "\<CR>:norm! `"
     elseif cmdline =~# '\C^undol' | return "\<CR>:u "
+    elseif cmdline =~# '\C^tabs' | set nomore | return "\<CR>:Z| tabnext\<S-Left>"
     else | return "\<CR>" | endif
   else | return "\<CR>" | endif
 enddef
