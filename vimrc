@@ -215,7 +215,7 @@ set shortmess-=cS | "  No '1 of x' pmenu messages. [1/15] search results shown.
 " Use this one to show :tcd value in tabpage labels
 " set tabline=%!vim9utils#MyTabline()
 set ignorecase smartcase " ignore case in searches, UNLESS capitals used
-set showtabline=2 | " Always show tabline
+set showtabline=1 | " Always show tabline
 set signcolumn=number
 set splitbelow " new horizontal split window always goes below current
 set splitright " same but with new vertical split window
@@ -271,7 +271,7 @@ inoremap [, [<CR>],<Esc>O
 " goes to previous entry, but ':help g<Up>' will search history for previous
 " pattern matching ':help g'. Also Up/Down go in/out of subfolders listings
 " when wildmenu showing - default C-n/p here is to traverse results, equivalent
-" to <Tab>/<S-Tab>. 
+" to <Tab>/<S-Tab>.
 cnoremap <expr> <C-p> wildmenumode() ? "<C-P>" : "<Up>"
 cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
 
@@ -281,7 +281,7 @@ cnoremap <expr> <C-j> wildmenumode() ? "\<Left>\<C-z>" : "\<C-j>"
 cnoremap <expr> <C-k> wildmenumode() ? "\<Right>\<C-z>" : "\<C-k>"
 
 " when I use this, I want a buffer GONE completely, no traces left.
-nnoremap <Leader>dd <Cmd>bwipeout!<CR> 
+nnoremap <Leader>dd <Cmd>bwipeout!<CR>
 
 nnoremap <Leader>ff :find *
 nnoremap <Leader>fs :sfind *
@@ -397,7 +397,7 @@ nnoremap [t <cmd>tabfirst<CR>
 " to the command, e.g., :Grep argone -argtwo 'argthree' preserve\ literall
 " spaces\ here\ for\ this\ argument
 " => ['argone', '-argtwo', 'argthree', 'preserve literal spaces here for this
-" argument']. 
+" argument'].
 "
 " Command         <f-args> transform args to:
 " :grep           (Nothing, <f-args> is removed)
