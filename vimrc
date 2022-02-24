@@ -199,9 +199,11 @@ set noswapfile " no annoying *.foo~ files left around
 set nowrap " defaults to line wrapping on
 set number
 set path-=/usr/include |  set path+=** | " Look recursively from ':pwd'
+set scrolloff=2
 set secure " autocmd, shell, and write commands not allow in dir exrc
 set shell=$SHELL | " macvim supposed to use this, but doesn't and sets 'sh'
 set showmatch " on brackets briefly jump to matching to show it
+set sidescrolloff=5
 set statusline=\ %f | " buffer name relative to :pwd
 set statusline+=%m%r%h | " [+] when modified, [-] no modify [RO] and [help]
 set statusline+=%= | " Start right-hand side of statusline
