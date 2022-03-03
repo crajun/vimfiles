@@ -111,15 +111,59 @@ call minpac#add('kana/vim-textobj-entire')
 call minpac#add('kana/vim-textobj-indent')
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('tpope/vim-rhubarb')
+" TODO: revisit this one
 call minpac#add('sheerun/vim-polyglot')
 call minpac#add('preservim/tagbar')
 call minpac#add('w0rp/ale')
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('skywind3000/asyncrun.vim')
 call minpac#add('skywind3000/asynctasks.vim')
+call minpac#add('prabirshrestha/vim-lsp')
+call minpac#add('prabirshrestha/asyncomplete.vim')
+call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
+
+" vim-lsp and asyncomplete.vim
+let g:asyncomplete_auto_popup = 0
+
+if executable('pyls')
+  " pip install python-language-server
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'pyls',
+    \ 'cmd': {server_info->['pyls']},
+    \ 'allowlist': ['python'],
+    \ })
+endif
+
+" TODO move this to utils autoload
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+    let g:lsp_format_sync_timeout = 1000
+endfunction
+
+augroup lsp_install
+  autocmd!
+  " call s:on_lsp_buffer_enabled only for languages that has the server
+  " registered.
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
 
 " brew install fzf first
 if executable('fzf') && has('mac')
@@ -271,8 +315,6 @@ xnoremap <Leader>g@ <cmd>GBrowse<CR>
 
 " Mappings {{{
 
-" I want C-n/C-p to always be nearest and/or in same buffer,
-" For more intelligent/farther reaching completions use C-Space
 " inoremap <C-p> <C-x><C-p>
 " inoremap <C-n> <C-x><C-n>
 
@@ -352,13 +394,13 @@ xnoremap K :m '<-2<CR>gv=gv
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 if $TERM_PROGRAM =~# 'Apple_Terminal'
-  inoremap <Nul> <C-x><C-o>
+  imap <Nul> <Plug>(asyncomplete_force_refresh)
   nnoremap <silent>OA <Cmd>2wincmd+<CR>
   nnoremap <silent>OB <Cmd>2wincmd-<CR>
   nnoremap <silent>[1;5D <Cmd>2wincmd <<CR>
   nnoremap <silent>[1;5C <Cmd>2wincmd ><CR>
 else
-  inoremap <C-Space> <C-x><C-o>
+  imap <C-@> <Plug>(asyncomplete_force_refresh)
   nnoremap <silent><C-Up> <Cmd>2wincmd+<CR>
   nnoremap <silent><C-Down> <Cmd>2wincmd-<CR>
   nnoremap <silent><C-Left> <Cmd>2wincmd <<CR>
