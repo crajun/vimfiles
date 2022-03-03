@@ -213,7 +213,7 @@ export def JekyllOpen(site: string)
     echoerr 'Command only works when &pwd is "devx"'
     return
   endif
-  let relpath = expand('%:.')
+  var relpath = expand('%:.')
         \ ->substitute('_ver_', '', '')
         \ ->substitute('^docs', '', '')
         \ ->substitute('\.md$', '/', '')
@@ -221,15 +221,28 @@ export def JekyllOpen(site: string)
   # cases:
   # docs/_ver_6.14/path/to/file
   # docs/release-details/file-with-version-6.8.md
-  let newversion = relpath->matchstr('\d\.\d\d\?')
+  var newversion = relpath->matchstr('\d\.\d\d\?')
 
   # When relpath = version/path/to/topic we need to drop leading \d\.\d\d\? dir, otherwise we end
   # up with 6.15/6.15/path/to/file. We only check up to first / to limit to first folder.
-  let newpath = newversion .. relpath->substitute('\d\.\d\d\?/', '', '')
+  var newpath = newversion .. relpath->substitute('\d\.\d\d\?/', '', '')
 
   # any version 6.14 and over requires localhost only
-  let host = str2float(newversion) >= 6.14 ? 'https://localhost.com:8080/' : 'https://developer-staging.youi.tv/'
+  var host = str2float(newversion) >= 6.14 ? 'https://localhost.com:8080/' : 'https://developer-staging.youi.tv/'
 
-  let finalurl = host .. newpath
-  execute "silent! !open " . finalurl
+  var finalurl = host .. newpath
+  execute "silent! !open " .. finalurl
+enddef
+
+export def SynGroup() 
+  # Outputs both the name of the syntax group, AND the translated syntax
+  # group of the character the cursor is on.
+  # line('.') and col('.') return the current position
+  # synID(...) returns a numeric syntax ID
+  # synIDtrans(l:s) translates the numeric syntax id l:s by following highlight links
+  # synIDattr(l:s, 'name') returns the name corresponding to the numeric syntax ID
+  # example output:
+  # vimMapModKey -> Special
+  var s = synID(line('.'), col('.'), 1)
+  echo synIDattr(s, 'name') .. ' -> ' .. synIDattr(synIDtrans(s), 'name')
 enddef

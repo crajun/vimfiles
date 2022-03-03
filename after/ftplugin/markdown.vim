@@ -5,7 +5,7 @@ setlocal suffixesadd=.md
 setlocal list
 setlocal expandtab
 
-" TODO: could be made more robust to support other style Mardown headings
+" TODO: could be made more robust to support other style Markdown headings
 let &l:define = '\v^#+\s*.+$'
 
 nnoremap <buffer> gf :call utils#LiquidInclude()<CR>
@@ -18,7 +18,6 @@ nnoremap <buffer> gf :call utils#LiquidInclude()<CR>
 " SEARCH PATTERN:
 " /{{\s*page.version\s*}}\zs\/[^\.\)]\+\|\.\.\zs\/[^\.\)]\+
 setlocal include={{\\s*page.version\\s*}}\\zs\\/[^\\.\\)]\\+\\\|\\.\\.\\zs\\/[^\\.\\)]\\+
-
 
 " TODO: this might just need to be delete now that I don't use
 " &ft = liquid anymore and just use vim-markdown plugin
