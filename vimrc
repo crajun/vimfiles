@@ -111,8 +111,6 @@ call minpac#add('kana/vim-textobj-entire')
 call minpac#add('kana/vim-textobj-indent')
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('tpope/vim-rhubarb')
-" TODO: revisit this one
-call minpac#add('sheerun/vim-polyglot')
 call minpac#add('preservim/tagbar')
 call minpac#add('w0rp/ale')
 call minpac#add('junegunn/fzf.vim')
@@ -124,6 +122,11 @@ call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
+
+" vim-markdown
+let g:markdown_fenced_languages = ['javascriptreact', 'cpp', 'sh', 'cmake']
+let g:markdown_syntax_conceal = 0
+let g:markdown_minlines = 500 | " Default 50. sync lines for highlighting
 
 " vim-lsp and asyncomplete.vim
 let g:asyncomplete_auto_popup = 0
@@ -176,10 +179,6 @@ let g:asynctasks_term_pos = "bottom"
 let g:asynctasks_term_reuse = 1
 let g:asynctasks_term_focus = 0
 
-" vim-polyglot
-" Turn off 'vim-sensible' stuff it does.
-let g:polyglot_disabled = ['sensible']
-
 " ale
 let g:ale_set_loclist = 1 | " update loclist, bound to C-n/p for me
 let g:ale_set_signs = 0 | " no marks in number/sign columns
@@ -209,8 +208,10 @@ let g:ale_linters = {
 \}
 " let g:ale_fixers = {}
 
-" vim-markdown
-let g:vim_markdown_frontmatter = 1
+" https://github.com/tpope/vim-markdown (ships w vim, link is to dev version)
+let g:markdown_fenced_languages = ['cpp', 'javascriptreact', 'cmake', 'sh']
+let g:markdown_syntax_conceal = 0
+let g:markdown_minlines = 200 | " 100 default. # lines to sync highlighting
 
 " fzf.vim
 nnoremap <Leader><Leader> :GFiles<CR>

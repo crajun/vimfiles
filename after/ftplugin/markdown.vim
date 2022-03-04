@@ -4,6 +4,8 @@ setlocal foldlevel=99
 setlocal suffixesadd=.md
 setlocal list
 setlocal expandtab
+setlocal foldmethod=expr
+setlocal foldexpr=MarkdownYamlFold()
 
 " TODO: could be made more robust to support other style Markdown headings
 let &l:define = '\v^#+\s*.+$'
@@ -19,19 +21,36 @@ nnoremap <buffer> gf :call utils#LiquidInclude()<CR>
 " /{{\s*page.version\s*}}\zs\/[^\.\)]\+\|\.\.\zs\/[^\.\)]\+
 setlocal include={{\\s*page.version\\s*}}\\zs\\/[^\\.\\)]\\+\\\|\\.\\.\\zs\\/[^\\.\\)]\\+
 
-" TODO: this might just need to be delete now that I don't use
-" &ft = liquid anymore and just use vim-markdown plugin
-" tagbar plugin support
-" Used ':TagbarGetTypeConfig markdown' to dump dict for markdown
-" and then just changed 'markdown' to 'liquid' to use the same for ft=liquid
-" let g:tagbar_type_liquid = {
-"     \ 'kinds' : [
-"         \ 'c:chapter',
-"         \ 's:section',
-"         \ 'S:subsection',
-"         \ 't:subsubsection',
-"         \ 'T:l3subsection',
-"         \ 'u:l4subsection',
-"         \ '?:unknown',
-"     \ ],
-" \ }
+" Based on:
+" https://habamax.github.io/2019/03/07/vim-markdown-frontmatter.html
+" Don't recognize '---' in frontmatter as being a markdown fold.
+function! MarkdownYamlFold() abort
+  let line = getline(v:lnum)
+
+  " Regular headers
+  let depth = match(line, '\(^#\+\)\@<=\( .*$\)\@=')
+  if depth > 0
+    return ">" . depth
+  endif
+
+  " Setext style headings
+  let prevline = getline(v:lnum - 1)
+  let nextline = getline(v:lnum + 1)
+  if (line =~ '^.\+$') && (nextline =~ '^=\+$') && (prevline =~ '^\s*$')
+    return ">1"
+  endif
+
+  if (line =~ '^.\+$') && (nextline =~ '^-\+$') && (prevline =~ '^\s*$')
+    return ">2"
+  endif
+
+  " frontmatter
+  if (v:lnum == 1) && (line =~ '^----*$')
+	  return ">1"
+  endif
+
+  return "="
+endfunction
+
+" vim:set sw=2:
+
