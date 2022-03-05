@@ -1,6 +1,7 @@
-setlocal expandtab
+setlocal noexpandtab
 setlocal shiftwidth=2
-setlocal softtabstop=2
+setlocal softtabstop=-1 | " use same value of shiftwidth
+setlocal tabstop=2
 setlocal textwidth=80
 setlocal foldmethod=indent
 " create 1 fold inside a function/endfunction, no more

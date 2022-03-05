@@ -1,4 +1,4 @@
-" vim: fdm=marker nowrap ft=vim et sts=2 ts=2 sw=2 fdl=99
+" vim: fdm=marker nowrap ft=vim fdl=99
 
 " Options {{{
 set nocompatible
@@ -27,14 +27,15 @@ set history=10000
 set hlsearch
 set incsearch
 set laststatus=2
-set listchars=tab:\│\ ,lead:·,trail:█,eol:
+" Tab char here set to work with 2 char wide, e.g., ts=2 sts=2 sw=2
+set listchars=tab:┊\ ,lead:·,trail:█,eol:
 set mouse=a
 set nolangremap
 set noswapfile
 set nowrap
 set nrformats-=octal
 set number
-set path-=/usr/include |  set path+=**
+set path-=/usr/include |	set path+=**
 set ruler
 set scrolloff=2
 set secure
@@ -71,9 +72,9 @@ set wildoptions=pum,tagfile
 set wildmenu
 
 if has('termguicolors')
-  if !$TERM_PROGRAM =~# 'Apple_Terminal'
-    set termguicolors
-  endif
+	if !$TERM_PROGRAM =~# 'Apple_Terminal'
+		set termguicolors
+	endif
 endif
 
 "https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
@@ -132,45 +133,44 @@ let g:markdown_minlines = 500 | " Default 50. sync lines for highlighting
 let g:asyncomplete_auto_popup = 0
 
 if executable('pyls')
-  " pip install python-language-server
-  autocmd User lsp_setup call lsp#register_server({
-    \ 'name': 'pyls',
-    \ 'cmd': {server_info->['pyls']},
-    \ 'allowlist': ['python'],
-    \ })
+	" pip install python-language-server
+	autocmd User lsp_setup call lsp#register_server({
+		\ 'name': 'pyls',
+		\ 'cmd': {server_info->['pyls']},
+		\ 'allowlist': ['python'],
+		\ })
 endif
 
 " TODO move this to utils autoload
 function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
-    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
-    let g:lsp_format_sync_timeout = 1000
+		setlocal omnifunc=lsp#complete
+		setlocal signcolumn=yes
+		if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+		nmap <buffer> gd <plug>(lsp-definition)
+		nmap <buffer> gs <plug>(lsp-document-symbol-search)
+		nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+		nmap <buffer> gr <plug>(lsp-references)
+		nmap <buffer> gi <plug>(lsp-implementation)
+		nmap <buffer> gt <plug>(lsp-type-definition)
+		nmap <buffer> <leader>rn <plug>(lsp-rename)
+		nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+		nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+		nmap <buffer> K <plug>(lsp-hover)
+		nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+		nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+		let g:lsp_format_sync_timeout = 1000
 endfunction
 
 augroup lsp_install
-  autocmd!
-  " call s:on_lsp_buffer_enabled only for languages that has the server
-  " registered.
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+	autocmd!
+	" call s:on_lsp_buffer_enabled only for languages that has the server
+	" registered.
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
-
 
 " brew install fzf first
 if executable('fzf') && has('mac')
-    set runtimepath+=/usr/local/opt/fzf
+		set runtimepath+=/usr/local/opt/fzf
 endif
 
 " asyncrun/asynctasks.vim
@@ -203,13 +203,13 @@ nnoremap <silent>n :silent! llast<CR>:ALEDetail<CR><Esc>
 
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
-  \ 'markdown': ['vale', 'cspell'],
-  \ 'vim': ['vint'],
+	\ 'markdown': ['vale', 'cspell'],
+	\ 'vim': ['vint'],
 \}
 " let g:ale_fixers = {}
 
 " https://github.com/tpope/vim-markdown (ships w vim, link is to dev version)
-let g:markdown_fenced_languages = ['cpp', 'javascriptreact', 'cmake', 'sh']
+let g:markdown_fenced_languages = ['cpp', 'javascriptreact', 'cmake', 'bash=sh', 'json']
 let g:markdown_syntax_conceal = 0
 let g:markdown_minlines = 200 | " 100 default. # lines to sync highlighting
 
@@ -226,42 +226,42 @@ nnoremap <Leader>c :FZFCd ~/git<CR>
 nnoremap <Leader>C :FZFCd!<CR>
 nnoremap <Leader><C-]> :Tags<CR>
 command! -bang -bar -nargs=? -complete=dir FZFCd
-  \ call fzf#run(fzf#wrap(
-  \ {'source': 'find '..( empty("<args>") ? ( <bang>0 ? "~" : "." ) : "<args>" ) ..
-  \ ' -type d -maxdepth 1', 'sink': 'cd'}))
+	\ call fzf#run(fzf#wrap(
+	\ {'source': 'find '..( empty("<args>") ? ( <bang>0 ? "~" : "." ) : "<args>" ) ..
+	\ ' -type d -maxdepth 1', 'sink': 'cd'}))
 " Function used to populate Quickfix with selected lines
 function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
+	call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+	copen
+	cc
 endfunction
 let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
+	\ 'ctrl-q': function('s:build_quickfix_list'),
+	\ 'ctrl-t': 'tab split',
+	\ 'ctrl-x': 'split',
+	\ 'ctrl-v': 'vsplit' }
 " Layout of fzf UI
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 " Default toggle preview window key of <C-/> is not widely supported on
 " terminal emulators. Also it slows things down. Off until toggled on.
 let g:fzf_preview_window = ['right:60%:hidden', 'ctrl-o']
 let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['bg', 'Error'],
-  \ 'fg+':     ['fg', 'Pmenu'],
-  \ 'bg+':     ['bg', 'Pmenu'],
-  \ 'hl+':     ['bg', 'Error'],
-  \ 'info':    ['fg', 'Normal'],
-  \ 'border':  ['fg', 'Normal'],
-  \ 'prompt':  ['fg', 'Statement'],
-  \ 'pointer': ['fg', 'Statement'],
-  \ 'marker':  ['fg', 'Statement'],
-  \ 'gutter':  ['bg', 'Normal'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'preview-fg': ['fg', 'Normal'],
-  \ 'preview-bg': ['bg', 'Normal'],
-  \ 'header':  ['fg', 'Comment'] }
+\ { 'fg':			 ['fg', 'Normal'],
+	\ 'bg':			 ['bg', 'Normal'],
+	\ 'hl':			 ['bg', 'Error'],
+	\ 'fg+':		 ['fg', 'Pmenu'],
+	\ 'bg+':		 ['bg', 'Pmenu'],
+	\ 'hl+':		 ['bg', 'Error'],
+	\ 'info':		 ['fg', 'Normal'],
+	\ 'border':  ['fg', 'Normal'],
+	\ 'prompt':  ['fg', 'Statement'],
+	\ 'pointer': ['fg', 'Statement'],
+	\ 'marker':  ['fg', 'Statement'],
+	\ 'gutter':  ['bg', 'Normal'],
+	\ 'spinner': ['fg', 'Label'],
+	\ 'preview-fg': ['fg', 'Normal'],
+	\ 'preview-bg': ['bg', 'Normal'],
+	\ 'header':  ['fg', 'Comment'] }
 
 " vim-fugitive - status overview and quick one-off commands
 nnoremap <silent><Leader>gg <cmd>G<CR>
@@ -395,17 +395,17 @@ xnoremap K :m '<-2<CR>gv=gv
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 if $TERM_PROGRAM =~# 'Apple_Terminal'
-  imap <Nul> <Plug>(asyncomplete_force_refresh)
-  nnoremap <silent>OA <Cmd>2wincmd+<CR>
-  nnoremap <silent>OB <Cmd>2wincmd-<CR>
-  nnoremap <silent>[1;5D <Cmd>2wincmd <<CR>
-  nnoremap <silent>[1;5C <Cmd>2wincmd ><CR>
+	imap <Nul> <Plug>(asyncomplete_force_refresh)
+	nnoremap <silent>OA <Cmd>2wincmd+<CR>
+	nnoremap <silent>OB <Cmd>2wincmd-<CR>
+	nnoremap <silent>[1;5D <Cmd>2wincmd <<CR>
+	nnoremap <silent>[1;5C <Cmd>2wincmd ><CR>
 else
-  imap <C-@> <Plug>(asyncomplete_force_refresh)
-  nnoremap <silent><C-Up> <Cmd>2wincmd+<CR>
-  nnoremap <silent><C-Down> <Cmd>2wincmd-<CR>
-  nnoremap <silent><C-Left> <Cmd>2wincmd <<CR>
-  nnoremap <silent><C-Right> <Cmd>2wincmd ><CR>
+	imap <C-@> <Plug>(asyncomplete_force_refresh)
+	nnoremap <silent><C-Up> <Cmd>2wincmd+<CR>
+	nnoremap <silent><C-Down> <Cmd>2wincmd-<CR>
+	nnoremap <silent><C-Left> <Cmd>2wincmd <<CR>
+	nnoremap <silent><C-Right> <Cmd>2wincmd ><CR>
 endif
 
 " Function keys
@@ -453,7 +453,7 @@ command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
 command! -nargs=1 Redir call utils#Redir(<q-args>)
 command! JekyllOpen call utils#JekyllOpenLive()
 command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-  \ | wincmd p | diffthis
+	\ | wincmd p | diffthis
 
 " Git-related
 " :Gshow<CR> || :Gshow <SHA> || :Gshow HEAD^^
@@ -466,7 +466,7 @@ command! -bar Gprfiles call setqflist(map(systemlist("git diff --name-only $(git
 " Check out PR # using gh pr checkout command and completion
 command! -complete=customlist,Ghlistprs -nargs=1 Ghprcheckout silent! !gh pr checkout <args>
 function! Ghlistprs(ArgLead, CmdLine, CursorPos) abort
-  return systemlist('gh pr list | cut -f1')
+	return systemlist('gh pr list | cut -f1')
 endfunction
 
 " }}}
@@ -475,28 +475,28 @@ endfunction
 " Put all autocmds into this group so this file is
 " safe to be re-sourced, by clearing all first with autocmd!
 augroup vimrc
-  autocmd!
-  autocmd FileType * if !&omnifunc | setlocal omnifunc=syntaxcomplete#Complete | endif
-  autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
-  autocmd BufEnter $MYVIMRC setlocal fdm=marker
-  autocmd BufWritePre /tmp/* setlocal noundofile
-  autocmd QuickFixCmdPost [^l]* botright cwindow
-  autocmd QuickFixCmdPost  l* botright lwindow
-  autocmd VimEnter * cwindow
-  autocmd FileType gitcommit call feedkeys('i')
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
-  " I also set this in utils#Redir because it does 'nobuflisted'
-  " This one catches other things that open 'nofile' buffers
-  autocmd BufEnter * if &buftype ==# 'nofile' | nnoremap <buffer> q :bwipeout!<CR> | endif
-  autocmd BufEnter * if &buftype ==# 'nofile' | setlocal nocursorcolumn | endif
-  autocmd BufWinEnter * if &previewwindow | setlocal nonumber norelativenumber nolist | endif
-  autocmd BufReadPost fugitive://* set bufhidden=delete
-  autocmd DirChanged * let &titlestring = fnamemodify(getcwd(), ":~")
-  autocmd BufReadPost *
-    \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-    \ |   exe "normal! g`\""
-    \ | endif
+	autocmd!
+	autocmd FileType * if !&omnifunc | setlocal omnifunc=syntaxcomplete#Complete | endif
+	autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
+	autocmd BufEnter $MYVIMRC setlocal fdm=marker
+	autocmd BufWritePre /tmp/* setlocal noundofile
+	autocmd QuickFixCmdPost [^l]* botright cwindow
+	autocmd QuickFixCmdPost  l* botright lwindow
+	autocmd VimEnter * cwindow
+	autocmd FileType gitcommit call feedkeys('i')
+	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+	autocmd WinLeave * setlocal nocursorline
+	" I also set this in utils#Redir because it does 'nobuflisted'
+	" This one catches other things that open 'nofile' buffers
+	autocmd BufEnter * if &buftype ==# 'nofile' | nnoremap <buffer> q :bwipeout!<CR> | endif
+	autocmd BufEnter * if &buftype ==# 'nofile' | setlocal nocursorcolumn | endif
+	autocmd BufWinEnter * if &previewwindow | setlocal nonumber norelativenumber nolist | endif
+	autocmd BufReadPost fugitive://* set bufhidden=delete
+	autocmd DirChanged * let &titlestring = fnamemodify(getcwd(), ":~")
+	autocmd BufReadPost *
+		\ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+		\ |		exe "normal! g`\""
+		\ | endif
 augroup END
 
 " }}}
