@@ -27,12 +27,12 @@ set history=10000
 set hlsearch
 set incsearch
 set laststatus=2
+set linebreak showbreak=↪
 " Tab char here set to work with 2 char wide, e.g., ts=2 sts=2 sw=2
 set listchars=tab:┊\ ,lead:·,trail:█,eol:
 set mouse=a
 set nolangremap
 set noswapfile
-set nowrap
 set nrformats-=octal
 set number
 set path-=/usr/include |	set path+=**
@@ -321,7 +321,7 @@ nnoremap <Leader>? :vimgrep //j **/*.md<S-Left><S-Left><Right>
 
 nnoremap <Leader>! :Redir<Space>
 nnoremap <Leader>@ :JekyllOpen<CR>
-
+nnoremap <Leader>z za
 nnoremap g; g;zv
 nnoremap g, g,zv
 nnoremap <silent> } :keepjumps normal! }<CR>
@@ -463,7 +463,6 @@ augroup vimrc
 	autocmd!
 	autocmd FileType * if !&omnifunc | setlocal omnifunc=syntaxcomplete#Complete | endif
 	autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
-	autocmd BufEnter $MYVIMRC setlocal fdm=marker
 	autocmd BufWritePre /tmp/* setlocal noundofile
 	autocmd QuickFixCmdPost [^l]* botright cwindow
 	autocmd QuickFixCmdPost  l* botright lwindow

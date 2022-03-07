@@ -7,9 +7,10 @@ setlocal expandtab
 setlocal shiftwidth=3
 setlocal softtabstop=3
 setlocal tabstop=3
-" setlocal foldmethod=expr
-" setlocal foldexpr=MarkdownYamlFold()
 
+" Better with 'set wrap' on
+nnoremap <buffer> j gj
+nnoremap <buffer> k gk
 " TODO: could be made more robust to support other style Markdown headings
 let &l:define = '\v^#+\s*.+$'
 
