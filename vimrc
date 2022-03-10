@@ -130,9 +130,13 @@ call minpac#add('prabirshrestha/asyncomplete.vim')
 call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
 call minpac#add('wellle/targets.vim')
 call minpac#add('mbbill/undotree')
+call minpac#add('romainl/vim-cool')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
+
+" https://github.com/romainl/vim-cool {{{2
+let g:CoolTotalMatches = 1
 
 " vim-markdown {{{2
 let g:markdown_fenced_languages = ['javascriptreact', 'cpp', 'sh', 'cmake']
@@ -214,7 +218,7 @@ nnoremap <silent>n :silent! llast<CR>:ALEDetail<CR><Esc>
 
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
-	\ 'markdown': ['vale', 'cspell'],
+	\ 'markdown': ['vale', 'cspell', 'markdownlintcli2'],
 	\ 'vim': ['vint'],
 \}
 " let g:ale_fixers = {}
@@ -305,7 +309,7 @@ nnoremap <Leader>gD :Gvdiffsplit<space>
 " git grep 'foo bar' [branch/SHA]
 " git log --grep='foobar' to search commit messages
 " git log -Sfoobar (when 'foobar' was added/removed)
-nnoremap <Leader>g/ :Ggrep! -Hnri --quiet<Space>
+nnoremap <Leader>g/ :Ggrep! -HnriqE <Space>
 nnoremap <Leader>g? :Git! log --grep=
 nnoremap <Leader>gS :Git! log -S
 nnoremap <Leader>g* :Ggrep! -Hnri --quiet <C-r>=expand("<cword>")<CR><CR>
@@ -320,7 +324,7 @@ xnoremap <Leader>g@ <cmd>GBrowse<CR>
 " Mappings {{{1
 
 nmap <Leader>/ :grep<Space>
-nnoremap <Leader>? :vimgrep //j **/*.md<S-Left><S-Left><Right>
+nnoremap <Leader>? :noautocmd vimgrep /\v/gj **/*.md<S-Left><S-Left><Right>
 
 nnoremap <Leader>! :Redir<Space>
 nnoremap <Leader>@ :JekyllOpen<CR>
@@ -451,13 +455,19 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
 " for expr2 in map() here we use string where v:val is index of current item in
 " list, from systemlist() call. Since setqflist() requires a dict we use map to
 " create one.
-command! -nargs=? -bar Gshow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
-command! -bar Gprfiles call setqflist(map(systemlist("git diff --name-only $(git merge-base HEAD develop)"), '{"filename": v:val, "lnum": 1}')) | copen
+command! -nargs=? -bar GitShow call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
+command! -complete=customlist,Gitbranches -nargs=1 -bar GitPRFiles call setqflist(map(systemlist("git diff --name-only $(git merge-base HEAD <args>)"), '{"filename": v:val, "lnum": 1}')) | copen
 " Check out PR # using gh pr checkout command and completion
-command! -complete=customlist,Ghlistprs -nargs=1 Ghprcheckout silent! !gh pr checkout <args>
+command! -complete=customlist,Ghlistprs -nargs=1 GitPRCheckout silent! !gh pr checkout <args>
+
 function! Ghlistprs(ArgLead, CmdLine, CursorPos) abort
 	return systemlist('gh pr list | cut -f1')
 endfunction
+
+function! Gitbranches(ArgLead, CmdLine, CursorPos) abort
+	return systemlist('git branch')
+endfunction
+
 
 " Autocmd {{{1
 " Put all autocmds into this group so this file is
