@@ -76,8 +76,8 @@ if has('termguicolors')
 endif
 
 " https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
-let &t_SI = "\e[6 q"
-let &t_EI = "\e[2 q"
+let &t_SI="\e[6 q"
+let &t_EI="\e[2 q"
 
 if executable('fzf') && has('mac')
 		set runtimepath+=/usr/local/opt/fzf
@@ -131,6 +131,8 @@ call minpac#add('mbbill/undotree')
 call minpac#add('romainl/vim-cool')
 call minpac#add('romainl/vim-qf')
 call minpac#add('tpope/vim-liquid')
+
+call minpac#add('teoljungberg/vim-whitescale')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
@@ -442,4 +444,5 @@ augroup END
 " Colorscheme and Syntax {{{1
 set background=dark
 colorscheme apprentice
+hi! Comment cterm=italic
 
