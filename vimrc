@@ -33,15 +33,15 @@ set mouse=a
 set nolangremap
 set noswapfile
 set nrformats-=octal
-set number
+set number relativenumber
 set path-=/usr/include | set path+=**
 set ruler
-set scrolloff=2
+set scrolloff=1
 set secure
 set sessionoptions-=options
 set showcmd
 set showmatch
-set sidescrolloff=5
+set sidescrolloff=2
 set statusline=%f
 set statusline+=%m%r%h
 set statusline+=%=
@@ -132,7 +132,7 @@ call minpac#add('romainl/vim-cool')
 call minpac#add('romainl/vim-qf')
 call minpac#add('tpope/vim-liquid')
 
-call minpac#add('teoljungberg/vim-whitescale')
+call minpac#add('habamax/vim-habaurora')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
@@ -442,7 +442,25 @@ augroup vimrc
 augroup END
 
 " Colorscheme and Syntax {{{1
-set background=dark
-colorscheme apprentice
-hi! Comment cterm=italic
+function! CustomHighlightsLight() abort
+	" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
+	" 'cursorline' coloring overrules syntax highlighting of background
+	" below and gets in the way with e.g., DiffAdd
+	highlight! Comment cterm=italic
+	" highlight Normal ctermbg=255
+	" fugitive
+	highlight! link diffAdded DiffAdd
+	highlight! link diffRemoved DiffDelete
+	highlight! link diffChanged DiffChange
+	highlight! LineNr ctermfg=161
+endfunction
+
+" TODO: stuff!
+
+augroup MyColors
+	autocmd!
+	autocmd ColorScheme habaurora call CustomHighlightsLight()
+augroup END
+
+colorscheme habaurora
 
