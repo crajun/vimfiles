@@ -115,8 +115,10 @@ call minpac#init()
 
 call minpac#add('k-takata/minpac', { 'type': 'opt' })
 call minpac#add('romainl/apprentice')
+call minpac#add('tpope/vim-characterize')
 call minpac#add('tpope/vim-commentary')
 call minpac#add('tpope/vim-repeat')
+call minpac#add('tpope/vim-sleuth')
 call minpac#add('tpope/vim-surround')
 call minpac#add('kana/vim-textobj-user')
 call minpac#add('kana/vim-textobj-entire')
@@ -136,14 +138,15 @@ call minpac#add('mbbill/undotree')
 call minpac#add('romainl/vim-cool')
 call minpac#add('romainl/vim-qf')
 call minpac#add('tpope/vim-liquid')
+call minpac#add('NLKNguyen/papercolor-theme')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 
 " https://github.com/preservim/tagbar {{{2
 let g:tagbar_type_liquid = {
-		\ 'kinds' : [
-			\ 'c:chapter',
+	\ 'kinds' : [
+		\ 'c:chapter',
 		\ 's:section',
 		\ 'S:subsection',
 		\ 't:subsubsection',
@@ -180,22 +183,22 @@ endif
 
 " TODO move this to utils autoload
 function! s:on_lsp_buffer_enabled() abort
-		setlocal omnifunc=lsp#complete
-		setlocal signcolumn=yes
-		if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-		nmap <buffer> gd <plug>(lsp-definition)
-		nmap <buffer> gs <plug>(lsp-document-symbol-search)
-		nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-		nmap <buffer> gr <plug>(lsp-references)
-		nmap <buffer> gi <plug>(lsp-implementation)
-		nmap <buffer> gt <plug>(lsp-type-definition)
-		nmap <buffer> <leader>rn <plug>(lsp-rename)
-		nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-		nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-		nmap <buffer> K <plug>(lsp-hover)
-		nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-		nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
-		let g:lsp_format_sync_timeout = 1000
+	setlocal omnifunc=lsp#complete
+	setlocal signcolumn=yes
+	if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+	nmap <buffer> gd <plug>(lsp-definition)
+	nmap <buffer> gs <plug>(lsp-document-symbol-search)
+	nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+	nmap <buffer> gr <plug>(lsp-references)
+	nmap <buffer> gi <plug>(lsp-implementation)
+	nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> <leader>rn <plug>(lsp-rename)
+	nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+	nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+	nmap <buffer> K <plug>(lsp-hover)
+	nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+	nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+	let g:lsp_format_sync_timeout = 1000
 endfunction
 
 augroup lsp_install
@@ -272,22 +275,24 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 " terminal emulators. Also it slows things down. Off until toggled on.
 let g:fzf_preview_window = ['right:60%:hidden', 'ctrl-o']
 let g:fzf_colors =
-\ { 'fg':			 ['fg', 'Normal'],
-	\ 'bg':			 ['bg', 'Normal'],
-	\ 'hl':			 ['bg', 'Error'],
-	\ 'fg+':		 ['fg', 'Pmenu'],
-	\ 'bg+':		 ['bg', 'Pmenu'],
-	\ 'hl+':		 ['bg', 'Error'],
-	\ 'info':		 ['fg', 'Normal'],
-	\ 'border':  ['fg', 'Normal'],
-	\ 'prompt':  ['fg', 'Statement'],
-	\ 'pointer': ['fg', 'Statement'],
-	\ 'marker':  ['fg', 'Statement'],
-	\ 'gutter':  ['bg', 'Normal'],
-	\ 'spinner': ['fg', 'Label'],
-	\ 'preview-fg': ['fg', 'Normal'],
-	\ 'preview-bg': ['bg', 'Normal'],
-	\ 'header':  ['fg', 'Comment'] }
+	\ {
+		\'fg': ['fg', 'Normal'],
+		\ 'bg': ['bg', 'Normal'],
+		\ 'hl': ['bg', 'Error'],
+		\ 'fg+': ['fg', 'Pmenu'],
+		\ 'bg+': ['bg', 'Pmenu'],
+		\ 'hl+': ['bg', 'Error'],
+		\ 'info': ['fg', 'Normal'],
+		\ 'border': ['fg', 'Normal'],
+		\ 'prompt': ['fg', 'Statement'],
+		\ 'pointer': ['fg', 'Statement'],
+		\ 'marker': ['fg', 'Statement'],
+		\ 'gutter': ['bg', 'Normal'],
+		\ 'spinner': ['fg', 'Label'],
+		\ 'preview-fg': ['fg', 'Normal'],
+		\ 'preview-bg': ['bg', 'Normal'],
+		\ 'header': ['fg', 'Comment']
+\ }
 
 " https://github.com/tpope/vim-fugitive {{{2
 nnoremap <silent><Leader>gg <cmd>G<CR>
@@ -492,8 +497,8 @@ augroup vimrc
 	autocmd QuickFixCmdPost  l* botright lwindow
 	autocmd VimEnter * cwindow
 	autocmd FileType gitcommit call feedkeys('i')
-	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-	autocmd WinLeave * setlocal nocursorline
+	" autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+	" autocmd WinLeave * setlocal nocursorline
 	" Also set in utils#Redir, this catches other things that open 'nofile' buffers
 	autocmd BufEnter * if &buftype ==# 'nofile' | nnoremap <buffer> q :bwipeout!<CR> | endif
 	autocmd BufEnter * if &buftype ==# 'nofile' | setlocal nocursorcolumn | endif
@@ -506,13 +511,37 @@ augroup vimrc
 		\ | endif
 augroup END
 
-" Colorscheme and Syntax {{{1
+   " Colorscheme and Syntax {{{1
 " See all active highlight groups with:
 " :so $VIMRUNTIME/syntax/hitest.vim
-" set background=light
-" colorscheme quiet
-set background=dark
-colorscheme apprentice
+
+" set background=dark
+" colorscheme apprentice
+
+set background=light
+let g:PaperColor_Theme_Options = {
+	\ 'theme': {
+		\ 'default': {
+			\ 'allow_bold': 0,
+			\ 'allow_italic': 0,
+		\ },
+	\ },
+	\ 'language': {
+		\ 'liquid': {
+			\ 'highlight_builtins': 1
+		\ },
+		\ 'markdown': {
+			\ 'highlight_builtins': 1
+		\ },
+		\ 'cpp': {
+			\ 'highlight_standard_library': 1
+		\ },
+		\ 'c': {
+			\ 'highlight_builtins': 1
+		\ },
+	\ },
+\}
+colorscheme PaperColor
 
 " Neovim backports {{{1
 " Don't restore global maps/options, let vimrc handle that

@@ -1,0 +1,17 @@
+root = true
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+
+[vimrc]
+indent_style = tab
+indent_size = 2
+tabstop = 2
+insert_final_newline = true
+
+[*.vim]
+indent_style = tab
+indent_size = 2
+tabstop = 2
+insert_final_newline = true
