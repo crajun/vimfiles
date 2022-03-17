@@ -14,6 +14,7 @@ set breakindent
 set clipboard=unnamed,unnamedplus
 set complete-=i
 set completeopt=menuone,popup
+set cursorline
 set diffopt+=algorithm:patience
 set display=truncate
 set errorformat+=%f | " :cexpr system('cat /tmp/list-o-filenames.txt')
@@ -450,34 +451,11 @@ function! CustomApprentice() abort
 	hi! LineNr ctermbg=235 guibg=#262626
 endfunction
 
-function! CustomSolarizedLight() abort
-	" custom highlights here.
-	hi! SpecialKey ctermbg=15
-endfunction
-
 augroup MyColors
 	autocmd!
 	autocmd ColorScheme apprentice call CustomApprentice()
-	autocmd ColorScheme solarized8_flat call CustomSolarizedLight()
 augroup END
 
 set background=dark
 colorscheme apprentice
-
-if (has('termguicolors') && &termguicolors) || has('gui_running')
-	" let g:solarized_
-	let g:solarized_italics = 1
-	let g:solarized_old_cursor_style = 1
-else
-	if ($TERM =~# 'italic') && ($TERM_PROGRAM =~# 'Apple_Terminal')
-		" when using custom terminfo 'xterm-256color-italic'
-		let g:solarized_italics = 1
-		" 16 ANSI colors method, term emulator 16 ANSI must match!
-		let g:solarized_use16 = 1
-	endif
-endif
-let g:solarized_enable_extra_hi_groups = 1
-let g:solarized_statusline = "flat" | " low, flat, normal
-" set background=light
-" colorscheme solarized8_flat
 
