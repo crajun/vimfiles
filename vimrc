@@ -226,18 +226,20 @@ let g:ale_hover_to_floating_preview = 1
 let g:ale_floating_preview = 1 | " Use float for everything
 let g:ale_hover_to_preview = 0 | " Use preview win for hover messages
 let g:ale_hover_cursor = 0
-" TODO: figure out how to call :ALEDetail automatically after the jump
-nnoremap [E <Plug>(ale_first)
-nnoremap ]E <Plug>(ale_last)
-nnoremap ]e <Plug>(ale_next)
-nnoremap [e <Plug>(ale_previous)
+" These plug mappings taken into consideration the location of cursor,
+" and need to wrapped this way to add on manual call to ALEDetail for popup
+nnoremap <silent>[E :execute "normal \<Plug>(ale_first)"<CR>:ALEDetail<CR>
+nnoremap <silent>]E :execute "normal \<Plug>(ale_last)"<CR>:ALEDetail<CR>
+nnoremap <silent>]e :execute "normal \<Plug>(ale_next)"<CR>:ALEDetail<CR>
+nnoremap <silent>[e :execute "normal \<Plug>(ale_previous)"<CR>:ALEDetail<CR>
 
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
 	\ 'markdown': ['vale', 'cspell', 'markdownlintcli2'],
 	\ 'vim': ['vint'],
+	\ 'liquid': ['vale', 'cspell', "markdownlintcli2"],
 \}
-let g:ale_linter_aliases = { 'liquid': 'markdown' }
+" let g:ale_linter_aliases = { 'liquid': 'markdown' }
 " let g:ale_fixers = {}
 
 " https://github.com/junegunn/fzf.vim {{{2
@@ -464,6 +466,5 @@ augroup MyColors
 	autocmd ColorScheme apprentice call CustomApprentice()
 augroup END
 
-set background=dark
 colorscheme apprentice
 
