@@ -41,6 +41,7 @@ set secure
 set sessionoptions-=options
 set showcmd
 set showmatch
+set showtabline=2
 set sidescrolloff=2
 set statusline=%f
 set statusline+=%m%r%h
@@ -51,7 +52,7 @@ set statusline+=\ %P
 set statusline +=\ %c
 set suffixes+=.png,.jpeg,.jpg,.exe
 set shortmess-=cS
-" set tabline=%!vim9utils#MyTabline()
+set tabline=%!vim9utils#MyTabline()
 set ignorecase smartcase
 set signcolumn=number
 set splitbelow splitright
@@ -444,6 +445,7 @@ augroup vimrc
 	autocmd BufWinEnter * if &previewwindow | setlocal nonumber norelativenumber nolist | endif
 	autocmd BufReadPost fugitive://* set bufhidden=delete
 	autocmd DirChanged * let &titlestring = fnamemodify(getcwd(), ":~")
+	autocmd TabEnter * let &titlestring = fnamemodify(getcwd(), ":~")
 	autocmd BufReadPost *
 		\ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
 		\ | exe "normal! g`\""

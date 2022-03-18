@@ -29,6 +29,7 @@ export def StripTrailingWhitespaces()
   endif
 enddef
 
+# OLD: I use vim-qf functions now
 export def ToggleQuickfixList()
   var qwinid = getqflist({'winid': 0}).winid
   if qwinid > 0
@@ -38,6 +39,7 @@ export def ToggleQuickfixList()
   endif
 enddef
 
+# OLD: I use vim-qf functions now
 export def ToggleLocationList()
   # Tries to toggle open/close location list for current window,
   # if no loclist exists then just ignore error stating such
@@ -93,7 +95,10 @@ export def MaybeReplaceCrWithCrColon()
   endif
 enddef
 
+# example: :Redir scriptnames, :Redir ls!, does not work for external like
+# :Redir !which python, though 
 export def Redir(cmd: string)
+	# TODO: I could detect if cmd startswith ! and run it with system()?
   var output = execute(cmd)
   botright split +enew
   setlocal nobuflisted nonumber norelativenumber buftype=nofile bufhidden=wipe noswapfile
@@ -119,55 +124,44 @@ export def JekyllOpenLive()
   # up with 6.15/6.15/path/to/file. We only check up to first / to limit to first folder.
   var newpath = newversion .. relpath->substitute('\d\.\d\d\?/', '', '')
   # any version 6.14 and over requires localhost only
-  var host = str2float(newversion) >= 6.14 ? 'https://localhost.com:8080/' : 'https://developer-staging.youi.tv/'
+  var host = str2float(newversion) >= 6.14 ? 'http://localhost:4000' : 'https://developer-staging.youi.tv/'
   var finalurl = host .. newpath
-  # TODO: make more robust, calling os-specific open like netrw does,
-  # like xdg-open on Linux
   execute "silent! !open " . finalurl
+	redraw!
 enddef
 
 export def MyTabline(): string
-  def GetCurrentTabLabel(tabnr: number): string
-    # Give tabpage number return string of :getcwd for that tabpage
-    var buflist = tabpagebuflist(tabnr)
-    var winnr = tabpagewinnr(tabnr)
-    return getcwd(winnr, tabnr)
-  enddef
-  var s: string
-  for i in range(1, tabpagenr('$'))
-    # Loop over pages and define labels for them, then get label for each tab
-    if i == tabpagenr()
-      s ..= '%#TabLineSel#'
-    else
-      s ..= '%#TabLine#'
-    endif
-    # set the tab page number, for mouse clicks
-    s ..= '%' .. i .. 'T'
-    # s ..= ' %{GetCurrentTabLabel(' .. i .. ')} '
-    s ..= ' ' .. GetCurrentTabLabel(i) .. ' '
+  var line: string
+  for i in range(tabpagenr('$'))
+		var tabnr: number = i + 1 # tab indexes start at 1
+		var winnr: number = tabpagewinnr(tabnr) # active window no. in tabnr
+		 
+		# TODO: specific list[number]?
+		var buflist: list<number> = tabpagebuflist(tabnr) # => [21, 24, 25]
+		var bufnr: number = buflist[winnr - 1]
+
+		# mouse support and highlighting current selected tab
+    line ..= '%' .. tabnr .. 'T' # tab number with special %T for mouse
+    line ..= (tabnr == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
+
+		# show the current active buffer name, just the filename
+		var bufname: string = fnamemodify(bufname(bufnr), ':t')
+		line ..= ' ' .. (bufname == '' ? '[No Name]' : bufname)
+		# show the tab number, put it at the back or will get cutoff
+		# when tablabel too wide
+		line ..= ' ' .. tabnr .. ' '
+		# modified? add '+'
+		line ..= (getbufvar(bufnr, "&mod") ? '+ ' : '')
+
   endfor
   # After last tab fill with hl-TabLineFill and reset tab page nr with %T
-  s ..= '%#TabLineFill#%T'
+  line ..= '%#TabLineFill#T'
   # Right-align (%=) hl-TabLine (%#TabLine#) style and use %999X for a close
   # current tab mark, with 'X' as the character
   if tabpagenr('$') > 1
-    s ..= '%=%#TabLine#%999XX'
+    line ..= '%=%#TabLine#%999XX'
   endif
-  return s
-enddef
-
-export def Myguitabline(): string
-  def GetCurrentTabLabel(tabnr: number): string
-    # Give tabpage number return string of :getcwd for that tabpage
-    var buflist = tabpagebuflist(tabnr)
-    var winnr = tabpagewinnr(tabnr)
-    return getcwd(winnr, tabnr)
-  enddef
-  # This is called for each tabpage when using gui, see ':h 'guitablabel'
-  var s = '%N' .. 'T'
-  # the actual label
-  s ..= ' %{GetCurrentTabLabel(' .. v:lnum  .. ')} '
-  return s
+  return line
 enddef
 
 export def Grep(...args: list<string>): string
