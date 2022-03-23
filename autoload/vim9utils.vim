@@ -131,18 +131,17 @@ export def JekyllOpenLive()
 enddef
 
 export def MyTabline(): string
-  var line: string
+  var line: string = ''
   for i in range(tabpagenr('$'))
-		var tabnr: number = i + 1 # tab indexes start at 1
-		var winnr: number = tabpagewinnr(tabnr) # active window no. in tabnr
+		var tabnr: number = i + 1 # tab index starts at 1
+		var winnr: number = tabpagewinnr(tabnr) # active window number
 		 
-		# TODO: specific list[number]?
 		var buflist: list<number> = tabpagebuflist(tabnr) # => [21, 24, 25]
 		var bufnr: number = buflist[winnr - 1]
 
-		# mouse support and highlighting current selected tab
-    line ..= '%' .. tabnr .. 'T' # tab number with special %T for mouse
     line ..= (tabnr == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
+		# mouse support and highlighting current selected tab
+		line ..= '%' .. tabnr .. 'T'
 
 		# show the current active buffer name, just the filename
 		var bufname: string = fnamemodify(bufname(bufnr), ':t')
@@ -155,7 +154,7 @@ export def MyTabline(): string
 
   endfor
   # After last tab fill with hl-TabLineFill and reset tab page nr with %T
-  line ..= '%#TabLineFill#T'
+  line ..= '%#TabLineFill#%T'
   # Right-align (%=) hl-TabLine (%#TabLine#) style and use %999X for a close
   # current tab mark, with 'X' as the character
   if tabpagenr('$') > 1
