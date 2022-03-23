@@ -35,6 +35,7 @@ set noswapfile
 set nrformats-=octal
 set number relativenumber
 set path-=/usr/include | set path+=**
+set pumheight=5
 set ruler
 set scrolloff=1
 set secure
@@ -43,13 +44,12 @@ set showcmd
 set showmatch
 set showtabline=2
 set sidescrolloff=2
+" set statusline=%!vim9utils#MyStatusline()
 set statusline=%f
-set statusline+=%m%r%h
+set statusline+=\ %M\ %R\ %H
 set statusline+=%=
 set statusline+=%{FugitiveStatusline()}
-set statusline+=\ [%Y]
-set statusline+=\ %P
-set statusline +=\ %c
+set statusline+=\ %Y
 set suffixes+=.png,.jpeg,.jpg,.exe
 set shortmess-=cS
 set tabline=%!vim9utils#MyTabline()
@@ -86,16 +86,6 @@ endif
 
 " Plugins {{{1
 " builtins {{{2
-let g:loaded_getscriptPlugin = 1
-let g:loaded_logiPat = 1
-let g:loaded_vimballPlugin = 1
-let g:loaded_vimball = 1
-let g:loaded_zipPlugin = 1
-let g:loaded_gzip = 1
-let g:loaded_spellfile_plugin = 1
-let g:loaded_tarPlugin = 1
-let g:loaded_2html_plugin = 1
-
 packadd! matchit
 packadd! cfilter
 
@@ -109,7 +99,6 @@ packadd minpac
 call minpac#init()
 
 call minpac#add('k-takata/minpac', { 'type': 'opt' })
-call minpac#add('romainl/apprentice')
 call minpac#add('tpope/vim-characterize')
 call minpac#add('tpope/vim-commentary')
 call minpac#add('tpope/vim-repeat')
@@ -134,16 +123,13 @@ call minpac#add('romainl/vim-cool')
 call minpac#add('romainl/vim-qf')
 call minpac#add('tpope/vim-liquid')
 call minpac#add('tpope/vim-markdown') " upstream of shipped runtime files
-
 call minpac#add('habamax/vim-habaurora')
+call minpac#add('romainl/apprentice')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 
 " https://github.com/tpope/vim-liquid {{{2
-" for {% highlight %} // code here {% endhighlight %} liquid tag highlighting
-" NOTE: until vim-liquid upstream incorporates my hack, I enable fenced
-" highlighting in ~/.vim/after/syntax/liquid.vim
 let g:liquid_highlight_types = g:markdown_fenced_languages
 "
 " https://github.com/preservim/tagbar {{{2
@@ -184,7 +170,6 @@ let g:asyncomplete_auto_popup = 0
 	" 	\ })
 " endif
 
-" TODO move this to utils autoload
 function! s:on_lsp_buffer_enabled() abort
 	setlocal omnifunc=lsp#complete
 	setlocal signcolumn=yes
@@ -247,13 +232,12 @@ let g:ale_linters = {
 " let g:ale_fixers = {}
 
 " https://github.com/junegunn/fzf.vim {{{2
-nnoremap <Leader><Leader> :GFiles<CR>
+nnoremap <C-p> :GFiles<CR>
 nnoremap <Leader>e. :FZF %:h<CR>
 let g:fzf_buffers_jump = 1
 nnoremap <Leader><Tab> :Buffers<CR>
-nnoremap <Leader>c :FZFCd ~/git<CR>
-nnoremap <Leader>C :FZFCd!<CR>
 nnoremap <Leader><C-]> :Tags<CR>
+nnoremap <Leader>c :FZFCd ~/git<CR>
 command! -bang -bar -nargs=? -complete=dir FZFCd
 	\ call fzf#run(fzf#wrap(
 	\ {'source': 'find '..( empty("<args>") ? ( <bang>0 ? "~" : "." ) : "<args>" ) ..
@@ -269,21 +253,11 @@ let g:fzf_action = {
 	\ 'ctrl-x': 'split',
 	\ 'ctrl-v': 'vsplit'
 \}
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+let g:fzf_layout = { 'window': { 'width': 0.5, 'height': 0.6 } }
 let g:fzf_preview_window = ['right:60%:hidden', 'ctrl-o']
 
 " https://github.com/tpope/vim-fugitive {{{2
-nnoremap <silent><Leader>gg <cmd>G<CR>
-nnoremap <Leader>g<Space> :G<space>
-
-" Add <cfile> to index and save, gW useful in 3 way merge diffs: choose
-" a buffer and use gW to use all that versions' changes, i.e., --ours/theirs
-nnoremap <silent><Leader>gw <cmd>Gwrite<CR>
-nnoremap <silent><Leader>gW <cmd>Gwrite!<CR>
-noremap <silent><Leader>gb <cmd>G blame<CR>
-nnoremap <silent><Leader>gl <cmd>0Git log<CR>
-nnoremap <silent><Leader>gL <cmd>Git log<CR>
-nnoremap <Leader>gE :Gedit<Space>
+nnoremap <Leader>gg <cmd>G<CR>
 nnoremap <silent><Leader>ge :Gedit <bar> only<CR>
 nnoremap <silent><Leader>gd <cmd>Gvdiffsplit<CR>
 nnoremap <Leader>gD :Gvdiffsplit<space>
@@ -292,34 +266,21 @@ nnoremap <Leader>g? :Git! log -p -S %
 nnoremap <Leader>g* :Ggrep! -Hnri --quiet <C-r>=expand("<cword>")<CR><CR>
 nnoremap <silent><Leader>gP <cmd>G push<CR>
 nnoremap <silent><Leader>gp <cmd>G pull<CR>
-nnoremap <silent><Leader>gf <cmd>G fetch<CR>
-nnoremap <Leader>g@ <cmd>GBrowse<CR>
 
 " Mappings {{{1
 nmap <Leader>/ :grep<Space>
-nnoremap <Leader>? :noautocmd vimgrep /\v/gj **/*.md<S-Left><S-Left><Right>
+nnoremap <Leader>? :noautocmd vimgrep /\v/gj **/*.md<S-Left><S-Left><Right><Right><Right>
 nnoremap <Leader>! :Redir<Space>
+" TODO: put this in liquid local mapping
 nnoremap <Leader>@ :JekyllOpen<CR>
-nnoremap <Leader>z za
+nnoremap <Tab> za
 nnoremap g; g;zv
 nnoremap g, g,zv
-nnoremap <silent> } :keepjumps normal! }<CR>
-nnoremap <silent> { :keepjumps normal! {<CR>
-inoremap (<CR> (<CR>)<Esc>O
-inoremap (; (<CR>);<Esc>O
-inoremap (, (<CR>),<Esc>O
-inoremap {; {<CR>};<Esc>O
-inoremap {, {<CR>},<Esc>O
-inoremap [<CR> [<CR>]<Esc>O
-inoremap [; [<CR>];<Esc>O
-inoremap [, [<CR>],<Esc>O
 
 cnoremap <expr> <C-p> wildmenumode() ? "<C-P>" : "<Up>"
 cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
 cnoremap <expr> <C-j> wildmenumode() ? "\<Left>\<C-z>" : "\<C-j>"
 cnoremap <expr> <C-k> wildmenumode() ? "\<Right>\<C-z>" : "\<C-k>"
-
-nnoremap <Leader>dd <Cmd>bwipeout!<CR>
 
 nnoremap <Leader>ff :find<space>
 nnoremap <Leader>fs :sfind<space>
@@ -328,8 +289,10 @@ nnoremap <Leader>ee :edit <C-z><S-Tab>
 nnoremap <Leader>es :split <C-z><S-Tab>
 nnoremap <Leader>ev :vert split <C-z><S-Tab>
 " buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
+nnoremap <Leader><Leader> :buffer #<CR>
 nnoremap <Leader>b. :filter! /^\~\\|^\// ls t<CR>:b
-nnoremap <Leader>b<Tab> :buffer <C-z><S-Tab>
+nnoremap <Leader>bb :buffer <C-z><S-Tab>
+nnoremap <Leader>bd <Cmd>bwipeout!<CR>
 nnoremap <Leader>bs :sbuffer <C-d>
 nnoremap <Leader>bv :vert sbuffer <C-d>
 
@@ -431,6 +394,8 @@ augroup vimrc
 	autocmd BufReadPost fugitive://* set bufhidden=delete
 	autocmd DirChanged * let &titlestring = fnamemodify(getcwd(), ":~")
 	autocmd TabEnter * let &titlestring = fnamemodify(getcwd(), ":~")
+	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+	autocmd WinLeave * setlocal nocursorline
 	autocmd BufReadPost *
 		\ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
 		\ | exe "normal! g`\""
@@ -444,13 +409,12 @@ endif
 
 function! CustomApprentice() abort
 	" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
-	" highlight! Comment cterm=italic
-	hi LineNr ctermbg=235 guibg=#262626
+	highlight! Comment cterm=italic
+	highlight! LineNr ctermbg=235 guibg=#262626
 endfunction
 
 function! CustomHabaurora() abort
-	" FIX: 'T' was showing next to tabpages
-	hi! TabLineFill ctermfg=246 guifg=#949494
+	highlight! Comment cterm=italic
 endfunction
 
 augroup MyColors
@@ -459,8 +423,6 @@ augroup MyColors
 	autocmd ColorScheme habaurora call CustomHabaurora()
 augroup END
 
-" Dark
 " colorscheme apprentice
-" Light
 colorscheme habaurora
 
