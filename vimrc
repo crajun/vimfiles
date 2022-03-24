@@ -28,7 +28,7 @@ set hlsearch
 set incsearch
 set laststatus=2
 set linebreak showbreak=↪
-set listchars=tab:┊\ ,lead:·,trail:█,eol:
+set listchars=tab:⇥\ ,lead:·,trail:█,eol:,precedes:«,extends:»
 set mouse=a
 set nolangremap
 set noswapfile
