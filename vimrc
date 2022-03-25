@@ -98,32 +98,37 @@ packadd minpac
 call minpac#init()
 
 call minpac#add('k-takata/minpac', { 'type': 'opt' })
+" Editing
 call minpac#add('tpope/vim-characterize')
 call minpac#add('tpope/vim-commentary')
 call minpac#add('tpope/vim-repeat')
-call minpac#add('tpope/vim-sleuth')
 call minpac#add('tpope/vim-surround')
 call minpac#add('kana/vim-textobj-user')
 call minpac#add('kana/vim-textobj-entire')
 call minpac#add('kana/vim-textobj-indent')
+call minpac#add('wellle/targets.vim')
+" Integrations
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('tpope/vim-rhubarb')
 call minpac#add('preservim/tagbar')
+call minpac#add('prabirshrestha/vim-lsp')
+call minpac#add('prabirshrestha/asyncomplete.vim')
+call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
+call minpac#add('puremourning/vimspector')
 call minpac#add('w0rp/ale')
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('skywind3000/asyncrun.vim')
 call minpac#add('skywind3000/asynctasks.vim')
-call minpac#add('prabirshrestha/vim-lsp')
-call minpac#add('prabirshrestha/asyncomplete.vim')
-call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
-call minpac#add('wellle/targets.vim')
-call minpac#add('mbbill/undotree')
-call minpac#add('romainl/vim-cool')
 call minpac#add('romainl/vim-qf')
+" Filetypes
+call minpac#add('tpope/vim-sleuth')
 call minpac#add('tpope/vim-liquid')
 call minpac#add('tpope/vim-markdown') " upstream of shipped runtime files
+" Chrome
+call minpac#add('mbbill/undotree')
 call minpac#add('habamax/vim-habaurora')
 call minpac#add('romainl/apprentice')
+call minpac#add('romainl/vim-cool')
 
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
@@ -381,7 +386,7 @@ endfunction
 augroup vimrc
 	autocmd!
 	autocmd FileType * if !&omnifunc | setlocal omnifunc=syntaxcomplete#Complete | endif
-	autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
+	autocmd BufWritePost $MYVIMRC nested source $MYVIMRC | call feedkeys("\<C-l>")
 	autocmd BufWritePre /tmp/* setlocal noundofile
 	autocmd QuickFixCmdPost [^l]* botright cwindow
 	autocmd QuickFixCmdPost  l* botright lwindow
@@ -395,6 +400,7 @@ augroup vimrc
 	autocmd TabEnter * let &titlestring = fnamemodify(getcwd(), ":~")
 	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
 	autocmd WinLeave * setlocal nocursorline
+	autocmd VimEnter,WinEnter,BufWinEnter * if &diff | setlocal nocursorline | endif
 	autocmd BufReadPost *
 		\ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
 		\ | exe "normal! g`\""
