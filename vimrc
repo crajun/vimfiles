@@ -106,6 +106,7 @@ call minpac#add('kana/vim-textobj-user')
 call minpac#add('kana/vim-textobj-entire')
 call minpac#add('kana/vim-textobj-indent')
 call minpac#add('wellle/targets.vim')
+call minpac#add('tpope/vim-unimpaired')
 " Integrations
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('tpope/vim-rhubarb')
