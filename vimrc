@@ -120,6 +120,7 @@ call minpac#add('junegunn/fzf.vim')
 call minpac#add('skywind3000/asyncrun.vim')
 call minpac#add('skywind3000/asynctasks.vim')
 call minpac#add('romainl/vim-qf')
+call minpac#add('christoomey/vim-tmux-navigator')
 " Filetypes
 call minpac#add('tpope/vim-sleuth')
 call minpac#add('tpope/vim-liquid')
@@ -221,10 +222,13 @@ let g:ale_hover_to_preview = 0 | " Use preview win for hover messages
 let g:ale_hover_cursor = 0
 " These plug mappings taken into consideration the location of cursor,
 " and need to wrapped this way to add on manual call to ALEDetail for popup
-nnoremap <silent>[E :execute "normal \<Plug>(ale_first)"<CR>:ALEDetail<CR>
-nnoremap <silent>]E :execute "normal \<Plug>(ale_last)"<CR>:ALEDetail<CR>
-nnoremap <silent>]e :execute "normal \<Plug>(ale_next)"<CR>:ALEDetail<CR>
-nnoremap <silent>[e :execute "normal \<Plug>(ale_previous)"<CR>:ALEDetail<CR>
+if $TERM_PROGRAM =~# 'Apple_Terminal'
+	nnoremap <silent>n :execute "normal \<Plug>(ale_next)"<CR>:ALEDetail<CR>
+	nnoremap <silent>p :execute "normal \<Plug>(ale_previous)"<CR>:ALEDetail<CR>
+else
+	nnoremap <silent><M-n> :execute "normal \<Plug>(ale_next)"<CR>:ALEDetail<CR>
+	nnoremap <silent><M-p> :execute "normal \<Plug>(ale_previous)"<CR>:ALEDetail<CR>
+endif
 
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
@@ -318,16 +322,16 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 if $TERM_PROGRAM =~# 'Apple_Terminal'
 	imap <Nul> <Plug>(asyncomplete_force_refresh)
-	nnoremap <silent>[1;2A <Cmd>2wincmd+<CR>
-	nnoremap <silent>[1;2B <Cmd>2wincmd-<CR>
-	nnoremap <silent>[1;2D <Cmd>2wincmd <<CR>
-	nnoremap <silent>[1;2C <Cmd>2wincmd ><CR>
+	nnoremap <silent>k <Cmd>2wincmd+<CR>
+	nnoremap <silent>j <Cmd>2wincmd-<CR>
+	nnoremap <silent>h <Cmd>2wincmd <<CR>
+	nnoremap <silent>l <Cmd>2wincmd ><CR>
 else
 	imap <C-@> <Plug>(asyncomplete_force_refresh)
-	nnoremap <silent><S-Up> <Cmd>2wincmd+<CR>
-	nnoremap <silent><S-Down> <Cmd>2wincmd-<CR>
-	nnoremap <silent><S-Left> <Cmd>2wincmd <<CR>
-	nnoremap <silent><S-Right> <Cmd>2wincmd ><CR>
+	nnoremap <silent><M-k> <Cmd>2wincmd+<CR>
+	nnoremap <silent><M-j> <Cmd>2wincmd-<CR>
+	nnoremap <silent><M-h> <Cmd>2wincmd <<CR>
+	nnoremap <silent><M-l> <Cmd>2wincmd ><CR>
 endif
 
 nnoremap <silent><F2> :call vim9utils#SynGroup()<CR>
