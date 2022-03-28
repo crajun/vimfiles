@@ -21,7 +21,7 @@ set errorformat+=%f | " :cexpr system('cat /tmp/list-o-filenames.txt')
 set exrc
 set foldlevelstart=99
 set formatoptions+=j
-set grepprg=grep\ -Hnri
+set grepprg=grep\ -HnriE\ $*
 set hidden
 set history=10000
 set hlsearch
