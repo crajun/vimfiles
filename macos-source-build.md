@@ -37,6 +37,7 @@ cd vim/src
 	--enable-cscope \
 	--enable-fail-if-missing \
 	--with-compiledby=craig@MBP
+
 # errors without sudo here for xxd tool during build, maybe others
 sudo make
 sudo make install
