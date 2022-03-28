@@ -69,12 +69,6 @@ set wildignore+=*.pyc
 set wildoptions=fuzzy,pum,tagfile
 set wildmenu
 
-if $TERM_PROGRAM ==# 'Apple_Terminal'
-	set notermguicolors
-else
-	set termguicolors
-endif
-
 " https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
 let &t_SI="\e[6 q"
 let &t_EI="\e[2 q"
@@ -402,19 +396,18 @@ augroup vimrc
 augroup END
 
 " Colorscheme and Syntax {{{1
-if (has('termguicolors') && &termguicolors) || has('gui_running')
-	set termguicolors
+" NOTE: $TERM_PROGRAM when running vim inside tmux reports 'tmux'
+" instead of Apple_Terminal
+if $TERM_PROGRAM ==# '[Apple_Terminal\|tmux\>]'
+	set notermguicolors
 endif
 
 function! CustomApprentice() abort
 	" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
-	highlight! Comment cterm=italic
 	highlight! LineNr ctermbg=235 guibg=#262626
 endfunction
 
 function! CustomLight() abort
-	" highlight! Comment cterm=italic gui=italic
-	" Extras not shipped
 	highlight! link diffAdded String
 	highlight! link diffBDiffer WarningMsg
 	highlight! link diffCommon WarningMsg
@@ -437,7 +430,7 @@ augroup MyColors
 	autocmd ColorScheme habalbum call CustomLight()
 augroup END
 
-" colorscheme apprentice
-colorscheme habalbum
+colorscheme apprentice
+" colorscheme habalbum
 
 
