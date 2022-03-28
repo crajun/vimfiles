@@ -236,7 +236,7 @@ let g:ale_linters = {
 	\ 'vim': ['vint'],
 	\ 'liquid': ['vale', 'cspell', 'markdownlintcli2'],
 \}
-" let g:ale_linter_aliases = { 'liquid': 'markdown' }
+let g:ale_linter_aliases = { 'liquid': 'markdown' }
 " let g:ale_fixers = {}
 
 " https://github.com/junegunn/fzf.vim {{{2
