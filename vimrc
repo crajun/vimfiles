@@ -342,7 +342,7 @@ nnoremap <Leader>w <cmd>update<CR>
 nnoremap <Leader>, <cmd>edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
 nnoremap <Leader>bb <cmd>buffer #<CR>
-nnoremap <Leader><CR> :source %<CR>
+nnoremap <Leader><CR> :source %<CR> <bar> :nohlsearch<CR>
 
 nnoremap gh :diffget //2<CR>
 nnoremap gl :diffget //3<CR>
@@ -350,7 +350,6 @@ nnoremap gl :diffget //3<CR>
 " Neovim backports
 nnoremap Q @q
 nnoremap Y y$
-nnoremap <C-L> <Cmd>nohlsearch<Bar>diffupdate<CR><C-L>
 inoremap <C-U> <C-G>u<C-U>
 inoremap <C-W> <C-G>u<C-W>
 
@@ -374,7 +373,7 @@ endfunction
 augroup vimrc
 	autocmd!
 	autocmd FileType * if !&omnifunc | setlocal omnifunc=syntaxcomplete#Complete | endif
-	autocmd BufWritePost $MYVIMRC nested source $MYVIMRC | call feedkeys("\<C-l>")
+	autocmd BufWritePost $MYVIMRC nested source $MYVIMRC | nohlsearch
 	autocmd BufWritePre /tmp/* setlocal noundofile
 	autocmd QuickFixCmdPost [^l]* botright cwindow
 	autocmd QuickFixCmdPost  l* botright lwindow
