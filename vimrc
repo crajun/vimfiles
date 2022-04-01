@@ -29,6 +29,7 @@ set cursorline
 set display=truncate
 set hlsearch incsearch
 set foldlevelstart=99
+set foldopen+=jump
 set laststatus=2
 set nolangremap
 set mouse=a
@@ -278,8 +279,6 @@ nnoremap <Leader>! :Redir<Space>
 " TODO: put this in liquid local mapping
 nnoremap <Leader>@ :JekyllOpen<CR>
 nnoremap <Tab> za
-nnoremap g; g;zv
-nnoremap g, g,zv
 
 cnoremap <expr> <C-p> wildmenumode() ? "<C-P>" : "<Up>"
 cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
@@ -417,5 +416,8 @@ augroup END
 
 colorscheme apprentice
 
+" Experiments {{{1
+
+"
 " vim: fdm=marker nowrap ft=vim fdl=2 list
 
