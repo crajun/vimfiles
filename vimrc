@@ -95,37 +95,28 @@ call minpac#init()
 
 call minpac#add('k-takata/minpac', { 'type': 'opt' })
 " Editing
-call minpac#add('tpope/vim-characterize')
 call minpac#add('tpope/vim-commentary')
 call minpac#add('tpope/vim-repeat')
 call minpac#add('tpope/vim-surround')
-call minpac#add('tpope/vim-speeddating')
-call minpac#add('kana/vim-textobj-user')
-call minpac#add('kana/vim-textobj-entire')
-call minpac#add('kana/vim-textobj-indent')
-call minpac#add('wellle/targets.vim')
-call minpac#add('tpope/vim-unimpaired')
-call minpac#add('AndrewRadev/splitjoin.vim')
 " Integrations
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('tpope/vim-rhubarb')
 call minpac#add('preservim/tagbar')
-call minpac#add('prabirshrestha/vim-lsp')
-call minpac#add('prabirshrestha/asyncomplete.vim')
-call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
-call minpac#add('puremourning/vimspector')
+call minpac#add('prabirshrestha/vim-lsp', {'type': 'opt'})
+call minpac#add('prabirshrestha/asyncomplete.vim', {'type': 'opt'})
+call minpac#add('prabirshrestha/asyncomplete-lsp.vim', {'type': 'opt'})
+call minpac#add('puremourning/vimspector', {'type': 'opt'})
 call minpac#add('w0rp/ale')
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('skywind3000/asyncrun.vim')
 call minpac#add('skywind3000/asynctasks.vim')
 call minpac#add('romainl/vim-qf')
-call minpac#add('christoomey/vim-tmux-navigator')
 " Filetypes
-call minpac#add('tpope/vim-sleuth')
+call minpac#add('tpope/vim-sleuth') " supports .editorconfig
 call minpac#add('tpope/vim-liquid')
 call minpac#add('tpope/vim-markdown') " upstream of shipped runtime files
 " Chrome
-call minpac#add('mbbill/undotree')
+call minpac#add('mbbill/undotree', {'type': 'opt'})
 call minpac#add('romainl/apprentice')
 call minpac#add('romainl/vim-cool')
 
