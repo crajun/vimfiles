@@ -1,3 +1,63 @@
-[submodule "pack/minpac/opt/minpac"]
-	path = pack/minpac/opt/minpac
-	url = https://github.com/k-takata/minpac
+[submodule "pack/third-party/start/vim-commentary"]
+	path = pack/third-party/start/vim-commentary
+	url = https://github.com/tpope/vim-commentary
+[submodule "pack/third-party/start/vim-liquid"]
+	path = pack/third-party/start/vim-liquid
+	url = https://github.com/tpope/vim-liquid
+[submodule "pack/third-party/start/vim-markdown"]
+	path = pack/third-party/start/vim-markdown
+	url = https://github.com/tpope/vim-markdown
+[submodule "pack/third-party/start/vim-repeat"]
+	path = pack/third-party/start/vim-repeat
+	url = https://github.com/tpope/vim-repeat
+[submodule "pack/third-party/start/vim-sleuth"]
+	path = pack/third-party/start/vim-sleuth
+	url = https://github.com/tpope/vim-sleuth
+[submodule "pack/third-party/start/vim-rhubarb"]
+	path = pack/third-party/start/vim-rhubarb
+	url = https://github.com/tpope/vim-rhubarb
+[submodule "pack/third-party/start/vim-surround"]
+	path = pack/third-party/start/vim-surround
+	url = https://github.com/tpope/vim-surround
+[submodule "pack/third-party/start/vim-fugitive"]
+	path = pack/third-party/start/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
+[submodule "pack/third-party/start/apprentice"]
+	path = pack/third-party/start/apprentice
+	url = https://github.com/romainl/apprentice
+[submodule "pack/third-party/start/vim-qf"]
+	path = pack/third-party/start/vim-qf
+	url = https://github.com/romainl/vim-qf
+[submodule "pack/third-party/start/vim-cool"]
+	path = pack/third-party/start/vim-cool
+	url = https://github.com/romainl/vim-cool
+[submodule "pack/third-party/start/ale"]
+	path = pack/third-party/start/ale
+	url = https://github.com/w0rp/ale
+[submodule "pack/third-party/start/asyncrun.vim"]
+	path = pack/third-party/start/asyncrun.vim
+	url = https://github.com/skywind3000/asyncrun.vim
+[submodule "pack/third-party/start/asynctasks.vim"]
+	path = pack/third-party/start/asynctasks.vim
+	url = https://github.com/skywind3000/asynctasks.vim
+[submodule "pack/third-party/start/fzf.vim"]
+	path = pack/third-party/start/fzf.vim
+	url = https://github.com/junegunn/fzf.vim
+[submodule "pack/third-party/start/tagbar"]
+	path = pack/third-party/start/tagbar
+	url = https://github.com/preservim/tagbar
+[submodule "pack/third-party/opt/vim-lsp"]
+	path = pack/third-party/opt/vim-lsp
+	url = https://github.com/prabirshrestha/vim-lsp
+[submodule "pack/third-party/opt/asyncomplete.vim"]
+	path = pack/third-party/opt/asyncomplete.vim
+	url = https://github.com/prabirshrestha/asyncomplete.vim
+[submodule "pack/third-party/opt/asyncomplete-lsp.vim"]
+	path = pack/third-party/opt/asyncomplete-lsp.vim
+	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim
+[submodule "pack/third-party/opt/undotree"]
+	path = pack/third-party/opt/undotree
+	url = https://github.com/mbbill/undotree
+[submodule "pack/third-party/opt/vimspector"]
+	path = pack/third-party/opt/vimspector
+	url = https://github.com/puremourning/vimspector

@@ -29,7 +29,7 @@ set ruler
 set scrolloff=1 sidescrolloff=2
 set shortmess-=cS
 set showcmd showmatch
-set showtabline=2
+set showtabline=1
 set signcolumn=number
 set tabline=%!vim9utils#MyTabline()
 " set statusline=%!vim9utils#MyStatusline()
@@ -60,10 +60,7 @@ set path-=/usr/include | set path+=**
 set suffixes+=.png,.jpeg,.jpg,.exe
 set tags=./tags;,tags;
 set wildcharm=<C-z>
-set wildignore+=*.exe,*.dylib,%*
-set wildignore+=*.png,*.jpeg,*.bmp,*.jpg
-set wildignore+=*.pyc
-set wildignore=*.o,*.obj
+set wildignore+=*.exe,*.dylib,%*,*.png,*.jpeg,*.bmp,*.jpg,*.pyc,*.o,*.obj
 set wildmenu
 set wildoptions=fuzzy,pum,tagfile
 
@@ -72,7 +69,7 @@ let &t_SI="\e[6 q"
 let &t_EI="\e[2 q"
 
 if executable('fzf') && has('mac')
-		set runtimepath+=/usr/local/opt/fzf
+	set runtimepath+=/usr/local/opt/fzf
 endif
 
 " Plugins {{{1
@@ -82,41 +79,6 @@ packadd! matchit
 let g:markdown_fenced_languages = ['cpp', 'jsx=javascriptreact', 'js=javascript', 'cmake', 'bash=sh', 'json']
 let g:markdown_syntax_conceal = 0
 let g:markdown_minlines = 1000
-
-" minpac {{{2
-packadd minpac
-
-call minpac#init()
-
-call minpac#add('k-takata/minpac', { 'type': 'opt' })
-" Editing
-call minpac#add('tpope/vim-commentary')
-call minpac#add('tpope/vim-repeat')
-call minpac#add('tpope/vim-surround')
-" Integrations
-call minpac#add('tpope/vim-fugitive')
-call minpac#add('tpope/vim-rhubarb')
-call minpac#add('preservim/tagbar')
-call minpac#add('prabirshrestha/vim-lsp', {'type': 'opt'})
-call minpac#add('prabirshrestha/asyncomplete.vim', {'type': 'opt'})
-call minpac#add('prabirshrestha/asyncomplete-lsp.vim', {'type': 'opt'})
-call minpac#add('puremourning/vimspector', {'type': 'opt'})
-call minpac#add('w0rp/ale')
-call minpac#add('junegunn/fzf.vim')
-call minpac#add('skywind3000/asyncrun.vim')
-call minpac#add('skywind3000/asynctasks.vim')
-call minpac#add('romainl/vim-qf')
-" Filetypes
-call minpac#add('tpope/vim-sleuth') " supports .editorconfig
-call minpac#add('tpope/vim-liquid')
-call minpac#add('tpope/vim-markdown') " upstream of shipped runtime files
-" Chrome
-call minpac#add('mbbill/undotree', {'type': 'opt'})
-call minpac#add('romainl/apprentice')
-call minpac#add('romainl/vim-cool')
-
-command! PackUpdate call minpac#update()
-command! PackClean call minpac#clean()
 
 " https://github.com/tpope/vim-liquid {{{2
 let g:liquid_highlight_types = g:markdown_fenced_languages
@@ -274,10 +236,10 @@ cnoremap <expr> <C-k> wildmenumode() ? "\<Right>\<C-z>" : "\<C-k>"
 
 nnoremap <Leader>ff :find<space>
 nnoremap <Leader>fs :sfind<space>
-nnoremap <Leader>fv :vert sfind<space> 
-nnoremap <Leader>ee :edit <C-z><S-Tab>
-nnoremap <Leader>es :split <C-z><S-Tab>
-nnoremap <Leader>ev :vert split <C-z><S-Tab>
+nnoremap <Leader>fv :vert sfind<space>
+nnoremap <Leader>ee :edit <C-z><S-Tab>*
+nnoremap <Leader>es :split <C-z><S-Tab>*
+nnoremap <Leader>ev :vert split <C-z><S-Tab>*
 " buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
 nnoremap <Leader><Leader> :buffer #<CR>
 nnoremap <Leader>b. :filter! /^\~\\|^\// ls t<CR>:b
@@ -299,7 +261,6 @@ nnoremap [E :lfirst<CR>
 
 xmap < <gv
 xmap > >gv
-
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 
@@ -318,7 +279,6 @@ nnoremap <silent><Leader>* :grep <cword> *<CR>
 nnoremap <Leader>w <cmd>update<CR>
 nnoremap <Leader>, <cmd>edit $MYVIMRC<CR>
 nnoremap <Leader>ft :e <C-R>=expand('~/.vim/after/ftplugin/'.&ft.'.vim')<CR><CR>
-nnoremap <Leader>bb <cmd>buffer #<CR>
 nnoremap <Leader><CR> :source %<CR> <bar> :nohlsearch<CR>
 
 nnoremap gh :diffget //2<CR>
@@ -372,26 +332,5 @@ augroup vimrc
 augroup END
 
 " Colorscheme and Syntax {{{1
-" NOTE: $TERM_PROGRAM when running vim inside tmux reports 'tmux'
-" instead of Apple_Terminal
-if $TERM_PROGRAM =~# '[Apple_Terminal\|tmux\>]'
-	set notermguicolors
-endif
-
-function! CustomApprentice() abort
-	" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
-	" highlight! LineNr ctermbg=235 guibg=#262626
-endfunction
-
-augroup MyColors
-	autocmd!
-	" autocmd ColorScheme apprentice call CustomApprentice()
-augroup END
-
 colorscheme apprentice
-
-" Experiments {{{1
-
-"
 " vim: fdm=marker nowrap ft=vim fdl=2 list
-
