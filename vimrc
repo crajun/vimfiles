@@ -6,37 +6,32 @@ set encoding=utf-8
 scriptencoding utf-8
 let mapleader=' '
 " Whitespace/Indenting/Linebreaks {{{2
-" Leave 'tabstop' at 8! See ':h tabstop' and ':h ins-expandtab'
-" if 'shiftwidth'is 0, uses &ts, affects 'cindent', >>, <<, i_CTRL_T, i_CTRL_D
-" if 'softtabstop' is 0, it's off. Will insert mix of tabs and spaces. -1 
-" will use &shiftwidth.
-	" set smarttab
 set autoindent smartindent
-set breakindent
-set listchars=tab:⇥\ ,lead:·,trail:█,eol:,precedes:«,extends:»
 set backspace=indent,eol,start
-set linebreak showbreak=↪
+set breakindent
 set formatoptions+=j
+set linebreak showbreak=↪
+set listchars=tab:⇥\ ,lead:·,trail:█,eol:,precedes:«,extends:»
 " Visuals {{{2
-set completeopt=menuone,popup
-set diffopt+=algorithm:patience
-set showcmd showmatch
-set showtabline=2
-set scrolloff=1 sidescrolloff=2
-set signcolumn=number
 set belloff=all
+set completeopt=menuone,popup
 set cursorline
+set diffopt+=algorithm:patience
 set display=truncate
-set hlsearch incsearch
 set foldlevelstart=99
 set foldopen+=jump
+set hlsearch incsearch
 set laststatus=2
-set nolangremap
 set mouse=a
+set nolangremap
 set number relativenumber
-set tabline=%!vim9utils#MyTabline()
 set ruler
+set scrolloff=1 sidescrolloff=2
 set shortmess-=cS
+set showcmd showmatch
+set showtabline=2
+set signcolumn=number
+set tabline=%!vim9utils#MyTabline()
 " set statusline=%!vim9utils#MyStatusline()
 set statusline=%f\ %M\ %R\ %H\ %=%{FugitiveStatusline()}\ %Y
 " Editing {{{2
@@ -46,31 +41,31 @@ set exrc
 set nrformats-=octal
 set secure
 set ttimeout ttimeoutlen=100
-set updatetime=250
 set undofile undodir=~/.vim/undodir
+set updatetime=250
 " Buffers/Windows/Views/Sessions/Tabpages {{{2
 set autoread
 set hidden
 set history=10000
 set noswapfile
+set sessionoptions-=options
 set splitbelow splitright
 set title
 set viewoptions-=options
-set sessionoptions-=options
 " Menus/Regex/Wildcards/Finding {{{2
-set path-=/usr/include | set path+=**
-set tags=./tags;,tags;
-set ignorecase smartcase
 set errorformat+=%f | " :cexpr system('cat /tmp/list-o-filenames.txt')
 set grepprg=grep\ -HnriE\ $*
+set ignorecase smartcase
+set path-=/usr/include | set path+=**
 set suffixes+=.png,.jpeg,.jpg,.exe
+set tags=./tags;,tags;
 set wildcharm=<C-z>
-set wildoptions=fuzzy,pum,tagfile
-set wildmenu
-set wildignore=*.o,*.obj
 set wildignore+=*.exe,*.dylib,%*
 set wildignore+=*.png,*.jpeg,*.bmp,*.jpg
 set wildignore+=*.pyc
+set wildignore=*.o,*.obj
+set wildmenu
+set wildoptions=fuzzy,pum,tagfile
 
 " https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
 let &t_SI="\e[6 q"
@@ -293,11 +288,14 @@ nnoremap <Leader>bv :vert sbuffer <C-d>
 
 cnoremap <expr> <CR> vim9utils#CCR()
 
-nnoremap <silent><C-b>v :vertical terminal ++close zsh<CR>
-noremap <silent><C-b>s :terminal ++close zsh<CR>
-tnoremap <silent><C-b>v <C-\><C-n>:vertical terminal ++close zsh<CR>
-tnoremap <silent><C-b>s <C-\><C-n>:terminal ++close zsh<CR>
-nnoremap <silent><C-b>! <C-w>T
+nnoremap [q :cprevious<CR>
+nnoremap ]q :cnext<CR>
+nnoremap [Q :cfirst<CR>
+nnoremap ]Q :clast<CR>
+nnoremap [e :lprevious<CR>
+nnoremap ]e :lnext<CR>
+nnoremap ]E :llast<CR>
+nnoremap [E :lfirst<CR>
 
 xmap < <gv
 xmap > >gv
