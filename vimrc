@@ -305,22 +305,6 @@ xnoremap K :m '<-2<CR>gv=gv
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-if $TERM_PROGRAM =~# '[Apple_Terminal\|tmux\>]'
-	" NOTE: vim inside tmux will be 'tmux'
-	" tmux ones will S-Arrow keys to resize
-	imap <Nul> <Plug>(asyncomplete_force_refresh)
-	nnoremap <silent>k <Cmd>2wincmd+<CR>
-	nnoremap <silent>j <Cmd>2wincmd-<CR>
-	nnoremap <silent>h <Cmd>2wincmd <<CR>
-	nnoremap <silent>l <Cmd>2wincmd ><CR>
-else
-	imap <C-@> <Plug>(asyncomplete_force_refresh)
-	nnoremap <silent><M-k> <Cmd>2wincmd+<CR>
-	nnoremap <silent><M-j> <Cmd>2wincmd-<CR>
-	nnoremap <silent><M-h> <Cmd>2wincmd <<CR>
-	nnoremap <silent><M-l> <Cmd>2wincmd ><CR>
-endif
-
 nnoremap <silent><F2> :call vim9utils#SynGroup()<CR>
 nmap <silent><F3> <Plug>(qf_qf_toggle)
 nmap <silent><F4> <Plug>(qf_loc_toggle)
