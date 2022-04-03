@@ -1,0 +1,30 @@
+" From $VIMRUNTIME/defaults.vim
+filetype plugin indent on
+syntax on
+set nocompatible		" Vi IMproved
+set backspace=indent,eol,start	" allow backspace over all these
+set display=truncate		" show @@@ in last line if it's truncated
+set history=10000		" max value
+set incsearch			" show matched chars as you type
+set laststatus=2		" show statusline always
+set mouse=a			" allow mouse in all modes
+set nolangremap			" prevent &langmap applying to chars from maps
+set nrformats-=octal		" octal-looking nums not treated as such w/ C-a
+set ruler			" line/col % in statusline
+set showcmd			" display incomplete commands in bottom-right 
+set scrolloff=2 		" vertical buffer from edge
+set sidescrolloff=2		" horizontal buffer from edge	
+set ttimeout			" time out for key codes
+set ttimeoutlen=100		" wait 100ms after Esc for special key
+set wildmenu			" completions menu e.g., :edit *<Tab>
+" Don't need Ex mode, reuse for formatting except for Select mode.
+map Q gq
+sunmap Q
+" first create a restore point to undo before deleting to beginning of line
+inoremap <C-U> <C-G>u<C-U>
+
+packadd matchit
+packadd cfilter
+
+let g:markdown_folding = 1
+let c_comment_strings=1
