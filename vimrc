@@ -59,11 +59,8 @@ set ignorecase smartcase
 set path-=/usr/include | set path+=**
 set suffixes+=.png,.jpeg,.jpg,.exe
 set tags=./tags;,tags;
-set wildcharm=<C-z>
+set wildcharm=<C-z> wildmenu wildoptions=fuzzy,pum,tagfile
 set wildignore+=*.exe,*.dylib,%*,*.png,*.jpeg,*.bmp,*.jpg,*.pyc,*.o,*.obj
-set wildmenu
-set wildoptions=fuzzy,pum,tagfile
-
 " https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
 let &t_SI="\e[6 q"
 let &t_EI="\e[2 q"
@@ -234,12 +231,12 @@ cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
 cnoremap <expr> <C-j> wildmenumode() ? "\<Left>\<C-z>" : "\<C-j>"
 cnoremap <expr> <C-k> wildmenumode() ? "\<Right>\<C-z>" : "\<C-k>"
 
-nnoremap <Leader>ff :find<space>
-nnoremap <Leader>fs :sfind<space>
-nnoremap <Leader>fv :vert sfind<space>
-nnoremap <Leader>ee :edit <C-z><S-Tab>*
-nnoremap <Leader>es :split <C-z><S-Tab>*
-nnoremap <Leader>ev :vert split <C-z><S-Tab>*
+nnoremap <Leader>ff :find *
+nnoremap <Leader>fs :sfind *
+nnoremap <Leader>fv :vert sfind *
+nnoremap <Leader>ee :edit *<C-z><S-Tab>
+nnoremap <Leader>es :split *<C-z><S-Tab>
+nnoremap <Leader>ev :vert split *<C-z><S-Tab>
 " buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
 nnoremap <Leader><Leader> :buffer #<CR>
 nnoremap <Leader>b. :filter! /^\~\\|^\// ls t<CR>:b
