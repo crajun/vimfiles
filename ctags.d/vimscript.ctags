@@ -1,4 +1,5 @@
 --recurse
 --exclude=pack/*
+--exclude=plug/*
 --exclude=undodir/*
 --languages=Vim
