@@ -224,7 +224,6 @@ nnoremap <Leader>? :noautocmd vimgrep /\v/gj **/*.md<S-Left><S-Left><Right><Righ
 nnoremap <Leader>! :Redir<Space>
 " TODO: put this in liquid local mapping
 nnoremap <Leader>@ :JekyllOpen<CR>
-nnoremap <Tab> za
 
 cnoremap <expr> <C-p> wildmenumode() ? "<C-P>" : "<Up>"
 cnoremap <expr> <C-n> wildmenumode() ? "<C-N>" : "<Down>"
@@ -335,4 +334,7 @@ augroup END
 " colorscheme habarena
 colorscheme apprentice
 
+" }}}
+"
+" TODO: j/k mapped to gj/gk based on tertiary &wrap
 " vim: fdm=marker nowrap ft=vim fdl=2 list
