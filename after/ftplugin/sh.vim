@@ -6,6 +6,6 @@ let b:did_ftplugin = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-compiler shell
+compiler shellcheck
 
 let b:undo_ftplugin = ""
