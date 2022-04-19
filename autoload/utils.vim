@@ -61,43 +61,6 @@ function! s:GetBufferList() abort
   return buflist
 endfunction
 
-" Return <CR>: and maybe followed by a 'b' or 'u' or more, depending on what
-" the command requires to user to enter to work.
-function! utils#MaybeReplaceCrWithCrColon() abort
-  " https://gist.github.com/romainl/047aca21e338df7ccf771f96858edb86
-  let l:cmdline = getcmdline()
-  if l:cmdline =~ '\v\C^(ls|files|buffers)'
-    return "\<CR>:b"
-  elseif l:cmdline =~ '\v\C(#|nu|num|numb|numbe|number)$'
-    return "\<CR>:"
-  elseif l:cmdline =~ '\v\C^(dli|li)'
-    return "\<CR>:" . cmdline[0] . "j " . split(cmdline, ' ')[1] . "\<S-Left>\<Left>"
-  elseif cmdline =~ '\v\C^(cli|lli)'
-    " like :clist or :llist but prompts for an error/location number
-    return "\<CR>:sil " . repeat(cmdline[0], 2) . "\<Space>"
-  elseif cmdline =~ '\C^old'
-    " like :oldfiles but prompts for an old file to edit
-    set nomore
-    return "\<CR>:sil se more|e #<"
-  elseif cmdline =~ '\C^changes'
-    " like :changes but prompts for a change to jump to
-    set nomore
-    return "\<CR>:sil se more|norm! g;\<S-Left>"
-  elseif cmdline =~ '\C^ju'
-    " like :jumps but prompts for a position to jump to
-    set nomore
-    return "\<CR>:sil se more|norm! \<C-o>\<S-Left>"
-  elseif cmdline =~ '\C^marks'
-    " like :marks but prompts for a mark to jump to
-    return "\<CR>:norm! `"
-  elseif cmdline =~ '\C^undol'
-    " like :undolist but prompts for a change to undo
-    return "\<CR>:u "
-  else
-    return "\<CR>"
-  endif
-endfunction
-
 function! utils#JekyllOpenDevx() abort
   " Requires 'devx' as &pwd for '%:.' to work correctly with forming the final URL to open
   if !getcwd() =~ 'devx' 
@@ -190,7 +153,7 @@ endfunction
 " Background here: https://gist.github.com/romainl/047aca21e338df7ccf771f96858edb86
 " with help from https://github.com/teoljungberg
 
-function! CCR()
+function! utils#CCR()
     let cmdline = getcmdline()
     let filter_stub = '\v\C^((filt|filte|filter) .+ )*'
     command! -bar Z silent set more|delcommand Z
@@ -244,7 +207,20 @@ function! CCR()
         return "\<CR>"
     endif
 endfunction
-cnoremap <expr> <CR> CCR()
+
+
+function! utils#SynGroup() abort
+  " Outputs both the name of the syntax group, AND the translated syntax
+  " group of the character the cursor is on.
+  " line('.') and col('.') return the current position
+  " synID(...) returns a numeric syntax ID
+  " synIDtrans(l:s) translates the numeric syntax id l:s by following highlight links
+  " synIDattr(l:s, 'name') returns the name corresponding to the numeric syntax ID
+  " example output:
+  " vimMapModKey -> Special
+  let l:s = synID(line('.'), col('.'), 1)
+  echo synIDattr(l:s, 'name') .. ' -> ' .. synIDattr(synIDtrans(l:s), 'name')
+endfunction
 
 " TODO: convert back to vimscript
 " export def Grep(...args: list<string>): string
@@ -313,16 +289,3 @@ cnoremap <expr> <CR> CCR()
 " 	redraw!
 " enddef
 "
-function! utils#SynGroup() abort
-  " Outputs both the name of the syntax group, AND the translated syntax
-  " group of the character the cursor is on.
-  " line('.') and col('.') return the current position
-  " synID(...) returns a numeric syntax ID
-  " synIDtrans(l:s) translates the numeric syntax id l:s by following highlight links
-  " synIDattr(l:s, 'name') returns the name corresponding to the numeric syntax ID
-  " example output:
-  " vimMapModKey -> Special
-  let l:s = synID(line('.'), col('.'), 1)
-  echo synIDattr(l:s, 'name') .. ' -> ' .. synIDattr(synIDtrans(l:s), 'name')
-endfunction
-

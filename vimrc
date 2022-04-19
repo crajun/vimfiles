@@ -50,7 +50,8 @@ set ttimeout ttimeoutlen=100
 set undofile undodir=~/.vim/undodir
 set updatetime=250
 set viewoptions-=options
-set wildcharm=<C-z> wildmenu 
+set wildcharm=<C-z>
+set wildmenu 
 set wildignore+=*.exe,*.dylib,%*,*.png,*.jpeg,*.bmp,*.jpg,*.pyc,*.o,*.obj
 set wildoptions=tagfile
 " Plugins {{{1
@@ -58,9 +59,6 @@ set wildoptions=tagfile
 packadd! matchit
 
 let g:markdown_fenced_languages = ['cpp', 'jsx=javascriptreact', 'js=javascript', 'cmake', 'bash=sh', 'json']
-if has('conceal')
-	let g:markdown_syntax_conceal = 1
-endif
 let g:markdown_minlines = 1000
 
 " https://github.com/tpope/vim-liquid {{{2
@@ -111,6 +109,7 @@ else
 	cnoremap <expr> <C-k> wildmenumode() ? "\<Up>\<C-z>" : "\<C-k>"
 endif
 
+cnoremap <expr> <CR> utils#CCR()
 nnoremap <Leader>ff :find *
 nnoremap <Leader>fs :sfind *
 nnoremap <Leader>fv :vert sfind *
