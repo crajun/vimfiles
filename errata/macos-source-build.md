@@ -1,6 +1,6 @@
 # macOS Vim source builds
 
-Tested on macOS Big Sur 11.6.5
+Tested on macOS Monterey 12.3.1
 
 # Preparation
 
@@ -13,7 +13,7 @@ so add proper PATH values to your ~/.zshrc:
 ```sh
 xcode-select --install
 brew install python ruby cmake
-echo '$(brew --prefix)/bin:$PATH' >> ~/.zshrd
+echo '$(brew --prefix)/bin:$PATH' >> ~/.zshrc
 
 ```
 

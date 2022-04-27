@@ -5,16 +5,16 @@ syntax on
 set encoding=utf-8
 scriptencoding utf-8
 let mapleader=' '
-colorscheme solarized
 
 set autoindent smartindent
 set autoread
 set backspace=indent,eol,start
 set belloff=all
-set clipboard=unnamed,unnamedplus
+set clipboard=autoselectplus | " mouse visual selection copies to OS clipboard
 set complete-=i
 set completeopt=menuone,popup
 " macOS /usr/bin/vim removed 'xdiff' lib bc of GPL
+" This tests for macOS shipped vim using $VIM, brew is /usr/local/share/vim
 if has('mac') && has('patch-8.1.0360') && $VIM == '/usr/share/vim'
 	set diffopt-=internal
 elseif has('patch-8.1.0360')
@@ -192,3 +192,20 @@ function! Gitbranches(ArgLead, CmdLine, CursorPos) abort
 	return systemlist('git branch')
 endfunction
 
+" Colors {{{1
+function! MySolarized() abort
+	" highlight! SpecialKey cterm=NONE ctermfg=7 ctermbg=15
+	" highlight! NonText cterm=NONE ctermfg=7 ctermbg=15
+endfunction
+
+augroup MyColors
+	autocmd!
+	autocmd ColorScheme solarized call MySolarized()
+augroup END
+
+let g:solarized_menu=0
+let g:solarized_italic=0
+let g:solarized_termtrans=0
+let g:solarized_visibility='low'
+let g:solarized_hitrail='low'
+colorscheme solarized
