@@ -179,7 +179,6 @@ command! Api :help list-functions<CR>
 command! Cd :tcd %:h
 command! TodoLocal :botright silent! lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
 command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
-command! -nargs=1 Redir call utils#Redir(<q-args>)
 command! JekyllOpenDevx call utils#JekyllOpenDevx()
 command! -bar ArglistToQuickfix call setqflist(map(argv(-1), '{"filename": v:val}')) <Bar> copen
 
@@ -193,20 +192,4 @@ function! Gitbranches(ArgLead, CmdLine, CursorPos) abort
 endfunction
 
 " Colors {{{1
-function! MySolarized() abort
-	" highlight! SpecialKey cterm=NONE ctermfg=7 ctermbg=15
-	" highlight! NonText cterm=NONE ctermfg=7 ctermbg=15
-	highlight! link CurSearch IncSearch
-endfunction
-
-augroup MyColors
-	autocmd!
-	autocmd ColorScheme solarized call MySolarized()
-augroup END
-
-let g:solarized_menu=0
-let g:solarized_italic=0
-let g:solarized_termtrans=0
-let g:solarized_visibility='low'
-let g:solarized_hitrail='low'
-colorscheme solarized
+colorscheme nord

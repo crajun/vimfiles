@@ -46,3 +46,6 @@
 [submodule "pack/third-party/start/vim-colors-solarized"]
 	path = pack/third-party/start/vim-colors-solarized
 	url = https://github.com/altercation/vim-colors-solarized
+[submodule "pack/third-party/start/nord-vim"]
+	path = pack/third-party/start/nord-vim
+	url = https://github.com/arcticicestudio/nord-vim
