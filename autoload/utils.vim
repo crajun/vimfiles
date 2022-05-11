@@ -18,30 +18,6 @@ function! utils#UpdateLastModified() abort
 	endif
 endfunction
 
-function! utils#JekyllOpenDevx() abort
-	" Requires 'devx' as &pwd for '%:.' to work correctly with forming the final URL to open
-	if !getcwd() =~ 'devx' 
-		echoerr 'Command only works when &pwd is "devx"'
-		return
-	endif
-	let relpath = expand('%:.')
-		\ ->substitute('_ver_', '', '')
-		\ ->substitute('^docs', '', '')
-		\ ->substitute('\.md$', '/', '')
-	" cases:
-	" docs/_ver_6.14/path/to/file
-	" docs/release-details/file-with-version-6.8.md
-	let newversion = relpath->matchstr('\d\.\d\d\?')
-	" When relpath = version/path/to/topic we need to drop leading \d\.\d\d\? dir, otherwise we end
-	" up with 6.15/6.15/path/to/file. We only check up to first / to limit to first folder.
-	let newpath = newversion .. relpath->substitute('\d\.\d\d\?/', '', '')
-	" any version 6.14 and over requires localhost only
-	let host = str2float(newversion) >= 6.14 ? 'http://localhost:4000' : 'https://developer-staging.youi.tv/'
-	let finalurl = host .. newpath
-	execute "silent! !open " . finalurl
-	redraw!
-endfunction
-
 function! utils#MarkdownInclude() abort
 	" finds:
 	" '/snippets/target-platform-before-start'
@@ -82,7 +58,7 @@ function! utils#MarkdownInclude() abort
 	endif
 endfunction
 
-function! JekyllOpen() abort
+function! utils#JekyllOpen() abort
 	if !getcwd() =~# 'youi-platform-docs'
 		echoerr 'Command currently only works when &pwd is ~/git/hbo/youi-platform-docs'
 		return

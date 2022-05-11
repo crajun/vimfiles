@@ -8,18 +8,13 @@ let mapleader=' '
 
 set autoindent smartindent
 set autoread
+set autoshelldir | " Requires term that emits OSC 7. VTE based one mostly do.
 set backspace=indent,eol,start
 set belloff=all
 set clipboard=autoselectplus | " mouse visual selection copies to OS clipboard
 set complete-=i
 set completeopt=menuone,popup
-" macOS /usr/bin/vim removed 'xdiff' lib bc of GPL
-" This tests for macOS shipped vim using $VIM, brew is /usr/local/share/vim
-if has('mac') && has('patch-8.1.0360') && $VIM == '/usr/share/vim'
-	set diffopt-=internal
-elseif has('patch-8.1.0360')
-	set diffopt+=algorithm:patience
-endif
+if has('patch-8.1.0360') | set diffopt+=algorithm:patience | endif
 set diffopt+=vertical
 set display=truncate
 set errorformat+=%f | " :cexpr system('cat /tmp/list-o-filenames.txt')
@@ -33,7 +28,8 @@ set hlsearch incsearch
 set ignorecase smartcase
 set laststatus=2
 set linebreak breakindent showbreak=+
-set listchars=tab:\|\ ,lead:*,trail:*,eol:$,precedes:<,extends:>
+" TODO: use  for git-branch
+set listchars=tab:\│\ ,lead:·,trail:▓,eol:↲,precedes:«,extends:»
 set modeline modelines=5
 set mouse=a
 set nolangremap
@@ -46,19 +42,20 @@ set ruler
 set scrolloff=1 sidescrolloff=2
 set sessionoptions-=options
 set shortmess-=cS
-set showcmd showmatch
+set showcmd showmatch showtabline=2
 set splitbelow splitright
 set statusline=%f\ %M\ %R\ %H\ %=%{FugitiveStatusline()}\ %Y
-set suffixes+=.png,.jpeg,.jpg,.exe
-set tabline=%!vim9utils#MyTabline()
 set tags=./tags;,tags;
 set ttimeout ttimeoutlen=100
+" TODO: set titlestring autocmd with changedirectory event
+set title
 set undofile undodir=~/.vim/undodir
 set updatetime=250
 set viewoptions-=options
 set wildcharm=<C-z>
-set wildmenu 
-set wildignore+=*.exe,*.dylib,%*,*.png,*.jpeg,*.bmp,*.jpg,*.pyc,*.o,*.obj
+set wildmenu
+set wildignore+=*.exe,*.dylib,%*,*.pyc,*.o,*.obj,*.h,*~,*.bak,*.swp
+set wildignore+=*.png,*.jpeg,*.jpg,*.bmp,*.svg,*.gif
 set wildoptions=tagfile
 " Plugins {{{1
 " builtins {{{2
@@ -100,9 +97,19 @@ nnoremap <silent><Leader>gp <cmd>G pull<CR>
 nmap <Leader>/ :grep<Space>
 nnoremap <Leader>? :noautocmd vimgrep /\v/gj **/*.md<S-Left><S-Left><Right><Right><Right>
 nnoremap <Leader>! :Redir<Space>
+nnoremap <Leader>yy <cmd>%y +<CR>
+nnoremap <Leader>dd <cmd>%d <CR>
 
-" TODO: put this in liquid local mapping
-nnoremap <Leader>@ :call utils#JekyllOpen()<CR>
+" Readline bindings ala Emacs
+cnoremap <C-a> <Home>
+cnoremap <C-b> <Left>
+cnoremap <C-d> <Del>
+cnoremap <C-e> <End>
+cnoremap <C-f> <Right>
+cnoremap <M-b> <S-Left>
+cnoremap <M-f> <S-Right>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
 
 if has('patch-8.2.4325')
 	set wildoptions+=pum
@@ -111,22 +118,22 @@ if has('patch-8.2.4325')
 	cnoremap <expr> <C-j> wildmenumode() ? "\<Left>\<C-z>" : "\<C-j>"
 	cnoremap <expr> <C-k> wildmenumode() ? "\<Right>\<C-z>" : "\<C-k>"
 else
-	cnoremap <expr> <C-j> wildmenumode() ? "\<Down>\<C-z>" : "\<C-j>"
-	cnoremap <expr> <C-k> wildmenumode() ? "\<Up>\<C-z>" : "\<C-k>"
+	" wildmenu pops on/off depending on context, so if we rely on it being open
+	" sometimes we'll send <C-j> (Enter) causing netrw to open the directory. 
+	" Avoid that by not trying to be clever. No-suprises-principle here.
+	cnoremap <C-j> <Down>
+	cnoremap <C-k> <Up>
 endif
 
-cnoremap <expr> <CR> CCR()
 nnoremap <Leader>ff :find *
 nnoremap <Leader>fs :sfind *
 nnoremap <Leader>fv :vert sfind *
 nnoremap <Leader>ee :edit *<C-z><S-Tab>
 nnoremap <Leader>es :split *<C-z><S-Tab>
 nnoremap <Leader>ev :vert split *<C-z><S-Tab>
-" buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
 nnoremap <Leader><Leader> :buffer #<CR>
+" buffers not part of :pwd show '/' or '~' at the beginning, so we can remove
 nnoremap <Leader>b. :filter! /^\~\\|^\// ls t<CR>:b
-" TODO: extra : added here because of CCR(), investigate further.
-" Recreate with :buffer #<CR> will switch buffer then put ':' in cmd line
 nnoremap <Leader>bb :buffer <C-z><S-Tab>
 nnoremap <Leader>bd <Cmd>bwipeout!<CR>
 nnoremap <Leader>bs :sbuffer <C-d>
@@ -152,7 +159,7 @@ xnoremap K :m '<-2<CR>gv=gv
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-nnoremap <F2> :call utils#SynGroup()<CR>
+nnoremap <F2> :call SynGroup()<CR>
 nmap <F3> <Plug>(qf_qf_toggle)
 nmap <F4> <Plug>(qf_loc_toggle)
 nnoremap <F5> :silent! lmake \| redraw!<CR>
@@ -175,21 +182,84 @@ inoremap <C-U> <C-G>u<C-U>
 inoremap <C-W> <C-G>u<C-W>
 
 " Commands {{{1
-command! Api :help list-functions<CR>
-command! Cd :tcd %:h
-command! TodoLocal :botright silent! lvimgrep /\v\CTODO|FIXME|HACK|DEV/ %<CR>
-command! Todo :botright silent! vimgrep /\v\CTODO|FIXME|HACK|DEV/ *<CR>
-command! JekyllOpenDevx call utils#JekyllOpenDevx()
-command! -bar ArglistToQuickfix call setqflist(map(argv(-1), '{"filename": v:val}')) <Bar> copen
-
-" load quickfix w files changed in last commit, or given SHA, or HEAD^ style
-command! -nargs=? -bar GitQfLoadFilesChanged call setqflist(map(systemlist("git show --pretty='' --name-only <args>"), '{"filename": v:val, "lnum": 1}')) | copen
-
-" load quickfix w files different that given branch name 
-command! -complete=customlist,Gitbranches -nargs=1 -bar GitQfChangedFilesOnCurrentBranchVersusGivenBranch call setqflist(map(systemlist("git diff --name-only $(git merge-base HEAD <args>)"), '{"filename": v:val, "lnum": 1}')) | copen
-function! Gitbranches(ArgLead, CmdLine, CursorPos) abort
-	return systemlist('git branch')
-endfunction
 
 " Colors {{{1
-colorscheme nord
+function! MySolarized() abort
+	" Remove underlines
+	if &background =~# 'light'
+			highlight! TabLine cterm=NONE ctermfg=12 ctermbg=7 gui=NONE guifg=#839496 guibg=#eee8d5
+			highlight! TabLineFill cterm=NONE ctermfg=10 ctermbg=7 gui=NONE guifg=#839496 guibg=#eee8d5
+			highlight! TabLineSel cterm=reverse gui=reverse guifg=#586e75 guibg=#eee8d5
+	else
+		" TODO: dark
+	endif
+		highlight! link CurSearch IncSearch
+endfunction
+
+augroup MyColors
+	autocmd!
+	autocmd ColorScheme solarized8 call MySolarized()
+augroup END
+
+if &termguicolors
+	let g:solarized_italics=1
+else
+	let g:solarized_use16=1
+endif
+let g:solarized_visibility='low'
+let g:solarized_extra_hi_groups=1
+colorscheme solarized8
+
+" WORKSHOP {{{1
+
+" Usage: tmap <expr> <Esc>]b SendToTerm("\<Esc>]b")
+function! s:SendToTerm(what) abort
+	call term_sendkeys('', a:what)
+	return ''
+endfunction
+
+nnoremap <Leader>m :TermMake <C-z><C-p>
+
+function! s:TermMake(target) abort
+	" echom 'DEBUG: TermMake called with ' .. a:target
+	" BUG: I can't just call 'make <target>' here, because I need
+	" the terminal to pick up new PATH variables set in rc files first,
+	" otherwise if run like ':term make hbo' if finds macOS system bundler first
+	" and tries that.
+	" execute "terminal make " .. a:target
+	terminal
+	call <SID>SendToTerm("make " .. a:target)
+endfunction
+
+command! -nargs=? -complete=customlist,<SID>MakeOptions TermMake call <SID>TermMake(<q-args>)
+
+" :h :command-completion-custom
+function! s:MakeOptions(ArgLead, CmdLine, CursorPost) abort
+	" Returns first string in the list or empty string.
+	" TODO: for now I'm hardcoding the ones I want, I'll maybe add parser later.
+	return ['hbo', 'next', 'nextnextonly', 'nextnextonly', 'production', 'sky', 'playstation']
+endfunction
+
+" Original:
+command! -bang -nargs=1 Global call setloclist(0, [], ' ', 
+	\ {'title': 'Global ' .. <q-args>,
+	\ 'efm': '%f:%l\ %m,%f:%l',
+	\ 'lines': execute('g<bang>/' .. <q-args> .. '/#')->split('\n')->map({_, val -> expand("%") .. ":" .. trim(val)})
+	\ })
+
+" MINE:
+" This line from original causing errors, why?
+" Also not able to jump to loclist items with original efm, with this one you can
+" \ ->map({_, val -> expand("%") .. ":" .. trim(val, 1)})
+" command! -bang -nargs=1 Global call setloclist(0, [], ' ', 
+" 	\ {'title': ':Global<bang> ' .. <q-args>,
+" 	\ 'efm': '%l\ %m',
+" 	\ 'lines': execute('g<bang>/' .. <q-args> .. '/#')->split('\n')
+" 	\ })
+
+nnoremap <M-j> :resize +2<CR>
+nnoremap <M-k> :resize -2<CR>
+nnoremap <M-h> :vertical resize +2<CR>
+nnoremap <M-l> :vertical resize -2<CR>
+
+

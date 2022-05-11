@@ -11,3 +11,6 @@ setlocal suffixesadd=.vim
 
 compiler vint
 let &l:define = '\C^command\|^function'
+
+" Need to allow remap here for CCR() function to do magic
+nmap <buffer> gO :g/^function!/#<CR>

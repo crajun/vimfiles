@@ -25,27 +25,6 @@
 [submodule "pack/third-party/start/tagbar"]
 	path = pack/third-party/start/tagbar
 	url = https://github.com/preservim/tagbar
-[submodule "pack/third-party/opt/vim-lsp"]
-	path = pack/third-party/opt/vim-lsp
-	url = https://github.com/prabirshrestha/vim-lsp
-[submodule "pack/third-party/opt/asyncomplete.vim"]
-	path = pack/third-party/opt/asyncomplete.vim
-	url = https://github.com/prabirshrestha/asyncomplete.vim
-[submodule "pack/third-party/opt/asyncomplete-lsp.vim"]
-	path = pack/third-party/opt/asyncomplete-lsp.vim
-	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim
-[submodule "pack/third-party/opt/undotree"]
-	path = pack/third-party/opt/undotree
-	url = https://github.com/mbbill/undotree
-[submodule "pack/third-party/opt/vimspector"]
-	path = pack/third-party/opt/vimspector
-	url = https://github.com/puremourning/vimspector
-[submodule "pack/third-party/start/apprentice"]
-	path = pack/third-party/start/apprentice
-	url = https://github.com/romainl/apprentice
-[submodule "pack/third-party/start/vim-colors-solarized"]
-	path = pack/third-party/start/vim-colors-solarized
-	url = https://github.com/altercation/vim-colors-solarized
-[submodule "pack/third-party/start/nord-vim"]
-	path = pack/third-party/start/nord-vim
-	url = https://github.com/arcticicestudio/nord-vim
+[submodule "pack/third-party/start/vim-solarized8"]
+	path = pack/third-party/start/vim-solarized8
+	url = https://github.com/lifepillar/vim-solarized8

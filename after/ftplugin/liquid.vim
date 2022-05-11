@@ -4,6 +4,8 @@ compiler liquid
 " TODO: redo this
 nnoremap <buffer> gf :call utils#LiquidInclude()<CR>
 
+nnoremap <buffer> <Leader>@ :call utils#JekyllOpen()<CR>
+
 " MATCHES:
 " 1. {% include {{ page.version }}/snippets/target-platform-before-start.md %}
 " 2. ({{ page.version }}/rn/develop/focus-management/#why-we-need-focus)

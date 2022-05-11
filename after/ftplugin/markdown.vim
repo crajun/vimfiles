@@ -12,3 +12,4 @@ setlocal expandtab
 nnoremap <buffer> j gj
 nnoremap <buffer> k gk
 
+iabbrev jiradd [DD-](https://jira.dp.hbo.com/browse/DD-)
